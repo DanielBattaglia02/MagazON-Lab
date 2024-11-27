@@ -1,0 +1,57 @@
+package controller.login;
+
+import jakarta.servlet.RequestDispatcher;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.*;
+import model.Utente;
+import model.UtenteDAO;
+
+import java.io.IOException;
+
+
+@WebServlet(name="login-servlet", value="/login-servlet")
+public class LoginServlet extends HttpServlet
+{
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
+    {
+        String password = request.getParameter("password");
+        String username = request.getParameter("username");
+        String ruolo = request.getParameter("ruolo");
+
+        UtenteDAO utenteDAO = new UtenteDAO();
+        Utente utente;
+
+        utente = utenteDAO.loginUtente(username, password, ruolo);
+
+        if(utente!=null)
+        {
+            HttpSession session = request.getSession();
+
+            synchronized (session)
+            {
+                session.setAttribute("ID", utente.getID());
+                session.setAttribute("username", utente.getUsername());
+                session.setAttribute("ruolo", utente.getRuolo());
+
+                RequestDispatcher requestDispatcher = request.getRequestDispatcher("visualizza-servlet-admin?pageName=dashboard");
+                requestDispatcher.forward(request, response);
+            }
+        }
+        else
+        {
+            Cookie cookie = new Cookie("errore", "1");
+            cookie.setMaxAge(60);
+            response.addCookie(cookie);
+
+            response.sendRedirect("index.jsp");
+        }
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
+    {
+        doGet(request, response);
+    }
+}
