@@ -34,7 +34,7 @@ public class UtenteDAO
             ResultSet resultSet = statement.executeQuery();
 
             while (resultSet.next()) {
-                int ID = resultSet.getInt("u.ID");
+                int ID = resultSet.getInt("ID");
                 String nome = resultSet.getString("nome");
                 String cognome = resultSet.getString("cognome");
                 String ruolo = resultSet.getString("ruolo");
@@ -42,7 +42,7 @@ public class UtenteDAO
                 String stato = resultSet.getString("stato");
                 String email = resultSet.getString("email");
                 String telefono = resultSet.getString("telefono");
-                Date dataDiNascita = resultSet.getDate("data_Di_Nascita");
+                Date dataDiNascita = resultSet.getDate("dataDiNascita");
                 String luogoDiNascita = resultSet.getString("luogoDiNascita");
 
                 utente = new Utente(ID, nome, cognome, ruolo, username, stato, email, telefono, dataDiNascita, luogoDiNascita);

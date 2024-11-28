@@ -1,0 +1,15 @@
+* {
+    box-sizing: border-box;
+    font-family: "Consolas", serif;
+}
+
+.main {
+    position: absolute;
+    top: 0;
+    left: 50px;
+    width: calc(100% - 50px);
+    height: 100%;
+    background-color: rgb(210, 210, 210);
+    color: black;
+    padding: 40px;
+}

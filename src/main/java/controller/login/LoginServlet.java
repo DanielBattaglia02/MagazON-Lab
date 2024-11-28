@@ -35,8 +35,14 @@ public class LoginServlet extends HttpServlet
                 session.setAttribute("username", utente.getUsername());
                 session.setAttribute("ruolo", utente.getRuolo());
 
-                RequestDispatcher requestDispatcher = request.getRequestDispatcher("visualizza-servlet-admin?pageName=dashboard");
-                requestDispatcher.forward(request, response);
+                if(ruolo.equals("magazziniere"))
+                {
+                    response.sendRedirect("visualizza-servlet-magazziniere?pageName=dashboard");
+                }
+                else
+                {
+                    response.sendRedirect("visualizza-servlet-admin?pageName=dashboard");
+                }
             }
         }
         else

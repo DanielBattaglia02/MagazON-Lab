@@ -34,10 +34,10 @@
 <div class="container">
   <form action="login-servlet" method="post">
       <label for="lbu">Username</label>
-      <input id="lbu" type="text" required>
+      <input id="lbu" name="username" type="text" required>
       <label for="lbp">Password</label>
       <div style="position: relative;">
-          <input id="lbp" type="password" required>
+          <input id="lbp" type="password" name="password" required>
           <span id="togglePassword" style="position: absolute; top: 40%; right: 10px; transform: translateY(-50%); cursor: pointer;">
               👁️
           </span>
