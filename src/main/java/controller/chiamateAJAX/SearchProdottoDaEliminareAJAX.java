@@ -17,7 +17,6 @@ import java.sql.*;
 import java.util.ArrayList;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-
 @WebServlet(name="search-prodotto-da-eliminare-ajax", value="/search-prodotto-da-eliminare-ajax")
 public class SearchProdottoDaEliminareAJAX extends HttpServlet {
 
@@ -26,29 +25,40 @@ public class SearchProdottoDaEliminareAJAX extends HttpServlet {
         response.setContentType("application/json;charset=UTF-8");
 
         // Leggi il parametro 'codice' dalla richiesta
-        String codice = request.getParameter("codice");
-
-        // Se non c'è il codice, rispondi con un array vuoto
-        if (codice == null || codice.trim().isEmpty()) {
-            response.getWriter().println("[]");
-            return;
-        }
+        String codice = (String) request.getParameter("codice");
+        System.out.println("codice: " + codice);
 
         // Inizializza la connessione e gli oggetti
         ArrayList<Prodotto> prodotti = new ArrayList<>();
         Connessione connessione = new Connessione();
+
         try {
-            // Esegui la query per cercare i prodotti
-            String sql = "SELECT ID, IDcategoria, codice, stato, nome, descrizione, dataArrivo, noteArrivo, partenza, dataSpedizione, noteSpedizione, destinazione, noteGenerali FROM prodotto WHERE codice LIKE ?";
+            String sql;
+
+            // Se il parametro codice è vuoto o nullo, recupera tutti i prodotti
+            if (codice.equals("-1")){
+                sql = "SELECT p.*, c.nome as categoriaNome FROM prodotto p " +
+                        "JOIN Categoria c ON c.ID=p.IDcategoria";
+            } else {
+                // Altrimenti, cerca i prodotti per codice
+                sql = "SELECT p.*, c.nome as categoriaNome FROM prodotto p " +
+                        "JOIN Categoria c ON c.ID=p.IDcategoria " +
+                        "WHERE codice LIKE ?";
+            }
+
             try (PreparedStatement stmt = connessione.getConnection().prepareStatement(sql)) {
-                stmt.setString(1, "%" + codice + "%");
+                // Se il codice è presente e non nullo, imposta il parametro della query
+                if (!codice.equals("-1")) {
+                    stmt.setString(1, "%" + codice + "%");
+                }
+
                 try (ResultSet rs = stmt.executeQuery()) {
                     // Aggiungi i risultati alla lista
                     while (rs.next()) {
                         Prodotto prodotto = new Prodotto(
                                 rs.getInt("ID"),
                                 rs.getInt("IDcategoria"),
-                                "CATEGORIA",  // Assumendo che il nome della categoria venga gestito altrove
+                                rs.getString("categoriaNome"),
                                 rs.getString("codice"),
                                 rs.getString("stato"),
                                 rs.getString("nome"),
@@ -62,17 +72,14 @@ public class SearchProdottoDaEliminareAJAX extends HttpServlet {
                                 rs.getString("noteGenerali")
                         );
                         prodotti.add(prodotto);
+                        System.out.println(prodotti);
                     }
                 }
             }
 
+            // Usa Jackson per serializzare l'array dei prodotti in formato JSON
             ObjectMapper mapper = new ObjectMapper();
             String json = mapper.writeValueAsString(prodotti);
-
-            System.out.println(json); // Output: ["element1","element2","element3"]
-            // Imposta il tipo di contenuto come JSON
-            response.setContentType("application/json");
-            response.setCharacterEncoding("UTF-8");
 
             // Invia il JSON come risposta
             response.getWriter().write(json);

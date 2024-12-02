@@ -47,7 +47,7 @@ else if(message.equals("4"))
 <html>
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/magazziniere/components/eliminaProdotto.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/admin/components/eliminaProdotto.css">
 </head>
 <body>
 
@@ -63,7 +63,7 @@ else if(message.equals("4"))
 </div>
 
 <!-- form nascosto1 -->
-<form id="hiddenForm" action="visualizza-servlet-magazziniere" method="post" style="display:none;">
+<form id="hiddenForm" action="visualizza-servlet-admin" method="post" style="display:none;">
     <input type="hidden" name="pageName" id="hiddenPageName" value="">
 </form>
 
@@ -90,7 +90,7 @@ else if(message.equals("4"))
 </div>
 
 <!-- form nascosto2 -->
-<form id="hiddenForm2" action="elimina-servlet-magazziniere" method="post" style="display:none;">
+<form id="hiddenForm2" action="elimina-servlet-admin" method="post" style="display:none;">
     <input type="hidden" name="pageName" id="hiddenPageName2" value="">
     <input type="hidden" name="IDprodotto" id="IDprodotto" value="">
 </form>

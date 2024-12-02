@@ -134,4 +134,97 @@ public class GestioneNotificheDAO
             }
         }
     }
+
+    public String inviaNotifica(int ID, String oggetto, String messaggio) {
+        String result = null;
+
+        try {
+            // Disattiva l'auto-commit all'inizio della transazione
+            connessione.getConnection().setAutoCommit(false);
+
+            // Inserimento della notifica nella tabella Notifica
+            String queryNotifica = "INSERT INTO Notifica (IDutente, oggetto, messaggio) VALUES (?, ?, ?)";
+            PreparedStatement statementNotifica = connessione.getConnection().prepareStatement(queryNotifica, Statement.RETURN_GENERATED_KEYS);
+
+            // IDutente è 0 perché la notifica sarà generica per tutti
+            int idUtenteGenerico = 0; // Usa 0 per identificare una notifica globale o aggiorna il modello
+            statementNotifica.setInt(1, ID);
+            statementNotifica.setString(2, oggetto);
+            statementNotifica.setString(3, messaggio);
+
+            int rowsAffectedNotifica = statementNotifica.executeUpdate();
+            if (rowsAffectedNotifica > 0) {
+                // Recupero l'ID della notifica appena creata
+                ResultSet generatedKeys = statementNotifica.getGeneratedKeys();
+                if (generatedKeys.next()) {
+                    int idNotifica = generatedKeys.getInt(1);
+
+                    // Recupero tutti gli utenti dalla tabella Utente
+                    String queryUtenti = "SELECT ID FROM Utente";
+                    PreparedStatement statementUtenti = connessione.getConnection().prepareStatement(queryUtenti);
+                    ResultSet resultSetUtenti = statementUtenti.executeQuery();
+
+                    // Inserisco una riga per ogni utente nella tabella StatoNotifica
+                    String queryStatoNotifica = "INSERT INTO StatoNotifica (IDnotifica, IDutente, stato) VALUES (?, ?, ?)";
+                    PreparedStatement statementStatoNotifica = connessione.getConnection().prepareStatement(queryStatoNotifica);
+
+                    while (resultSetUtenti.next()) {
+                        int idUtente = resultSetUtenti.getInt("ID");
+                        statementStatoNotifica.setInt(1, idNotifica);
+                        statementStatoNotifica.setInt(2, idUtente);
+                        statementStatoNotifica.setString(3, "non letto"); // Stato predefinito
+
+                        statementStatoNotifica.addBatch(); // Accumulo le query
+                    }
+
+                    // Eseguo il batch di inserimenti
+                    int[] batchResults = statementStatoNotifica.executeBatch();
+
+                    // Verifico se tutti gli inserimenti sono andati a buon fine
+                    boolean success = true;
+                    for (int resultCode : batchResults) {
+                        if (resultCode == Statement.EXECUTE_FAILED) {
+                            success = false;
+                            break;
+                        }
+                    }
+
+                    if (success) {
+                        // Confermo la transazione
+                        connessione.getConnection().commit();
+                        result = "3"; // Operazione completata con successo
+                    } else {
+                        connessione.getConnection().rollback();
+                        result = "4"; // Problemi nell'inserimento degli stati delle notifiche
+                    }
+                } else {
+                    connessione.getConnection().rollback();
+                    result = "4"; // Problemi nel recupero dell'ID della notifica
+                }
+            } else {
+                connessione.getConnection().rollback();
+                result = "4"; // Problemi nell'inserimento della notifica
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            try {
+                connessione.getConnection().rollback(); // Rollback in caso di errore
+            } catch (SQLException rollbackEx) {
+                rollbackEx.printStackTrace();
+            }
+            throw new RuntimeException("Errore durante l'invio della notifica.", e);
+        } finally {
+            try {
+                if (connessione != null) {
+                    connessione.getConnection().setAutoCommit(true); // Ripristino l'autocommit
+                    connessione.closeConnection();
+                }
+            } catch (SQLException e) {
+                throw new RuntimeException("Errore durante la chiusura della connessione.", e);
+            }
+        }
+
+        return result;
+    }
 }

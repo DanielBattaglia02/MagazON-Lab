@@ -34,7 +34,7 @@ Autore: Daniel Battaglia
         <div class="azione" onclick="redirectTo('notifiche')">
             <div class="notification-wrapper">
                 <img src="${pageContext.request.contextPath}/img/sidebar/notifiche.png" alt="Gestione notifiche">
-                <span class="notification-count" id="notificationCount">0</span> <!-- Numero notifiche -->
+                <span class="notification-count" id="notificationCount"></span> <!-- Numero notifiche -->
             </div>
             <span class="scritta">Gestione notifiche</span>
         </div>
