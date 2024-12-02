@@ -1,3 +1,7 @@
+/*
+Autore: Daniel Battaglia
+ */
+
 package model;
 
 import java.sql.Date;

@@ -1,3 +1,6 @@
+<%--
+Autore: Daniel Battaglia
+--%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
 <html>
@@ -9,38 +12,38 @@
 <body>
 <div class="sidebar">
     <div class="logo">
-        <img src="${pageContext.request.contextPath}/img/logo.jpg" alt="Logo">
+        <img src="${pageContext.request.contextPath}/img/sidebar/logo.jpg" alt="Logo">
         <span class="scritta">Dashboard</span>
     </div>
     <div class="azione">
-        <img src="${pageContext.request.contextPath}/img/aggiungiProd.png" alt="Aggiungi prodotto">
+        <img src="${pageContext.request.contextPath}/img/sidebar/aggiungiProd.png" alt="Aggiungi prodotto">
         <span class="scritta">Aggiungi prodotto</span>
     </div>
     <div class="azione">
-        <img src="${pageContext.request.contextPath}/img/eliminaProd.png" alt="Elimina prodotto">
+        <img src="${pageContext.request.contextPath}/img/sidebar/eliminaProd.png" alt="Elimina prodotto">
         <span class="scritta">Elimina prodotto</span>
     </div>
     <div class="azione">
-        <img src="${pageContext.request.contextPath}/img/categorie.png" alt="Gestione categorie">
+        <img src="${pageContext.request.contextPath}/img/sidebar/categorie.png" alt="Gestione categorie">
         <span class="scritta">Gestione categorie</span>
     </div>
     <div class="azione">
-        <img src="${pageContext.request.contextPath}/img/utenti.png" alt="Gestione utenti">
+        <img src="${pageContext.request.contextPath}/img/sidebar/utenti.png" alt="Gestione utenti">
         <span class="scritta">Gestione utenti</span>
     </div>
     <div class="azione">
-        <img src="${pageContext.request.contextPath}/img/liste.png" alt="Gestione liste">
+        <img src="${pageContext.request.contextPath}/img/sidebar/liste.png" alt="Gestione liste">
         <span class="scritta">Gestione liste</span>
     </div>
     <div class="azione">
         <div class="notification-wrapper">
-            <img src="${pageContext.request.contextPath}/img/notifiche.png" alt="Gestione notifiche">
+            <img src="${pageContext.request.contextPath}/img/sidebar/notifiche.png" alt="Gestione notifiche">
             <span class="notification-count">0</span> <!-- Numero notifiche -->
         </div>
         <span class="scritta">Gestione notifiche</span>
     </div>
     <div class="logout" onclick="confirmLogout()">
-        <img src="${pageContext.request.contextPath}/img/logout.png" alt="Logout">
+        <img src="${pageContext.request.contextPath}/img/sidebar/logout.png" alt="Logout">
         <span class="scritta">Logout</span>
     </div>
 </div>

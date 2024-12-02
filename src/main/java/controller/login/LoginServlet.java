@@ -1,11 +1,14 @@
+/*
+Autore: Daniel Battaglia
+ */
+
 package controller.login;
 
-import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
+import model.GestioneUtentiDAO;
 import model.Utente;
-import model.UtenteDAO;
 
 import java.io.IOException;
 
@@ -20,10 +23,10 @@ public class LoginServlet extends HttpServlet
         String username = request.getParameter("username");
         String ruolo = request.getParameter("ruolo");
 
-        UtenteDAO utenteDAO = new UtenteDAO();
+        GestioneUtentiDAO gestioneUtentiDAO = new GestioneUtentiDAO();
         Utente utente;
 
-        utente = utenteDAO.loginUtente(username, password, ruolo);
+        utente = gestioneUtentiDAO.loginUtente(username, password, ruolo);
 
         if(utente!=null)
         {

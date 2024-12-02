@@ -1,4 +1,8 @@
+<%--
+Autore: Daniel Battaglia
+--%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
 <html>
 <head>
@@ -13,7 +17,9 @@
         </div>
 
         <div class="box-filtri">
-            <form class="filtri">
+
+            <form class="filtri" method="post" action="visualizza-servlet-magazziniere">
+                <input type="hidden" name="pageName" value="prodottiFiltrati">
                 <div class="filtro">
                     <label for="codice">Codice:</label>
                     <input type="text" id="codice" name="codice" placeholder="Inserisci codice">
@@ -22,10 +28,9 @@
                     <label for="categoria">Categoria:</label>
                     <select id="categoria" name="categoria">
                         <option value="">--Seleziona categoria--</option>
-                        <option value="elettronica">Elettronica</option>
-                        <option value="abbigliamento">Abbigliamento</option>
-                        <option value="alimentari">Alimentari</option>
-                        <option value="arredamento">Arredamento</option>
+                        <c:forEach var="categoria" items="${listaCategorie}">
+                        <option value="${categoria.ID}">${categoria.nome}</option>
+                        </c:forEach>
                     </select>
                 </div>
                 <div class="filtro">
@@ -50,14 +55,16 @@
     </div>
 
 
-
     <div class="sezione">
 
         <div class="contenitore-tabella">
             <table class="tabella">
                 <thead>
                 <tr>
-                    <th>CODICE</th>
+                    <th colspan="12">LISTA PRODOTTI</th>
+                </tr>
+                <tr>
+                    <th colspan="2">CODICE</th>
                     <th>CATEGORIA</th>
                     <th>NOME</th>
                     <th>STATO</th>
@@ -65,216 +72,39 @@
                     <th>NOTE ARRIVO</th>
                     <th>DATA SPEDIZIONE</th>
                     <th>NOTE SPEDIZIONE</th>
-                    <th>DETTAGLI</th>
-                    <th>MODIFICA</th>
+                    <th colspan="2">AZIONI</th>
                 </tr>
                 </thead>
                 <tbody>
-                <!-- Riga di esempio -->
-                <tr>
-                    <td>12345</td>
-                    <td>Elettronica</td>
-                    <td>Smartphone</td>
-                    <td>Disponibile</td>
-                    <td>2024-11-01</td>
-                    <td>Consegna standard</td>
-                    <td>2024-11-15</td>
-                    <td>Spedito con corriere</td>
-                    <td><button>Dettagli</button></td>
-                    <td><button>Modifica</button></td>
-                </tr>
-                <tr>
-                    <td>67890</td>
-                    <td>Abbigliamento</td>
-                    <td>Felpa</td>
-                    <td>Esaurito</td>
-                    <td>2024-10-20</td>
-                    <td>Consegna urgente</td>
-                    <td>2024-11-18</td>
-                    <td>Spedito con tracking</td>
-                    <td><button>Dettagli</button></td>
-                    <td><button>Modifica</button></td>
-                </tr>
-                <tr>
-                    <td>67890</td>
-                    <td>Abbigliamento</td>
-                    <td>Felpa</td>
-                    <td>Esaurito</td>
-                    <td>2024-10-20</td>
-                    <td>Consegna urgente</td>
-                    <td>2024-11-18</td>
-                    <td>Spedito con tracking</td>
-                    <td><button>Dettagli</button></td>
-                    <td><button>Modifica</button></td>
-                </tr>
-                <tr>
-                    <td>67890</td>
-                    <td>Abbigliamento</td>
-                    <td>Felpa</td>
-                    <td>Esaurito</td>
-                    <td>2024-10-20</td>
-                    <td>Consegna urgente</td>
-                    <td>2024-11-18</td>
-                    <td>Spedito con tracking</td>
-                    <td><button>Dettagli</button></td>
-                    <td><button>Modifica</button></td>
-                </tr>
-                <tr>
-                    <td>67890</td>
-                    <td>Abbigliamento</td>
-                    <td>Felpa</td>
-                    <td>Esaurito</td>
-                    <td>2024-10-20</td>
-                    <td>Consegna urgente</td>
-                    <td>2024-11-18</td>
-                    <td>Spedito con tracking</td>
-                    <td><button>Dettagli</button></td>
-                    <td><button>Modifica</button></td>
-                </tr>
-                <tr>
-                    <td>67890</td>
-                    <td>Abbigliamento</td>
-                    <td>Felpa</td>
-                    <td>Esaurito</td>
-                    <td>2024-10-20</td>
-                    <td>Consegna urgente</td>
-                    <td>2024-11-18</td>
-                    <td>Spedito con tracking</td>
-                    <td><button>Dettagli</button></td>
-                    <td><button>Modifica</button></td>
-                </tr>
-                <tr>
-                    <td>67890</td>
-                    <td>Abbigliamento</td>
-                    <td>Felpa</td>
-                    <td>Esaurito</td>
-                    <td>2024-10-20</td>
-                    <td>Consegna urgente</td>
-                    <td>2024-11-18</td>
-                    <td>Spedito con tracking</td>
-                    <td><button>Dettagli</button></td>
-                    <td><button>Modifica</button></td>
-                </tr>
-                <tr>
-                    <td>67890</td>
-                    <td>Abbigliamento</td>
-                    <td>Felpa</td>
-                    <td>Esaurito</td>
-                    <td>2024-10-20</td>
-                    <td>Consegna urgente</td>
-                    <td>2024-11-18</td>
-                    <td>Spedito con tracking</td>
-                    <td><button>Dettagli</button></td>
-                    <td><button>Modifica</button></td>
-                </tr>
-                <tr>
-                    <td>67890</td>
-                    <td>Abbigliamento</td>
-                    <td>Felpa</td>
-                    <td>Esaurito</td>
-                    <td>2024-10-20</td>
-                    <td>Consegna urgente</td>
-                    <td>2024-11-18</td>
-                    <td>Spedito con tracking</td>
-                    <td><button>Dettagli</button></td>
-                    <td><button>Modifica</button></td>
-                </tr>
-                <tr>
-                    <td>67890</td>
-                    <td>Abbigliamento</td>
-                    <td>Felpa</td>
-                    <td>Esaurito</td>
-                    <td>2024-10-20</td>
-                    <td>Consegna urgente</td>
-                    <td>2024-11-18</td>
-                    <td>Spedito con tracking</td>
-                    <td><button>Dettagli</button></td>
-                    <td><button>Modifica</button></td>
-                </tr>
-                <tr>
-                    <td>67890</td>
-                    <td>Abbigliamento</td>
-                    <td>Felpa</td>
-                    <td>Esaurito</td>
-                    <td>2024-10-20</td>
-                    <td>Consegna urgente</td>
-                    <td>2024-11-18</td>
-                    <td>Spedito con tracking</td>
-                    <td><button>Dettagli</button></td>
-                    <td><button>Modifica</button></td>
-                </tr>
-                <tr>
-                    <td>67890</td>
-                    <td>Abbigliamento</td>
-                    <td>Felpa</td>
-                    <td>Esaurito</td>
-                    <td>2024-10-20</td>
-                    <td>Consegna urgente</td>
-                    <td>2024-11-18</td>
-                    <td>Spedito con tracking</td>
-                    <td><button>Dettagli</button></td>
-                    <td><button>Modifica</button></td>
-                </tr>
-                <tr>
-                    <td>67890</td>
-                    <td>Abbigliamento</td>
-                    <td>Felpa</td>
-                    <td>Esaurito</td>
-                    <td>2024-10-20</td>
-                    <td>Consegna urgente</td>
-                    <td>2024-11-18</td>
-                    <td>Spedito con tracking</td>
-                    <td><button>Dettagli</button></td>
-                    <td><button>Modifica</button></td>
-                </tr>
-                <tr>
-                    <td>67890</td>
-                    <td>Abbigliamento</td>
-                    <td>Felpa</td>
-                    <td>Esaurito</td>
-                    <td>2024-10-20</td>
-                    <td>Consegna urgente</td>
-                    <td>2024-11-18</td>
-                    <td>Spedito con tracking</td>
-                    <td><button>Dettagli</button></td>
-                    <td><button>Modifica</button></td>
-                </tr>
-                <tr>
-                    <td>67890</td>
-                    <td>Abbigliamento</td>
-                    <td>Felpa</td>
-                    <td>Esaurito</td>
-                    <td>2024-10-20</td>
-                    <td>Consegna urgente</td>
-                    <td>2024-11-18</td>
-                    <td>Spedito con tracking</td>
-                    <td><button>Dettagli</button></td>
-                    <td><button>Modifica</button></td>
-                </tr>
-                <tr>
-                    <td>67890</td>
-                    <td>Abbigliamento</td>
-                    <td>Felpa</td>
-                    <td>Esaurito</td>
-                    <td>2024-10-20</td>
-                    <td>Consegna urgente</td>
-                    <td>2024-11-18</td>
-                    <td>Spedito con tracking</td>
-                    <td><button>Dettagli</button></td>
-                    <td><button>Modifica</button></td>
-                </tr>
-                <tr>
-                    <td>67890</td>
-                    <td>Abbigliamento</td>
-                    <td>Felpa</td>
-                    <td>Esaurito</td>
-                    <td>2024-10-20</td>
-                    <td>Consegna urgente</td>
-                    <td>2024-11-18</td>
-                    <td>Spedito con tracking</td>
-                    <td><button>Dettagli</button></td>
-                    <td><button>Modifica</button></td>
-                </tr>
+                    <c:forEach var="prodotto" items="${listaProdotti}">
+                        <tr class="${'non disponibile'.equals(prodotto.stato) ? 'riga-non-disponibile' : ''}">
+                            <td>
+                                <img class="icona" src="${pageContext.request.contextPath}/img/oggetti/pacco-amazon.png" alt="immagine prodotto">
+                            </td>
+                            <td>${prodotto.codice}</td>
+                            <td>${prodotto.nomeCategoria}</td>
+                            <td>${prodotto.nome}</td>
+                            <td>${prodotto.stato}</td>
+                            <td>${prodotto.dataArrivo}</td>
+                            <td>${prodotto.noteArrivo}</td>
+                            <td>${prodotto.dataSpedizione}</td>
+                            <td>${prodotto.noteSpedizione}</td>
+                            <form action="visualizza-servlet-magazziniere" method="post">
+                                <td>
+                                    <input type="hidden" name="IDprodotto" value="${prodotto.ID}">
+                                    <input type="hidden" name="pageName" value="dettagliProdotto">
+                                    <input class="bottone" type="submit" value="Dettagli">
+                                </td>
+                            </form>
+                            <form action="visualizza-servlet-magazziniere" method="post">
+                                <td>
+                                    <input type="hidden" name="IDprodotto" value="${prodotto.ID}">
+                                    <input type="hidden" name="pageName" value="modificaProdotto">
+                                    <input class="bottone" type="submit" value="Modifica">
+                                </td>
+                            </form>
+                        </tr>
+                    </c:forEach>
                 </tbody>
             </table>
         </div>

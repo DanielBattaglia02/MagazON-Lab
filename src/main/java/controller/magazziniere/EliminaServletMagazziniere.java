@@ -2,7 +2,7 @@
 Autore: Daniel Battaglia
  */
 
-package controller.admin;
+package controller.magazziniere;
 
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
@@ -16,15 +16,25 @@ import model.*;
 import java.io.IOException;
 import java.util.List;
 
-@WebServlet(name="visualizza-servlet-admin", value="/visualizza-servlet-admin")
-public class VisualizzaServletAdmin extends HttpServlet
+@WebServlet(name="elimina-servlet-magazziniere", value="/elimina-servlet-magazziniere")
+public class EliminaServletMagazziniere extends HttpServlet
 {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
     {
         String pageName = request.getParameter("pageName");
 
-        RequestDispatcher requestDispatcher = request.getRequestDispatcher("WEB-INF/results/admin/homepageAdmin.jsp?pageName=" + pageName);
+        if(pageName.equals("prodotto"))
+        {
+            int id = Integer.parseInt(request.getParameter("IDprodotto"));
+
+            GestioneProdottiDAO gestioneProdottiDAO = new GestioneProdottiDAO();
+            String result = gestioneProdottiDAO.eliminaProdotto(id);
+            request.setAttribute("message", result);
+            pageName = "eliminaProdotto";
+        }
+
+        RequestDispatcher requestDispatcher = request.getRequestDispatcher("visualizza-servlet-magazziniere?pageName=" + pageName);
         requestDispatcher.forward(request, response);
     }
 

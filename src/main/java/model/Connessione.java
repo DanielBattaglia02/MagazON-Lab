@@ -1,10 +1,14 @@
+/*
+Autore: Daniel Battaglia
+ */
+
 package model;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-public class Connessione
+public class Connessione implements AutoCloseable
 {
     private Connection con;
 
@@ -39,6 +43,18 @@ public class Connessione
         }
         catch (SQLException var2)
         {
+            var2.printStackTrace();
+        }
+    }
+
+    // Metodo close() per l'implementazione di AutoCloseable
+    @Override
+    public void close() throws SQLException {
+        try {
+            if (this.con != null && !this.con.isClosed()) {
+                this.con.close();
+            }
+        } catch (SQLException var2) {
             var2.printStackTrace();
         }
     }

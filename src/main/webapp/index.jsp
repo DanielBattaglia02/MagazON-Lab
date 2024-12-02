@@ -1,3 +1,6 @@
+<%--
+Autore: Daniel Battaglia
+--%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
 <%
@@ -28,7 +31,7 @@
 <body>
 
 <div class="logo">
-  <img src="img/logo.jpg">
+  <img src="img/sidebar/logo.jpg">
 </div>
 
 <div class="container">
