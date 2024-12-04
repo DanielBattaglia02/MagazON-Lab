@@ -102,6 +102,11 @@ public class VisualizzaServletAdmin extends HttpServlet
             List<Categoria> listaCategorie = gestioneCategorieDAO.visualizzaCategorie();
             request.setAttribute("listaCategorie", listaCategorie);
         }
+        else if(pageName.equals("utenti")){
+            GestioneUtentiDAO gestioneUtentiDAO = new GestioneUtentiDAO();
+            List<Utente> listaUtenti = gestioneUtentiDAO.visualizzaUtenti();
+            request.setAttribute("listaUtenti", listaUtenti);
+        }
 
         RequestDispatcher requestDispatcher = request.getRequestDispatcher("WEB-INF/results/admin/homepageAdmin.jsp?pageName=" + pageName);
         requestDispatcher.forward(request, response);
