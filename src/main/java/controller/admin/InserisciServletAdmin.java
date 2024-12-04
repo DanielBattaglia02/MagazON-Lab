@@ -12,8 +12,12 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import model.GestioneNotificheDAO;
 import model.GestioneProdottiDAO;
+import model.GestioneUtentiDAO;
+import utils.utils;
 
 import java.io.IOException;
+import java.security.SecureRandom;
+import java.util.Base64;
 
 @WebServlet(name="inserisci-servlet-admin", value="/inserisci-servlet-admin")
 public class InserisciServletAdmin extends HttpServlet
@@ -73,6 +77,27 @@ public class InserisciServletAdmin extends HttpServlet
 
             request.setAttribute("message", result);
             pageName = "notifiche";
+        }
+        else if (pageName.equals("utenti")){
+            String nome = request.getParameter("nome");
+            String cognome= request.getParameter("cognome");
+            String ruolo= request.getParameter("ruolo");
+
+            String username = request.getParameter("username");
+            String password= utils.generatePassword(10);
+            String email = request.getParameter("email");
+            String telefono = request.getParameter("telefono");
+
+            String dataNascita = request.getParameter("dataNascita");
+            String luogoNascita = request.getParameter("luogoNascita");
+
+            GestioneUtentiDAO gestioneUtentiDAO = new GestioneUtentiDAO();
+            String result= gestioneUtentiDAO.aggiungiUtente(nome,cognome,ruolo,username,password,email,telefono,dataNascita,luogoNascita);
+            request.setAttribute("message", result);
+            request.setAttribute("username", username);
+            request.setAttribute("password", password);
+            pageName = "aggiungiUtente";
+
         }
 
         RequestDispatcher requestDispatcher = request.getRequestDispatcher("visualizza-servlet-admin?pageName=" + pageName);

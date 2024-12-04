@@ -10,6 +10,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.security.SecureRandom;
+import java.util.Base64;
 
 public class GestioneUtentiDAO
 {
@@ -182,5 +184,47 @@ public class GestioneUtentiDAO
         }
 
         return utenti;
+    }
+
+
+    public String aggiungiUtente(String nome, String cognome, String ruolo,
+                                 String username, String password, String email,
+                                 String telefono, String dataNascitaStr, String luogoNascita) {
+
+        Date dataNascita=java.sql.Date.valueOf(dataNascitaStr);
+
+        String query = "INSERT INTO utente (nome, cognome, ruolo, username, password, email, telefono, dataDiNascita, luogoDiNascita) VALUES (?, ?, ?, ?, SHA1(?), ?, ?, ?, ?)";
+        String result = null;
+
+        try {
+            PreparedStatement statement = connessione.getConnection().prepareStatement(query);
+            statement.setString(1, nome);
+            statement.setString(2, cognome);
+            statement.setString(3, ruolo);
+            statement.setString(4, username);
+            statement.setString(5, password);
+            statement.setString(6, email);
+            statement.setString(7, telefono);
+            statement.setDate(8, dataNascita);
+            statement.setString(9, luogoNascita);
+
+            int rowsInserted = statement.executeUpdate();
+            if (rowsInserted > 0) {
+                result = "1"; // Inserimento avvenuto con successo
+            } else {
+                result = "2"; // Problemi nell'inserimento in Utente
+            }
+        } catch (SQLException e) {
+            result = "3"; // Eccezione durante l'inserimento
+            throw new RuntimeException(e);}
+        finally {
+            try {
+                connessione.closeConnection();
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        return result;
     }
 }

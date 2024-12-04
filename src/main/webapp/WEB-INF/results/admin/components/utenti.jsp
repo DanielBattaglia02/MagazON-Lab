@@ -12,7 +12,7 @@ Autore: Daniel Battaglia
 <body>
 
 <div class="header">
-    <div class="box-scritta" onclick="redirectTo('aggiuniUtente')">Aggiungi utente</div>
+    <div class="box-scritta" onclick="redirectTo('aggiungiUtente')">Aggiungi utente</div>
     <div class="box-scritta" onclick="redirectTo2('dashboard')">Torna indietro</div>
 </div>
 
@@ -62,15 +62,15 @@ Autore: Daniel Battaglia
                     <td>${utente.luogoDiNascita}</td>
                     <form action="visualizza-servlet-admin" method="post">
                         <td>
-                            <input type="hidden" name="IDcategoria" value="${utente.ID}">
-                            <input type="hidden" name="pageName" value="carrello">
+                            <input type="hidden" name="IDutente" value="${utente.ID}">
+                            <input type="hidden" name="pageName" value="utenti">
                             <input class="bottone" type="submit" value="Modifica">
                         </td>
                     </form>
-                    <form action="eliminare-servlet-admin" method="post">
+                    <form action="elimina-servlet-admin" method="post">
                         <td>
-                            <input type="hidden" name="IDcategoria" value="${utente.ID}">
-                            <input type="hidden" name="pageName" value="carrello">
+                            <input type="hidden" name="IDutente" value="${utente.ID}">
+                            <input type="hidden" name="pageName" value="utenti">
                             <input class="bottone" type="submit" value="Elimina">
                         </td>
                     </form>
