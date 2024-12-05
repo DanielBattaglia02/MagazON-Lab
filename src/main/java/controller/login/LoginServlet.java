@@ -32,6 +32,8 @@ public class LoginServlet extends HttpServlet
         {
             HttpSession session = request.getSession();
 
+            gestioneUtentiDAO.setStato(utente.getID(),1);
+
             synchronized (session)
             {
                 session.setAttribute("ID", utente.getID());

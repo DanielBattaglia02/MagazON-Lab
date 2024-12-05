@@ -68,6 +68,22 @@ Autore: Daniel Battaglia
     cursor: pointer;
 }
 
+.online {
+    background-color: #329932 !important;
+}
+
+.online:hover {
+    background-color: #236b23 !important;
+}
+
+.offline {
+    background-color: #cc0000 !important;
+}
+
+.offline:hover{
+    background-color: #990000 !important;
+}
+
 /************************************************************************/
 
 .box-scritta{

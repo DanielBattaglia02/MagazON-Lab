@@ -353,4 +353,40 @@ public class GestioneUtentiDAO {
 
         return result;
     }
+
+    public void setStato(int id, int statoInt) {
+        connessione = new Connessione();
+
+        String query = "UPDATE Utente SET stato = ? WHERE ID = ?";
+        String stato = "";
+
+        if (statoInt == 1) {
+            stato = "online";
+        } else if (statoInt == 0) {
+            stato = "offline";
+        } else return;
+
+        try {
+            // Prepara la query
+            PreparedStatement statement = connessione.getConnection().prepareStatement(query);
+
+            // Imposta i parametri per la query
+            statement.setString(1, stato);
+            statement.setInt(2, id);
+
+            // Esegui l'aggiornamento
+            statement.executeUpdate();
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            if (connessione != null) {
+                try {
+                    connessione.closeConnection();
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+    }
 }

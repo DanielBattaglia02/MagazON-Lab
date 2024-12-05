@@ -1,7 +1,7 @@
 <%--
 Autore: Daniel Battaglia
 --%>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" session="true" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
 
@@ -9,6 +9,8 @@ Autore: Daniel Battaglia
     String message = (String) request.getAttribute("message");
     Boolean del = (Boolean) request.getAttribute("del");
     Boolean update = (Boolean) request.getAttribute("update");
+    int IDutente = (int) session.getAttribute("ID");
+    request.setAttribute("IDutente", IDutente);
 
     if (message != null) {
         if (del != null && del){
@@ -82,7 +84,7 @@ Autore: Daniel Battaglia
             </thead>
             <tbody>
             <c:forEach var="utente" items="${listaUtenti}">
-                <tr>
+                <tr class="${utente.stato == 'online' ? 'online' : 'offline'}">
                     <td>${utente.ID}</td>
                     <td>${utente.nome}</td>
                     <td>${utente.cognome}</td>
@@ -93,7 +95,7 @@ Autore: Daniel Battaglia
                     <td>${utente.telefono}</td>
                     <td>${utente.dataDiNascita}</td>
                     <td>${utente.luogoDiNascita}</td>
-                    <c:if test="${'magazziniere' == utente.ruolo}">
+                    <c:if test="${'magazziniere' == utente.ruolo or utente.ID==IDutente}">
                     <form action="visualizza-servlet-admin" method="post">
                         <td>
                             <input type="hidden" name="IDutente" value="${utente.ID}">
