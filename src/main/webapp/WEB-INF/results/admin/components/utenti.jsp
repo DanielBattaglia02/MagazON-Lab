@@ -93,6 +93,7 @@ Autore: Daniel Battaglia
                     <td>${utente.telefono}</td>
                     <td>${utente.dataDiNascita}</td>
                     <td>${utente.luogoDiNascita}</td>
+                    <c:if test="${'magazziniere' == utente.ruolo}">
                     <form action="visualizza-servlet-admin" method="post">
                         <td>
                             <input type="hidden" name="IDutente" value="${utente.ID}">
@@ -107,6 +108,7 @@ Autore: Daniel Battaglia
                             <input class="bottone" type="submit" value="Elimina">
                         </td>
                     </form>
+                    </c:if>
                 </tr>
             </c:forEach>
             </tbody>
