@@ -7,32 +7,31 @@ package model;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GestioneCategorieDAO
-{
+public class GestioneCategorieDAO {
     private Connessione connessione;
 
     public GestioneCategorieDAO() {
         connessione = new Connessione();
     }
 
-    public List<Categoria> visualizzaCategorie()
-    {
+    public List<Categoria> visualizzaCategorie() {
         List<Categoria> categorie = new ArrayList<>();
 
         String query = "SELECT * FROM categoria";
 
-        try
-        {
+        try {
             PreparedStatement statement = connessione.getConnection().prepareStatement(query);
             ResultSet resultSet = statement.executeQuery();
 
             while (resultSet.next()) {
                 int ID = resultSet.getInt("ID");
-                String nome= resultSet.getString("nome");
-                String descrizione = resultSet.getString("descrizione");;
+                String nome = resultSet.getString("nome");
+                String descrizione = resultSet.getString("descrizione");
+                ;
                 String note = resultSet.getString("note");
 
                 Categoria categoria = new Categoria(ID, nome, descrizione, note);
@@ -41,6 +40,56 @@ public class GestioneCategorieDAO
 
             resultSet.close();
             statement.close();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            if (connessione != null) {
+                try {
+                    connessione.closeConnection();
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+
+        return categorie;
+    }
+
+    public String aggiungiCategoria(
+            String nome,
+            String descrizione,
+            String note) {
+
+        String result = null;
+
+        try { // Verifica se la categoria esiste già nella tabella Categoria
+            String queryCheckCodice = "SELECT COUNT(*) FROM Categoria WHERE nome = ?";
+            PreparedStatement statementCheckCodice = connessione.getConnection().prepareStatement(queryCheckCodice);
+            statementCheckCodice.setString(1, nome);
+            ResultSet resultSet = statementCheckCodice.executeQuery();
+            if (resultSet.next() && resultSet.getInt(1) > 0) {
+                // Se il nome esiste già, restituire un errore
+                return "4"; // Nome già presente
+            }
+
+            String queryCategoria = "INSERT INTO Categoria(nome, descrizione, note) VALUES(?,?,?)";
+
+            PreparedStatement statementCategoria = connessione.getConnection().prepareStatement(queryCategoria, Statement.RETURN_GENERATED_KEYS);
+            statementCategoria.setString(1,nome);
+            statementCategoria.setString(2,descrizione);
+            statementCategoria.setString(3,note);
+
+            int rowsAffected = statementCategoria.executeUpdate();
+
+            if (rowsAffected > 0)
+            {
+                result = "1";   //inserimento avvenuto con successo
+            }
+            else
+            {
+                result = "4";   //problemi nell'inserimento
+            }
+
         }
         catch (SQLException e)
         {
@@ -61,6 +110,9 @@ public class GestioneCategorieDAO
             }
         }
 
-        return categorie;
+        return result;
     }
+
 }
+
+

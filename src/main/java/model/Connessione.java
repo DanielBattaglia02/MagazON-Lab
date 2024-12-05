@@ -18,7 +18,7 @@ public class Connessione implements AutoCloseable
         {
             Class.forName("com.mysql.cj.jdbc.Driver").newInstance();
             String url = "jdbc:mysql://localhost:3306/Magazon";    //localhost per locale
-            this.con = DriverManager.getConnection(url, "root", "basidati23");
+            this.con = DriverManager.getConnection(url, "root", "studentiTSW");
             System.out.println("Connessione avvenuta \n");
         }
         catch (Exception var2)

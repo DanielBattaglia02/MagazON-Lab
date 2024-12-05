@@ -12,7 +12,7 @@ Autore: Daniel Battaglia
 <body>
 
     <div class="header">
-        <div class="box-scritta" onclick="redirectTo('aggiuniCategoria')">Aggiungi categoria</div>
+        <div class="box-scritta" onclick="redirectTo('aggiungiCategoria')">Aggiungi categoria</div>
         <div class="box-scritta" onclick="redirectTo2('dashboard')">Torna indietro</div>
     </div>
 

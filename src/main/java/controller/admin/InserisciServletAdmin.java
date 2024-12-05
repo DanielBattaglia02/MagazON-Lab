@@ -10,6 +10,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import model.GestioneCategorieDAO;
 import model.GestioneNotificheDAO;
 import model.GestioneProdottiDAO;
 
@@ -73,6 +74,17 @@ public class InserisciServletAdmin extends HttpServlet
 
             request.setAttribute("message", result);
             pageName = "notifiche";
+        }
+        else if(pageName.equals("categoria"))
+        {
+            String nome = request.getParameter("nome");
+            String descrizione = request.getParameter("descrizione");
+            String note = request.getParameter("note");
+
+            GestioneCategorieDAO gestioneCategorieDAO = new GestioneCategorieDAO();
+            String result = gestioneCategorieDAO.aggiungiCategoria(nome, descrizione, note);
+            request.setAttribute("message", result);
+            pageName = "aggiungiCategoria";
         }
 
         RequestDispatcher requestDispatcher = request.getRequestDispatcher("visualizza-servlet-admin?pageName=" + pageName);
