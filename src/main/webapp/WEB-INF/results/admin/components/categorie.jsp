@@ -51,14 +51,14 @@ Autore: Daniel Battaglia
                         <form action="visualizza-servlet-admin" method="post">
                             <td>
                                 <input type="hidden" name="IDcategoria" value="${categoria.ID}">
-                                <input type="hidden" name="pageName" value="carrello">
+                                <input type="hidden" name="pageName" value="modificaCategoria">
                                 <input class="bottone" type="submit" value="Modifica">
                             </td>
                         </form>
                         <form action="eliminare-servlet-admin" method="post">
                             <td>
                                 <input type="hidden" name="IDcategoria" value="${categoria.ID}">
-                                <input type="hidden" name="pageName" value="carrello">
+                                <input type="hidden" name="pageName" value="eliminaCategoria">
                                 <input class="bottone" type="submit" value="Elimina">
                             </td>
                         </form>

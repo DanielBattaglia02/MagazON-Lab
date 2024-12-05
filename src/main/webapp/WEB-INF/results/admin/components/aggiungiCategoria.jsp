@@ -36,7 +36,7 @@ Autore: Francesco Vaiano
 <body>
 
 <div class="header">
-    <div class="box-scritta" onclick="redirectTo('dashboard')">Torna indietro</div>
+    <div class="box-scritta" onclick="redirectTo('categorie')">Torna indietro</div>
     <div class="titolo">Aggiungi una categoria</div>
     <div class="descrizione">
         Inserisci le informazioni nei seguenti campi.

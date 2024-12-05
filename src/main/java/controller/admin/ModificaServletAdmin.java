@@ -10,6 +10,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import model.GestioneCategorieDAO;
 import model.GestioneNotificheDAO;
 import model.GestioneProdottiDAO;
 
@@ -74,6 +75,20 @@ public class ModificaServletAdmin extends HttpServlet
             String result = gestioneNotificheDAO.modificaStatoNotifica(notificaID, userID, stato);
             request.setAttribute("message", result);
             pageName = "notifiche";
+        }
+        else if(pageName.equals("categoria"))
+        {
+            int id = Integer.parseInt(request.getParameter("IDcategoria"));
+            String nome = request.getParameter("nome");
+            String descrizione = request.getParameter("descrizione");
+            String note = request.getParameter("note");
+
+            GestioneCategorieDAO gestioneCategorieDAO = new GestioneCategorieDAO();
+            String result =  gestioneCategorieDAO.modificaCategoria(id,nome, descrizione, note);
+
+            request.setAttribute("IDcategoria", id);
+            request.setAttribute("message", result);
+            pageName = "modificaCategoria";
         }
 
         RequestDispatcher requestDispatcher = request.getRequestDispatcher("visualizza-servlet-admin?pageName=" + pageName);

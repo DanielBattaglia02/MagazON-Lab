@@ -77,6 +77,20 @@ public class ModificaServletMagazziniere extends HttpServlet
             request.setAttribute("message", result);
             pageName = "notifiche";
         }
+        else if(pageName.equals("categoria"))
+        {
+            int id = Integer.parseInt(request.getParameter("IDcategoria"));
+            String nome = request.getParameter("nome");
+            String descrizione = request.getParameter("descrizione");
+            String note = request.getParameter("note");
+
+            GestioneCategorieDAO gestioneCategorieDAO = new GestioneCategorieDAO();
+            String result =  gestioneCategorieDAO.modificaCategoria(id,nome, descrizione, note);
+
+            request.setAttribute("IDcategoria", id);
+            request.setAttribute("message", result);
+            pageName = "modificaCategoria";
+        }
 
         RequestDispatcher requestDispatcher = request.getRequestDispatcher("visualizza-servlet-magazziniere?pageName=" + pageName);
         requestDispatcher.forward(request, response);
