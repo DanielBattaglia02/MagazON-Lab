@@ -7,17 +7,32 @@ Autore: Daniel Battaglia
 
 <%
     String message = (String) request.getAttribute("message");
+    Boolean del = (Boolean) request.getAttribute("del");
+    Boolean update = (Boolean) request.getAttribute("update");
 
     if (message != null) {
-        if (message.equals("1")) {
+        if (del != null && del){
+            if (message.equals("1")) {
 %>
-<script>alert("Utente cancellato con successo!")</script>
+            <script>alert("Utente cancellato con successo!")</script>
 <%
-} else if (message.equals("2")) {
+            } else if (message.equals("2")) {
 %>
-<script>alert("Errore nella cancellazione dell'utente")</script>
+            <script>alert("Errore nella cancellazione dell'utente")</script>
 <%
-        }
+            }
+
+        }else if (update){
+                if (message.equals("1")) {
+%>
+                <script>alert("Utente modificato con successo!")</script>
+<%
+                } else if (message.equals("2")) {
+%>
+                <script>alert("Errore nella modifica dell'utente")</script>
+<%
+                }
+            }
     }
 %>
 
@@ -81,7 +96,7 @@ Autore: Daniel Battaglia
                     <form action="visualizza-servlet-admin" method="post">
                         <td>
                             <input type="hidden" name="IDutente" value="${utente.ID}">
-                            <input type="hidden" name="pageName" value="utenti">
+                            <input type="hidden" name="pageName" value="modificaUtente">
                             <input class="bottone" type="submit" value="Modifica">
                         </td>
                     </form>

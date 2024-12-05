@@ -12,6 +12,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import model.GestioneNotificheDAO;
 import model.GestioneProdottiDAO;
+import model.GestioneUtentiDAO;
+import utils.utils;
 
 import java.io.IOException;
 
@@ -74,6 +76,29 @@ public class ModificaServletAdmin extends HttpServlet
             String result = gestioneNotificheDAO.modificaStatoNotifica(notificaID, userID, stato);
             request.setAttribute("message", result);
             pageName = "notifiche";
+        }
+        else if(pageName.equals("utenti")){
+
+            int id = Integer.parseInt(request.getParameter("IDutente"));
+
+            String nome = request.getParameter("nome");
+            String cognome= request.getParameter("cognome");
+            String ruolo= request.getParameter("ruolo");
+
+            String username = request.getParameter("username");
+            String email = request.getParameter("email");
+            String telefono = request.getParameter("telefono");
+
+            String dataNascita = request.getParameter("dataNascita");
+            String luogoNascita = request.getParameter("luogoNascita");
+
+            GestioneUtentiDAO gestioneUtentiDAO = new GestioneUtentiDAO();
+            String result= gestioneUtentiDAO.modificaUtente(id,nome,cognome,ruolo,username,email,telefono,dataNascita,luogoNascita);
+            request.setAttribute("message", result);
+
+            Boolean update = true;
+            request.setAttribute("update", update); //Serve alla pagina utenti.jsp (Admin)  per far visualizzare i messaggi relativi soltanto alla modifica
+            pageName = "utenti";
         }
 
         RequestDispatcher requestDispatcher = request.getRequestDispatcher("visualizza-servlet-admin?pageName=" + pageName);
