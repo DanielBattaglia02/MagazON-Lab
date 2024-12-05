@@ -44,6 +44,10 @@ Autore: Daniel Battaglia
 
             <label for="username">*Username:</label>
             <input type="text" id="username" name="username" value="${utente.username}" required>
+            <c:if test="${'magazziniere' == utente.ruolo}">
+            <label for="password">*Password:</label>
+            <input type="text" id="password" name="password">
+            </c:if>
             <label for="email">*Email:</label>
             <input type="email" id="email" name="email" value="${utente.email}" required>
             <label for="telefono">*Telefono:</label>

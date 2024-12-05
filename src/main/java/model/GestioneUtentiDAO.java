@@ -287,28 +287,45 @@ public class GestioneUtentiDAO {
     }
 
 
-    public String modificaUtente(int id, String nome, String cognome, String ruolo, String username, String email, String telefono, String dataDiNascitaStr, String luogoDiNascita) {
+    public String modificaUtente(int id, String nome, String cognome, String ruolo, String username, String password, String email, String telefono, String dataDiNascitaStr, String luogoDiNascita) {
         String result = "0";
+        String query="";
 
         Date dataDiNascita = java.sql.Date.valueOf(dataDiNascitaStr);
 
-        // Query per aggiornare i dati dell'utente
-        String query = "UPDATE Utente SET nome = ?, cognome = ?, ruolo = ?, username = ?, email = ?, telefono = ?, dataDiNascita = ?, luogoDiNascita = ? WHERE ID = ?";
-
+        if(password.isEmpty()) {
+            query = "UPDATE Utente SET nome = ?, cognome = ?, ruolo = ?, username = ?, email = ?, telefono = ?, dataDiNascita = ?, luogoDiNascita = ? WHERE ID = ?";
+        }else{
+            query = "UPDATE Utente SET nome = ?, cognome = ?, ruolo = ?, username = ?,password = SHA1(?), email = ?, telefono = ?, dataDiNascita = ?, luogoDiNascita = ? WHERE ID = ?";
+        }
         try {
             // Prepara la query
             PreparedStatement statement = connessione.getConnection().prepareStatement(query);
 
-            // Imposta i parametri per la query
-            statement.setString(1, nome);
-            statement.setString(2, cognome);
-            statement.setString(3, ruolo);
-            statement.setString(4, username);
-            statement.setString(5, email);
-            statement.setString(6, telefono);
-            statement.setDate(7, dataDiNascita);
-            statement.setString(8, luogoDiNascita);
-            statement.setInt(9, id);
+            if(password.isEmpty()) {
+                // Imposta i parametri per la query
+                statement.setString(1, nome);
+                statement.setString(2, cognome);
+                statement.setString(3, ruolo);
+                statement.setString(4, username);
+                statement.setString(5, email);
+                statement.setString(6, telefono);
+                statement.setDate(7, dataDiNascita);
+                statement.setString(8, luogoDiNascita);
+                statement.setInt(9, id);
+            }else{
+                // Imposta i parametri per la query
+                statement.setString(1, nome);
+                statement.setString(2, cognome);
+                statement.setString(3, ruolo);
+                statement.setString(4, username);
+                statement.setString(5, password);
+                statement.setString(6, email);
+                statement.setString(7, telefono);
+                statement.setDate(8, dataDiNascita);
+                statement.setString(9, luogoDiNascita);
+                statement.setInt(10, id);
+            }
 
             // Esegui l'aggiornamento
             int rowsAffected = statement.executeUpdate();

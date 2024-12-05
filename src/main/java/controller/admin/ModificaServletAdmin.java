@@ -86,14 +86,16 @@ public class ModificaServletAdmin extends HttpServlet
             String ruolo= request.getParameter("ruolo");
 
             String username = request.getParameter("username");
+            String password = request.getParameter("password");
             String email = request.getParameter("email");
             String telefono = request.getParameter("telefono");
 
             String dataNascita = request.getParameter("dataNascita");
             String luogoNascita = request.getParameter("luogoNascita");
 
+
             GestioneUtentiDAO gestioneUtentiDAO = new GestioneUtentiDAO();
-            String result= gestioneUtentiDAO.modificaUtente(id,nome,cognome,ruolo,username,email,telefono,dataNascita,luogoNascita);
+            String result= gestioneUtentiDAO.modificaUtente(id,nome,cognome,ruolo,username,password,email,telefono,dataNascita,luogoNascita);
             request.setAttribute("message", result);
 
             Boolean update = true;
