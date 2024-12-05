@@ -4,6 +4,24 @@ Autore: Daniel Battaglia
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
+
+<%
+    String message = (String) request.getAttribute("message");
+
+    if (message != null) {
+        if (message.equals("1")) {
+%>
+<script>alert("Utente cancellato con successo!")</script>
+<%
+} else if (message.equals("2")) {
+%>
+<script>alert("Errore nella cancellazione dell'utente")</script>
+<%
+        }
+    }
+%>
+
+
 <html>
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">

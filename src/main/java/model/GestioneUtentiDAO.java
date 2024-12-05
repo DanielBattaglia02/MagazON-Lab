@@ -227,4 +227,52 @@ public class GestioneUtentiDAO
 
         return result;
     }
+
+    public String eliminaUtente(int id) {
+        String result = null;
+
+        String query = "SELECT 1 FROM Utente WHERE ID = ?";
+
+        try {
+            PreparedStatement statement = connessione.getConnection().prepareStatement(query);
+            statement.setInt(1, id);
+
+            ResultSet resultSet = statement.executeQuery();
+
+            if (resultSet.next()) {
+                try {
+                    // Se l'utente esiste, procedi con la cancellazione
+                    String deleteQuery = "DELETE FROM Utente WHERE ID=?";
+                    PreparedStatement deleteStatement = connessione.getConnection().prepareStatement(deleteQuery);
+                    deleteStatement.setInt(1, id);
+                    int rowsAffected = deleteStatement.executeUpdate();
+
+                    if (rowsAffected > 0) {
+                        result = "1";  // Cancellazione riuscita
+                    } else {
+                        result = "2";  // Problemi tecnici durante la cancellazione
+                    }
+                } catch (SQLException e) {
+                    result = "2";
+                    throw new RuntimeException(e);
+                }
+            } else {
+                result = "2";  // Utente non trovato
+            }
+        } catch (SQLException e) {
+            result = "2";  // Gestione errori SQL
+            throw new RuntimeException(e);
+        } finally {
+            if (connessione != null) {
+                try {
+                    connessione.closeConnection();
+                } catch (SQLException e) {
+                    result = "2";  // Errore durante la chiusura della connessione
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+
+        return result;
+    }
 }

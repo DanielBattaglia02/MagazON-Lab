@@ -11,6 +11,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import model.GestioneProdottiDAO;
+import model.GestioneUtentiDAO;
 
 import java.io.IOException;
 
@@ -30,6 +31,14 @@ public class EliminaServletAdmin extends HttpServlet
             String result = gestioneProdottiDAO.eliminaProdotto(id);
             request.setAttribute("message", result);
             pageName = "eliminaProdotto";
+        }
+        else if(pageName.equals("utenti")){
+            int id = Integer.parseInt(request.getParameter("IDutente"));
+
+            GestioneUtentiDAO gestioneUtentiDAO = new GestioneUtentiDAO();
+            String result = gestioneUtentiDAO.eliminaUtente(id);
+            request.setAttribute("message", result);
+            pageName = "utenti";
         }
 
         RequestDispatcher requestDispatcher = request.getRequestDispatcher("visualizza-servlet-admin?pageName=" + pageName);
