@@ -55,10 +55,10 @@ Autore: Daniel Battaglia
                                 <input class="bottone" type="submit" value="Modifica">
                             </td>
                         </form>
-                        <form action="eliminare-servlet-admin" method="post">
+                        <form action="elimina-servlet-admin" method="post">
                             <td>
                                 <input type="hidden" name="IDcategoria" value="${categoria.ID}">
-                                <input type="hidden" name="pageName" value="eliminaCategoria">
+                                <input type="hidden" name="pageName" value="categoria">
                                 <input class="bottone" type="submit" value="Elimina">
                             </td>
                         </form>

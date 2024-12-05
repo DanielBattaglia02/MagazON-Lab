@@ -176,7 +176,66 @@ public class GestioneCategorieDAO {
 
         return categoria;
     }
+
+    public String eliminaCategoria(int ID) {
+        String result = null;
+
+        String query = "SELECT 1 FROM categoria WHERE ID = ?";
+
+        try{
+            PreparedStatement statement = connessione.getConnection().prepareStatement(query);
+
+            statement.setInt(1,ID);
+
+            ResultSet resultSet =statement.executeQuery();
+
+            if(resultSet.next()){
+                try {
+                    String deleteQuery = "DELETE FROM categoria WHERE ID = ?";
+                    PreparedStatement deleteStatement = connessione.getConnection().prepareStatement(deleteQuery);
+                    deleteStatement.setInt(1, ID);
+
+                    int rowsAffected = deleteStatement.executeUpdate();
+
+                    if (rowsAffected > 0) {
+                        result = "1";
+                    } else {
+                        result = "2";
+                    }
+                }
+                catch (SQLException e) {
+                    result = "2";
+                    throw new RuntimeException(e);
+                }
+                }else
+            {
+                result = "4";  // Product not found in any table (spedizione, arrivo, prodotto), return error
+            }
+        } catch (SQLException e)
+        {
+            result = "4";  // Catch and handle any SQL errors
+            throw new RuntimeException(e);
+        }
+        finally
+        {
+            if (connessione != null)
+            {
+                try
+                {
+                    connessione.closeConnection();
+                }
+                catch (SQLException e)
+                {
+                    result = "4";  // Catch errors during connection closure
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+
+        return result;
+    }
 }
+
 
 
 
