@@ -7,7 +7,7 @@ Autore: Daniel Battaglia
 <html>
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/admin/components/aggiungiUtente.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/admin/components/modificaUtente.css">
 </head>
 <body>
 
