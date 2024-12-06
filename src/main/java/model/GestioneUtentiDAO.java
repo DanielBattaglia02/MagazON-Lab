@@ -216,26 +216,26 @@ public class GestioneUtentiDAO {
                     int rowsAffected = deleteStatement.executeUpdate();
 
                     if (rowsAffected > 0) {
-                        result = "1";  // Cancellazione riuscita
+                        result = "Utente cancellato con successo!";  // Cancellazione riuscita
                     } else {
-                        result = "2";  // Problemi tecnici durante la cancellazione
+                        result = "Errore nella cancellazione dell'utente";  // Problemi tecnici durante la cancellazione
                     }
                 } catch (SQLException e) {
-                    result = "2";
+                    result = "Errore nella cancellazione dell'utente";
                     throw new RuntimeException(e);
                 }
             } else {
-                result = "2";  // Utente non trovato
+                result = "Errore nella cancellazione dell'utente";  // Utente non trovato
             }
         } catch (SQLException e) {
-            result = "2";  // Gestione errori SQL
+            result = "Errore nella cancellazione dell'utente";  // Gestione errori SQL
             throw new RuntimeException(e);
         } finally {
             if (connessione != null) {
                 try {
                     connessione.closeConnection();
                 } catch (SQLException e) {
-                    result = "2";  // Errore durante la chiusura della connessione
+                    result = "Errore nella cancellazione dell'utente";  // Errore durante la chiusura della connessione
                     throw new RuntimeException(e);
                 }
             }
@@ -331,13 +331,13 @@ public class GestioneUtentiDAO {
             int rowsAffected = statement.executeUpdate();
 
             if (rowsAffected > 0) {
-                result = "1"; // Successo: Utente modificato
+                result = "Utente modificato con successo!"; // Successo: Utente modificato
             } else {
-                result = "2"; // Nessun utente trovato con l'ID specificato
+                result = "Errore nella modifica dell'utente"; // Nessun utente trovato con l'ID specificato
             }
 
         } catch (SQLException e) {
-            result = "2"; // Errore durante la modifica
+            result = "Errore nella modifica dell'utente"; // Errore durante la modifica
             e.printStackTrace();
         } finally {
             // Chiude la connessione
@@ -345,7 +345,7 @@ public class GestioneUtentiDAO {
                 try {
                     connessione.closeConnection();
                 } catch (SQLException e) {
-                    result = "2"; // Errore durante la chiusura della connessione
+                    result = "Errore nella modifica dell'utente"; // Errore durante la chiusura della connessione
                     e.printStackTrace();
                 }
             }

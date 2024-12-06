@@ -40,9 +40,6 @@ public class EliminaServletAdmin extends HttpServlet
             GestioneUtentiDAO gestioneUtentiDAO = new GestioneUtentiDAO();
             String result = gestioneUtentiDAO.eliminaUtente(id);
             request.setAttribute("message", result);
-
-            Boolean del = true;
-            request.setAttribute("del", del); //Serve alla pagina utenti.jsp (Admin) per far visualizzare i messaggi relativi soltanto alla cancellazione
         }else if(pageName.equals("liste")){
             int idLista = Integer.parseInt(request.getParameter("IDlista"));
             // Crea un'istanza del DAO per interagire con il database

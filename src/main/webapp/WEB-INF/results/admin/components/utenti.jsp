@@ -7,37 +7,14 @@ Autore: Daniel Battaglia
 
 <%
     String message = (String) request.getAttribute("message");
-    Boolean del = (Boolean) request.getAttribute("del");
-    Boolean update = (Boolean) request.getAttribute("update");
     Integer IDutente = (Integer) session.getAttribute("ID");
     if (IDutente != null) {
         request.setAttribute("IDutente", IDutente);
     }
-
-    if (message != null) {
-        if (del != null && del){
-            if (message.equals("1")) {
+    if(message!=null){
 %>
-            <script>alert("Utente cancellato con successo!")</script>
-<%
-            } else if (message.equals("2")) {
-%>
-            <script>alert("Errore nella cancellazione dell'utente")</script>
-<%
-            }
-
-        }else if (update){
-                if (message.equals("1")) {
-%>
-                <script>alert("Utente modificato con successo!")</script>
-<%
-                } else if (message.equals("2")) {
-%>
-                <script>alert("Errore nella modifica dell'utente")</script>
-<%
-                }
-            }
-    }
+        <script>alert('<%= message %>')</script>
+<%}
 %>
 
 

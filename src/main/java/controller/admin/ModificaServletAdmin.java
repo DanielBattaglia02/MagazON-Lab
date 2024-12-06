@@ -98,10 +98,6 @@ public class ModificaServletAdmin extends HttpServlet
             GestioneUtentiDAO gestioneUtentiDAO = new GestioneUtentiDAO();
             String result= gestioneUtentiDAO.modificaUtente(id,nome,cognome,ruolo,username,password,email,telefono,dataNascita,luogoNascita);
             request.setAttribute("message", result);
-
-            Boolean update = true;
-            request.setAttribute("update", update); //Serve alla pagina utenti.jsp (Admin)  per far visualizzare i messaggi relativi soltanto alla modifica
-            pageName = "utenti";
         }else if(pageName.equals("liste")){
             int id = Integer.parseInt(request.getParameter("IDlista"));
             String note = request.getParameter("note");
