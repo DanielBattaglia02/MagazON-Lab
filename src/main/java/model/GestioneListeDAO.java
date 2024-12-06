@@ -78,4 +78,46 @@ public class GestioneListeDAO {
         }
         return "";
     }
+
+
+    public void inserisciLista(String nomeFile, String note){
+        String query="INSERT INTO Lista(nomeFile,note) VALUES(?,?)";
+
+        try{
+            PreparedStatement statement = connessione.getConnection().prepareStatement(query);
+            statement.setString(1, nomeFile);
+            statement.setString(2, note);
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }finally{
+            if (connessione != null) {
+                try{
+                    connessione.closeConnection();
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+    }
+
+    public void inserisciLista(String nomeFile){
+        String query="INSERT INTO Lista(nomeFile) VALUES(?)";
+
+        try{
+            PreparedStatement statement = connessione.getConnection().prepareStatement(query);
+            statement.setString(1, nomeFile);
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }finally{
+            if (connessione != null) {
+                try{
+                    connessione.closeConnection();
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+    }
 }

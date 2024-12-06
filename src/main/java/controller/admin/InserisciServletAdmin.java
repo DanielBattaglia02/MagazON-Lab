@@ -10,14 +10,23 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import model.GestioneListeDAO;
 import model.GestioneNotificheDAO;
 import model.GestioneProdottiDAO;
 import model.GestioneUtentiDAO;
 import utils.utils;
 
+import java.io.File;
 import java.io.IOException;
-import java.security.SecureRandom;
-import java.util.Base64;
+import jakarta.servlet.annotation.MultipartConfig;
+import jakarta.servlet.http.Part;
+import java.nio.file.Paths;
+
+@MultipartConfig( //Serve per supportare l'invio di file dal form
+        fileSizeThreshold = 1024 * 1024 * 2, // 2MB
+        maxFileSize = 1024 * 1024 * 10, // 10MB
+        maxRequestSize = 1024 * 1024 * 50 // 50MB
+)
 
 @WebServlet(name="inserisci-servlet-admin", value="/inserisci-servlet-admin")
 public class InserisciServletAdmin extends HttpServlet
@@ -98,6 +107,63 @@ public class InserisciServletAdmin extends HttpServlet
             request.setAttribute("password", password);
             pageName = "aggiungiUtente";
 
+        }else if(pageName.equals("liste")) {
+            String UPLOAD_DIRECTORY = "liste";
+
+// Ottieni la directory di caricamento
+            String uploadPath = getServletContext().getRealPath("/") + UPLOAD_DIRECTORY;
+            File uploadDir = new File(uploadPath);
+            if (!uploadDir.exists()) {
+                uploadDir.mkdir(); // Crea la directory se non esiste
+            }
+
+            String fileName = null;
+            String note = null;
+
+            try {
+                // Ottieni il file caricato
+                Part filePart = request.getPart("file");
+                if (filePart != null) {
+                    fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString(); // Nome file
+
+                    // Aggiungi controllo per nome duplicato
+                    String filePath = uploadPath + File.separator + fileName;
+                    File file = new File(filePath);
+                    int count = 1;
+
+                    // Finché il file esiste, genera un nuovo nome
+                    while (file.exists()) {
+                        String nameWithoutExtension = fileName.substring(0, fileName.lastIndexOf('.'));
+                        String extension = fileName.substring(fileName.lastIndexOf('.'));
+                        fileName = nameWithoutExtension + "_" + count + extension;
+                        filePath = uploadPath + File.separator + fileName;
+                        file = new File(filePath);
+                        count++;
+                    }
+
+                    // Salva il file con il nome aggiornato
+                    filePart.write(filePath);
+                }
+
+                // Ottieni la descrizione
+                note = request.getParameter("note");
+
+                // Salva i dettagli nel database
+                if (fileName != null && !fileName.isEmpty()) {
+                    GestioneListeDAO gestioneListeDAO = new GestioneListeDAO();
+                    if(note.isEmpty()){
+                        gestioneListeDAO.inserisciLista(fileName);
+                    }else{
+                        gestioneListeDAO.inserisciLista(fileName, note);
+                    }
+                    request.setAttribute("message", "success");
+                } else {
+                    request.setAttribute("message", "error");
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                request.setAttribute("message", "error");
+            }
         }
 
         RequestDispatcher requestDispatcher = request.getRequestDispatcher("visualizza-servlet-admin?pageName=" + pageName);
