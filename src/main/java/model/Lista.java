@@ -8,18 +8,16 @@ public class Lista {
     private int ID;
     private String nomeFile;
     private String note;
-    private int IDutente; // Assumiamo che la relazione sia tra la lista e un utente
 
     // Costruttore vuoto
     public Lista() {
     }
 
     // Costruttore con parametri
-    public Lista(int ID, String nomeFile, String note, int IDutente) {
+    public Lista(int ID, String nomeFile, String note) {
         this.ID = ID;
         this.nomeFile = nomeFile;
         this.note = note;
-        this.IDutente = IDutente;
     }
 
     // Getter e Setter
@@ -45,14 +43,6 @@ public class Lista {
 
     public void setNote(String note) {
         this.note = note;
-    }
-
-    public int getIDutente() {
-        return IDutente;
-    }
-
-    public void setIDutente(int IDutente) {
-        this.IDutente = IDutente;
     }
 }
 

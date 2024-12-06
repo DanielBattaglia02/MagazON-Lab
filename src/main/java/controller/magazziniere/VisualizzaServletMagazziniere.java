@@ -101,8 +101,11 @@ public class VisualizzaServletMagazziniere extends HttpServlet
             GestioneCategorieDAO gestioneCategorieDAO = new GestioneCategorieDAO();
             List<Categoria> listaCategorie = gestioneCategorieDAO.visualizzaCategorie();
             request.setAttribute("listaCategorie", listaCategorie);
+        }else if (pageName.equals("liste")){
+            GestioneListeDAO gestioneListeDAO = new GestioneListeDAO();
+            List<Lista> listaListe = gestioneListeDAO.visualizzaListe();
+            request.setAttribute("listaListe", listaListe);
         }
-
         RequestDispatcher requestDispatcher = request.getRequestDispatcher("WEB-INF/results/magazziniere/homepageMagazziniere.jsp?pageName=" + pageName);
         requestDispatcher.forward(request, response);
     }
