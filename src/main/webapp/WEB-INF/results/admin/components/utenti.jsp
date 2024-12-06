@@ -9,8 +9,10 @@ Autore: Daniel Battaglia
     String message = (String) request.getAttribute("message");
     Boolean del = (Boolean) request.getAttribute("del");
     Boolean update = (Boolean) request.getAttribute("update");
-    int IDutente = (int) session.getAttribute("ID");
-    request.setAttribute("IDutente", IDutente);
+    Integer IDutente = (Integer) session.getAttribute("ID");
+    if (IDutente != null) {
+        request.setAttribute("IDutente", IDutente);
+    }
 
     if (message != null) {
         if (del != null && del){

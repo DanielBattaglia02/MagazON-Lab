@@ -28,8 +28,8 @@ public class LogoutServlet extends HttpServlet
         if (session != null)
         {
 
-            int id = (int) session.getAttribute("ID");
-            if(id != 0) {
+            Integer id = (Integer) session.getAttribute("ID");
+            if (id != null && id != 0) {
                 GestioneUtentiDAO gestioneUtentiDAO = new GestioneUtentiDAO();
                 gestioneUtentiDAO.setStato(id, 0);
             }
