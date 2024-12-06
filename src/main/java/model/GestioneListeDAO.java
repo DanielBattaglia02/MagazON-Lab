@@ -1,5 +1,6 @@
 package model;
 
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -17,7 +18,7 @@ public class GestioneListeDAO {
     public List<Lista> visualizzaListe(){
         List<Lista> lista = new ArrayList<Lista>();
 
-        String query= "SELECT * FROM Lista";
+        String query= "SELECT * FROM Lista ORDER BY dataInvio";
 
         try{
             PreparedStatement statement = connessione.getConnection().prepareStatement(query);
@@ -27,8 +28,9 @@ public class GestioneListeDAO {
                 int id = rs.getInt("ID");
                 String nomeFile = rs.getString("nomeFile");
                 String note = rs.getString("note");
+                Date dataInvio = rs.getDate("dataInvio");
 
-                Lista l=new Lista(id,nomeFile,note);
+                Lista l=new Lista(id,nomeFile,note,dataInvio);
                 lista.add(l);
             }
 
@@ -180,7 +182,9 @@ public class GestioneListeDAO {
             if(rs.next()){
                 String nomeFile = rs.getString("nomeFile");
                 String note = rs.getString("note");
-                l=new Lista(id,nomeFile,note);
+                Date dataInvio = rs.getDate("dataInvio");
+
+                l=new Lista(id,nomeFile,note,dataInvio);
             }
 
             rs.close();

@@ -4,20 +4,24 @@ Autore: Daniel Battaglia
 
 package model;
 
+import java.sql.Date;
+
 public class Lista {
     private int ID;
     private String nomeFile;
     private String note;
+    private Date dataInvio;
 
     // Costruttore vuoto
     public Lista() {
     }
 
     // Costruttore con parametri
-    public Lista(int ID, String nomeFile, String note) {
+    public Lista(int ID, String nomeFile, String note, Date dataInvio) {
         this.ID = ID;
         this.nomeFile = nomeFile;
         this.note = note;
+        this.dataInvio = dataInvio;
     }
 
     // Getter e Setter
@@ -44,5 +48,8 @@ public class Lista {
     public void setNote(String note) {
         this.note = note;
     }
+
+    public Date getDataInvio() { return dataInvio; }
+    public void setDataInvio(Date dataInvio) {this.dataInvio = dataInvio; }
 }
 

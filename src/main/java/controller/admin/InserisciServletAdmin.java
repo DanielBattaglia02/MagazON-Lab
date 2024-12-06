@@ -156,14 +156,16 @@ public class InserisciServletAdmin extends HttpServlet
                     }else{
                         gestioneListeDAO.inserisciLista(fileName, note);
                     }
-                    request.setAttribute("message", "success");
+                    request.setAttribute("message", "File caricato con successo!");
                 } else {
-                    request.setAttribute("message", "error");
+                    request.setAttribute("message", "Errore durante il caricamento del file. Riprova.");
                 }
             } catch (Exception e) {
                 e.printStackTrace();
-                request.setAttribute("message", "error");
+                request.setAttribute("message", "Errore durante il caricamento del file. Riprova.");
             }
+
+            pageName="aggiungiLista";
         }
 
         RequestDispatcher requestDispatcher = request.getRequestDispatcher("visualizza-servlet-admin?pageName=" + pageName);

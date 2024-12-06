@@ -6,20 +6,14 @@ Autore: Daniel Battaglia
 
 <%
     String message = (String) request.getAttribute("message");
-
-    if (message != null) {
-        if (message.equals("success")) {
-%>
-<script>
-    alert("File caricato con successo!");
-</script>
-<%
-} else if (message.equals("error")) {
-%>
-<script>alert("Errore durante il caricamento del file. Riprova.");</script>
-<%
-        }
+    Integer IDutente = (Integer) session.getAttribute("ID");
+    if (IDutente != null) {
+        request.setAttribute("IDutente", IDutente);
     }
+    if(message!=null){
+%>
+<script>alert('<%= message %>')</script>
+<%}
 %>
 
 <html>

@@ -63,33 +63,37 @@ Autore: Daniel Battaglia
             </thead>
             <tbody>
             <c:forEach var="utente" items="${listaUtenti}">
-                <tr class="${utente.stato == 'online' ? 'online' : 'offline'}">
+                <tr>
                     <td>${utente.ID}</td>
                     <td>${utente.nome}</td>
                     <td>${utente.cognome}</td>
                     <td>${utente.ruolo}</td>
                     <td>${utente.username}</td>
-                    <td>${utente.stato}</td>
+                    <td class="${utente.stato == 'online' ? 'online' : 'offline'}">${utente.stato}</td>
                     <td>${utente.email}</td>
                     <td>${utente.telefono}</td>
                     <td>${utente.dataDiNascita}</td>
                     <td>${utente.luogoDiNascita}</td>
+                    <td>
                     <c:if test="${'magazziniere' == utente.ruolo or utente.ID==IDutente}">
                     <form action="visualizza-servlet-admin" method="post">
-                        <td>
+
                             <input type="hidden" name="IDutente" value="${utente.ID}">
                             <input type="hidden" name="pageName" value="modificaUtente">
                             <input class="bottone" type="submit" value="Modifica">
-                        </td>
+
                     </form>
+                    </c:if>
+                    </td>
+                    <td>
+                    <c:if test="${'magazziniere' == utente.ruolo or utente.ID==IDutente}">
                     <form action="elimina-servlet-admin" method="post">
-                        <td>
                             <input type="hidden" name="IDutente" value="${utente.ID}">
                             <input type="hidden" name="pageName" value="utenti">
                             <input class="bottone" type="submit" value="Elimina">
-                        </td>
                     </form>
                     </c:if>
+                    </td>
                 </tr>
             </c:forEach>
             </tbody>

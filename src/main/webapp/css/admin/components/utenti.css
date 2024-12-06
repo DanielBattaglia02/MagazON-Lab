@@ -69,19 +69,27 @@ Autore: Daniel Battaglia
 }
 
 .online {
-    background-color: #329932 !important;
-}
-
-.online:hover {
-    background-color: #236b23 !important;
+    color: #329932 !important;
 }
 
 .offline {
-    background-color: #cc0000 !important;
+    color: #cc0000 !important;
 }
 
-.offline:hover{
-    background-color: #990000 !important;
+.tabella .bottone {
+    display: block; /* Rende il bottone un elemento a blocco per il centramento */
+    margin: auto; /* Centra il bottone orizzontalmente */
+    padding: 4px 8px; /* Padding per migliorare l'estetica */
+    background-color: rgb(14, 23, 69); /* Colore di sfondo del bottone */
+    color: white; /* Colore del testo */
+    border: none; /* Rimuove il bordo */
+    border-radius: 4px; /* Bordo arrotondato */
+    cursor: pointer; /* Mostra il puntatore */
+    text-align: center; /* Centro il testo all'interno del bottone */
+}
+
+.tabella .bottone:hover {
+    background-color: #0056b3; /* Cambia colore al passaggio del mouse */
 }
 
 /************************************************************************/

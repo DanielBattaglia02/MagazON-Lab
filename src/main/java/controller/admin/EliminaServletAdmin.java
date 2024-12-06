@@ -61,7 +61,7 @@ public class EliminaServletAdmin extends HttpServlet
                     if (deleted) {
                         // Se il file è stato eliminato, elimina la voce dal database
                         gestioneListeDAO.eliminaLista(idLista);
-                        request.setAttribute("message", "File e lista eliminati con successo.");
+                        request.setAttribute("message", "Lista eliminata con successo.");
                     } else {
                         request.setAttribute("message", "Errore durante l'eliminazione del file.");
                     }
