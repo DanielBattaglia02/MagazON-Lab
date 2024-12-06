@@ -27,7 +27,7 @@ Autore: Daniel Battaglia
                 <th>ID</th>
                 <th>NOME FILE</th>
                 <th>NOTE</th>
-                <th colspan="1">AZIONE</th>
+                <th>AZIONE</th>
             </tr>
             </thead>
             <tbody>
@@ -36,7 +36,7 @@ Autore: Daniel Battaglia
                     <td>${lista.ID}</td>
                     <td>${lista.nomeFile}</td>
                     <td>${lista.note}</td>
-                        <form action="scarica-lista-servlet-magazziniere" method="post">
+                        <form action="scarica-lista-servlet" method="post">
                             <td>
                                 <input type="hidden" name="IDlista" value="${lista.ID}">
                                 <input type="hidden" name="pageName" value="liste">

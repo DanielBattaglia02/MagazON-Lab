@@ -2,9 +2,8 @@
 Autore: Daniel Battaglia
  */
 
-package controller.magazziniere;
+package controller.lista;
 
-import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -14,8 +13,8 @@ import model.*;
 
 import java.io.IOException;
 
-@WebServlet(name="scarica-lista-servlet-magazziniere", value="/scarica-lista-servlet-magazziniere")
-public class ScaricaListaServletMagazziniere extends HttpServlet
+@WebServlet(name="scarica-lista-servlet", value="/scarica-lista-servlet")
+public class ScaricaListaServlet extends HttpServlet
 {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
