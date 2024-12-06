@@ -120,4 +120,26 @@ public class GestioneListeDAO {
             }
         }
     }
+
+    public void eliminaLista(int id){
+        String query="DELETE FROM Lista WHERE ID=?";
+        connessione = new Connessione();
+
+        try{
+            PreparedStatement statement = connessione.getConnection().prepareStatement(query);
+            statement.setInt(1, id);
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }finally{
+            if (connessione != null) {
+                try{
+                    connessione.closeConnection();
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+
+    }
 }

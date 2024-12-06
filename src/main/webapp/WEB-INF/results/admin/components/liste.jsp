@@ -4,6 +4,15 @@ Autore: Daniel Battaglia
 <%@ page contentType="text/html;charset=UTF-8" language="java" session="true" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
+<%
+  String message=(String) request.getAttribute("message");
+
+  if(message!=null){
+
+  %>
+     <script>alert('<%= message %>')</script>
+  <%}
+%>
 
 <html>
 <head>
@@ -64,6 +73,7 @@ Autore: Daniel Battaglia
           <form action="elimina-servlet-admin" method="post">
             <td>
               <input type="hidden" name="IDlista" value="${lista.ID}">
+              <input type="hidden" name="nomeFile" value="${lista.nomeFile}">
               <input type="hidden" name="pageName" value="liste">
               <input class="bottone" type="submit" value="Elimina">
             </td>
