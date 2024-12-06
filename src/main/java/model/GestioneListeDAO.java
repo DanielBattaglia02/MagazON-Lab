@@ -121,25 +121,81 @@ public class GestioneListeDAO {
         }
     }
 
-    public void eliminaLista(int id){
-        String query="DELETE FROM Lista WHERE ID=?";
+    public void eliminaLista(int id) {
+        String query = "DELETE FROM Lista WHERE ID=?";
         connessione = new Connessione();
 
-        try{
+        try {
             PreparedStatement statement = connessione.getConnection().prepareStatement(query);
             statement.setInt(1, id);
             statement.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e);
-        }finally{
+        } finally {
             if (connessione != null) {
-                try{
+                try {
                     connessione.closeConnection();
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
                 }
             }
         }
+    }
 
+    public boolean aggiornaLista(int id, String note) {
+        String query = "UPDATE lista SET note=? WHERE ID=?";
+        connessione = new Connessione();
+
+        try {
+            PreparedStatement statement = connessione.getConnection().prepareStatement(query);
+            statement.setString(1, note);
+            statement.setInt(2, id);
+            int rowsUpdated = statement.executeUpdate();
+
+            // Se almeno una riga è stata aggiornata, ritorna true
+            return rowsUpdated > 0;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            if (connessione != null) {
+                try {
+                    connessione.closeConnection();
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+    }
+
+    public Lista cercaLista(int id){
+        String query="SELECT * FROM Lista WHERE ID=?";
+        connessione = new Connessione();
+        Lista l=null;
+
+        try{
+            PreparedStatement statement = connessione.getConnection().prepareStatement(query);
+            statement.setInt(1, id);
+            ResultSet rs= statement.executeQuery();
+
+            if(rs.next()){
+                String nomeFile = rs.getString("nomeFile");
+                String note = rs.getString("note");
+                l=new Lista(id,nomeFile,note);
+            }
+
+            rs.close();
+            statement.close();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }finally {
+            if (connessione != null) {
+                try {
+                    connessione.closeConnection();
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+        return l;
     }
 }

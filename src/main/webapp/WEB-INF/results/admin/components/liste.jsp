@@ -63,10 +63,10 @@ Autore: Daniel Battaglia
               <input class="bottone" type="submit" value="Scarica">
             </td>
           </form>
-          <form action="modifica-servlet-admin" method="post">
+          <form action="visualizza-servlet-admin" method="post">
             <td>
               <input type="hidden" name="IDlista" value="${lista.ID}">
-              <input type="hidden" name="pageName" value="liste">
+              <input type="hidden" name="pageName" value="modificaLista">
               <input class="bottone" type="submit" value="Modifica">
             </td>
           </form>

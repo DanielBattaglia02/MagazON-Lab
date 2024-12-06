@@ -10,6 +10,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import model.GestioneListeDAO;
 import model.GestioneNotificheDAO;
 import model.GestioneProdottiDAO;
 import model.GestioneUtentiDAO;
@@ -101,6 +102,18 @@ public class ModificaServletAdmin extends HttpServlet
             Boolean update = true;
             request.setAttribute("update", update); //Serve alla pagina utenti.jsp (Admin)  per far visualizzare i messaggi relativi soltanto alla modifica
             pageName = "utenti";
+        }else if(pageName.equals("liste")){
+            int id = Integer.parseInt(request.getParameter("IDlista"));
+            String note = request.getParameter("note");
+
+            GestioneListeDAO gestioneListeDAO = new GestioneListeDAO();
+            boolean listaAggiornata = gestioneListeDAO.aggiornaLista(id, note);
+
+            if (listaAggiornata) {
+                request.setAttribute("message", "Lista " + id + " aggiornata");
+            } else {
+                request.setAttribute("message", "Errore modifica lista");
+            }
         }
 
         RequestDispatcher requestDispatcher = request.getRequestDispatcher("visualizza-servlet-admin?pageName=" + pageName);
