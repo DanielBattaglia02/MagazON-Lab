@@ -10,6 +10,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import model.GestioneLogisticaDAO;
 import model.GestioneNotificheDAO;
 import model.GestioneProdottiDAO;
 
@@ -61,18 +62,23 @@ public class InserisciServletAdmin extends HttpServlet
             request.setAttribute("message", result);
             pageName = "aggiungiProdotto";
         }
-        else if(pageName.equals("notifica"))
+        else if(pageName.equals("arrivo"))
         {
-            Integer userID = (Integer) request.getSession().getAttribute("ID"); // Assumendo che l'ID utente sia nella sessione
+            int IDprodotto= Integer.parseInt(request.getParameter("prodotto"));
+            String note = request.getParameter("note");
 
-            String oggetto = request.getParameter("oggetto");
-            String messaggio = request.getParameter("messaggio");
+            GestioneLogisticaDAO gestioneLogisticaDAO = new GestioneLogisticaDAO();
+            gestioneLogisticaDAO.inserisciArrivo(IDprodotto, note);
+            pageName = "arrivi";
+        }
+        else if(pageName.equals("spedizioni"))
+        {
+            int IDprodotto= Integer.parseInt(request.getParameter("prodotto"));
+            String note = request.getParameter("note");
 
-            GestioneNotificheDAO gestioneNotificheDAO = new GestioneNotificheDAO();
-            String result = gestioneNotificheDAO.inviaNotifica(userID, oggetto, messaggio);
-
-            request.setAttribute("message", result);
-            pageName = "notifiche";
+            GestioneLogisticaDAO gestioneLogisticaDAO = new GestioneLogisticaDAO();
+            gestioneLogisticaDAO.inserisciSpedizione(IDprodotto, note);
+            pageName = "spedizioni";
         }
 
         RequestDispatcher requestDispatcher = request.getRequestDispatcher("visualizza-servlet-admin?pageName=" + pageName);

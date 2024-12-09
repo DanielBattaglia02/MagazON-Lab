@@ -62,6 +62,24 @@ public class InserisciServletMagazziniere extends HttpServlet
             request.setAttribute("message", result);
             pageName = "aggiungiProdotto";
         }
+        else if(pageName.equals("arrivo"))
+        {
+            int IDprodotto= Integer.parseInt(request.getParameter("prodotto"));
+            String note = request.getParameter("note");
+
+            GestioneLogisticaDAO gestioneLogisticaDAO = new GestioneLogisticaDAO();
+            gestioneLogisticaDAO.inserisciArrivo(IDprodotto, note);
+            pageName = "arrivi";
+        }
+        else if(pageName.equals("spedizioni"))
+        {
+            int IDprodotto= Integer.parseInt(request.getParameter("prodotto"));
+            String note = request.getParameter("note");
+
+            GestioneLogisticaDAO gestioneLogisticaDAO = new GestioneLogisticaDAO();
+            gestioneLogisticaDAO.inserisciSpedizione(IDprodotto, note);
+            pageName = "spedizioni";
+        }
 
         RequestDispatcher requestDispatcher = request.getRequestDispatcher("visualizza-servlet-magazziniere?pageName=" + pageName);
         requestDispatcher.forward(request, response);

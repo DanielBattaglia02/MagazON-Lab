@@ -12,9 +12,14 @@ Autore: Daniel Battaglia
 <body>
     <div class="header">
         <div class="box-superiore">
-            <div class="box-arancione">GESTIONE ARRIVI</div>
-            <div class="box-rosso">GESTIONE SPEDIZIONI</div>
+            <div class="box-arancione" onclick="redirectTo('arrivi')">GESTIONE ARRIVI</div>
+            <div class="box-rosso" onclick="redirectTo('spedizioni')">GESTIONE SPEDIZIONI</div>
         </div>
+
+        <!-- form nascosto1 -->
+        <form id="hiddenForm" action="inserisci-servlet-magazziniere" method="post" style="display:none;">
+            <input type="hidden" name="pageName" id="hiddenPageName" value="">
+        </form>
 
         <div class="box-filtri">
 
@@ -109,5 +114,13 @@ Autore: Daniel Battaglia
             </table>
         </div>
     </div>
+
+    <script>
+        function redirectTo(pageName)
+        {
+            document.getElementById('hiddenPageName').value = pageName;
+            document.getElementById('hiddenForm').submit();
+        }
+    </script>
 </body>
 </html>

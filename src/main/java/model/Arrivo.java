@@ -3,20 +3,20 @@ package model;
 public class Arrivo {
     private int ID;
     private int IDprodotto;
+    private String codice;
     private String note;
 
     // Costruttore vuoto
     public Arrivo() {
     }
 
-    // Costruttore con parametri
-    public Arrivo(int ID, int IDprodotto, String note) {
+    public Arrivo(int ID, int IDprodotto, String codice, String note) {
         this.ID = ID;
         this.IDprodotto = IDprodotto;
+        this.codice = codice;
         this.note = note;
     }
 
-    // Getter e Setter
     public int getID() {
         return ID;
     }
@@ -31,6 +31,14 @@ public class Arrivo {
 
     public void setIDprodotto(int IDprodotto) {
         this.IDprodotto = IDprodotto;
+    }
+
+    public String getCodice() {
+        return codice;
+    }
+
+    public void setCodice(String codice) {
+        this.codice = codice;
     }
 
     public String getNote() {

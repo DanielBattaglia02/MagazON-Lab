@@ -10,6 +10,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import model.GestioneLogisticaDAO;
 import model.GestioneNotificheDAO;
 import model.GestioneProdottiDAO;
 
@@ -74,6 +75,24 @@ public class ModificaServletAdmin extends HttpServlet
             String result = gestioneNotificheDAO.modificaStatoNotifica(notificaID, userID, stato);
             request.setAttribute("message", result);
             pageName = "notifiche";
+        }
+        else if(pageName.equals("arrivo"))
+        {
+            String note = request.getParameter("note");
+            int ID = Integer.parseInt(request.getParameter("IDarrivo"));
+
+            GestioneLogisticaDAO gestioneLogisticaDAO = new GestioneLogisticaDAO();
+            gestioneLogisticaDAO.modificaNoteArrivo(ID, note);
+            pageName = "arrivi";
+        }
+        else if(pageName.equals("spedizione"))
+        {
+            String note = request.getParameter("note");
+            int ID = Integer.parseInt(request.getParameter("IDspedizione"));
+
+            GestioneLogisticaDAO gestioneLogisticaDAO = new GestioneLogisticaDAO();
+            gestioneLogisticaDAO.modificaNoteSpedizione(ID, note);
+            pageName = "spedizioni";
         }
 
         RequestDispatcher requestDispatcher = request.getRequestDispatcher("visualizza-servlet-admin?pageName=" + pageName);

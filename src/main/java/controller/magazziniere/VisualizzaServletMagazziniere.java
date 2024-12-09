@@ -102,6 +102,46 @@ public class VisualizzaServletMagazziniere extends HttpServlet
             List<Categoria> listaCategorie = gestioneCategorieDAO.visualizzaCategorie();
             request.setAttribute("listaCategorie", listaCategorie);
         }
+        else if (pageName.equals("arrivi"))
+        {
+            GestioneLogisticaDAO gestioneLogisticaDAO = new GestioneLogisticaDAO();
+            List<Arrivo> listaArrivi = gestioneLogisticaDAO.visualizzaArrivi();
+            request.setAttribute("listaArrivi", listaArrivi);
+        }
+        else if (pageName.equals("spedizioni"))
+        {
+            GestioneLogisticaDAO gestioneLogisticaDAO = new GestioneLogisticaDAO();
+            List<Spedizione> listaSpedizioni = gestioneLogisticaDAO.visualizzaSpedizioni();
+            request.setAttribute("listaSpedizioni", listaSpedizioni);
+        }
+        else if (pageName.equals("modificaArrivo"))
+        {
+            int ID = Integer.parseInt(request.getParameter("IDarrivo"));
+
+            GestioneLogisticaDAO gestioneLogisticaDAO = new GestioneLogisticaDAO();
+            Arrivo arrivo = gestioneLogisticaDAO.visualizzaArrivo(ID);
+            request.setAttribute("arrivo", arrivo);
+        }
+        else if (pageName.equals("modificaSpedizione"))
+        {
+            int ID = Integer.parseInt(request.getParameter("IDspedizione"));
+
+            GestioneLogisticaDAO gestioneLogisticaDAO = new GestioneLogisticaDAO();
+            Spedizione spedizione = gestioneLogisticaDAO.visualizzaSpedizione(ID);
+            request.setAttribute("spedizione", spedizione);
+        }
+        else if (pageName.equals("aggiungiArrivo"))
+        {
+            GestioneProdottiDAO gestioneProdottiDAO = new GestioneProdottiDAO();
+            List<Prodotto> listaProdotti = gestioneProdottiDAO.visualizzaProdottiPerSpedizioneArrivo();
+            request.setAttribute("listaProdotti", listaProdotti);
+        }
+        else if (pageName.equals("aggiungiSpedizione"))
+        {
+            GestioneProdottiDAO gestioneProdottiDAO = new GestioneProdottiDAO();
+            List<Prodotto> listaProdotti = gestioneProdottiDAO.visualizzaProdottiPerSpedizioneArrivo();
+            request.setAttribute("listaProdotti", listaProdotti);
+        }
 
         RequestDispatcher requestDispatcher = request.getRequestDispatcher("WEB-INF/results/magazziniere/homepageMagazziniere.jsp?pageName=" + pageName);
         requestDispatcher.forward(request, response);

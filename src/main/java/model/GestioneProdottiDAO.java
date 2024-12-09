@@ -77,6 +77,58 @@ public class GestioneProdottiDAO
         return prodotti;
     }
 
+    public List<Prodotto> visualizzaProdottiPerSpedizioneArrivo() {
+        List<Prodotto> prodotti = new ArrayList<>();
+
+        String query = "SELECT c.nome, p.* FROM prodotto p " +
+                "JOIN categoria c ON p.IDcategoria=c.ID " +
+                "WHERE p.stato NOT IN ('in arrivo', 'in spedizione') " +  // Filtra i prodotti con stato diverso da 'in arrivo' e 'in spedizione'
+                "ORDER BY p.ID";
+
+        try {
+            PreparedStatement statement = connessione.getConnection().prepareStatement(query);
+            ResultSet resultSet = statement.executeQuery();
+
+            while (resultSet.next()) {
+                int ID = resultSet.getInt("p.ID");
+                int IDcategoria = resultSet.getInt("p.IDcategoria");
+                String nomeCategoria = resultSet.getString("c.nome");
+                String codice = resultSet.getString("codice");
+                String stato = resultSet.getString("stato");
+                String nome = resultSet.getString("nome");
+                String descrizione = resultSet.getString("descrizione");
+                Date dataArrivo = resultSet.getDate("dataArrivo");
+                String noteArrivo = resultSet.getString("noteArrivo");
+                String partenza = resultSet.getString("partenza");
+                Date dataSpedizione = resultSet.getDate("dataSpedizione");
+                String noteSpedizione = resultSet.getString("noteSpedizione");
+                String destinazione = resultSet.getString("destinazione");
+                String noteGenerali = resultSet.getString("noteGenerali");
+
+                Prodotto prodotto = new Prodotto(ID, IDcategoria, nomeCategoria, codice, stato, nome, descrizione,
+                        dataArrivo, noteArrivo, partenza, dataSpedizione,
+                        noteSpedizione, destinazione, noteGenerali);
+                prodotti.add(prodotto);
+            }
+
+            resultSet.close();
+            statement.close();
+        } catch (SQLException e) {
+            throw new RuntimeException("Errore durante il recupero dei prodotti: " + e.getMessage(), e);
+        } finally {
+            if (connessione != null) {
+                try {
+                    connessione.closeConnection();
+                } catch (SQLException e) {
+                    throw new RuntimeException("Errore durante la chiusura della connessione: " + e.getMessage(), e);
+                }
+            }
+        }
+
+        return prodotti;
+    }
+
+
     public Prodotto cercaProdotto(int ID) {
         Prodotto prodotto = null;
 
@@ -232,8 +284,6 @@ public class GestioneProdottiDAO
 
         return prodotti;
     }
-
-
 
     public String eliminaProdotto(int id) {
         String result = null;
@@ -425,19 +475,22 @@ public class GestioneProdottiDAO
             String noteGenerali) {
 
         String result = "3"; // Default, assume failure unless proven otherwise
+        Connection conn = null;
 
         try {
+            conn = connessione.getConnection(); // Ottieni la connessione attiva
+
             // 1) Verifica se il codice è già presente nel database
             String queryCheckCodice = "SELECT COUNT(*) FROM prodotto WHERE codice = ? AND ID != ?";
-            PreparedStatement statementCheckCodice = connessione.getConnection().prepareStatement(queryCheckCodice);
-            statementCheckCodice.setString(1, codice);
-            statementCheckCodice.setInt(2, idProdotto);
-            ResultSet resultSet = statementCheckCodice.executeQuery();
-            if (resultSet.next() && resultSet.getInt(1) > 0) {
+            PreparedStatement stmtCheckCodice = conn.prepareStatement(queryCheckCodice);
+            stmtCheckCodice.setString(1, codice);
+            stmtCheckCodice.setInt(2, idProdotto);
+            ResultSet rsCheckCodice = stmtCheckCodice.executeQuery();
+            if (rsCheckCodice.next() && rsCheckCodice.getInt(1) > 0) {
                 return "1"; // Codice già presente
             }
 
-            // 2) Conversione delle date da stringa a java.sql.Date
+            // 2) Conversione delle date
             java.sql.Date dataArrivo = null;
             if (dataArrivoStr != null && !dataArrivoStr.trim().isEmpty()) {
                 dataArrivo = java.sql.Date.valueOf(dataArrivoStr);
@@ -448,90 +501,107 @@ public class GestioneProdottiDAO
                 dataSpedizione = java.sql.Date.valueOf(dataSpedizioneStr);
             }
 
-            // 3) Gestire la rimozione dalle tabelle Arrivo e Spedizione se necessario
+            // 3) Gestione stato prodotto
             if ("in magazzino".equalsIgnoreCase(stato) || "non disponibile".equalsIgnoreCase(stato)) {
-                // Verifica se il prodotto è presente in Arrivo e Spedizione e rimuovilo
+                // Rimuove il prodotto da "arrivo" e "spedizione"
                 String deleteArrivo = "DELETE FROM arrivo WHERE IDprodotto = ?";
-                PreparedStatement stmtArrivo = connessione.getConnection().prepareStatement(deleteArrivo);
+                PreparedStatement stmtArrivo = conn.prepareStatement(deleteArrivo);
                 stmtArrivo.setInt(1, idProdotto);
                 stmtArrivo.executeUpdate();
 
                 String deleteSpedizione = "DELETE FROM spedizione WHERE IDprodotto = ?";
-                PreparedStatement stmtSpedizione = connessione.getConnection().prepareStatement(deleteSpedizione);
+                PreparedStatement stmtSpedizione = conn.prepareStatement(deleteSpedizione);
                 stmtSpedizione.setInt(1, idProdotto);
                 stmtSpedizione.executeUpdate();
+
             } else if ("in spedizione".equalsIgnoreCase(stato)) {
-                // 4) Se lo stato è "in spedizione", rimuovi il prodotto da Arrivo e aggiungilo in Spedizione
+                // Rimuove il prodotto da "arrivo" e aggiunge a "spedizione"
                 String deleteArrivo = "DELETE FROM arrivo WHERE IDprodotto = ?";
-                PreparedStatement stmtArrivo = connessione.getConnection().prepareStatement(deleteArrivo);
+                PreparedStatement stmtArrivo = conn.prepareStatement(deleteArrivo);
                 stmtArrivo.setInt(1, idProdotto);
                 stmtArrivo.executeUpdate();
 
-                // Aggiungi il prodotto alla tabella Spedizione
-                String querySpedizione = "INSERT INTO spedizione(IDprodotto, note) VALUES (?, ?)";
-                PreparedStatement statementSpedizione = connessione.getConnection().prepareStatement(querySpedizione);
-                statementSpedizione.setInt(1, idProdotto);
-                statementSpedizione.setString(2, noteSpedizione);
-                statementSpedizione.executeUpdate();
+                // Aggiungi il prodotto alla tabella spedizione solo se non è già presente
+                String checkSpedizione = "SELECT COUNT(*) FROM spedizione WHERE IDprodotto = ?";
+                PreparedStatement stmtCheckSpedizione = conn.prepareStatement(checkSpedizione);
+                stmtCheckSpedizione.setInt(1, idProdotto);
+                ResultSet rsCheckSpedizione = stmtCheckSpedizione.executeQuery();
+                if (rsCheckSpedizione.next() && rsCheckSpedizione.getInt(1) == 0) {
+                    String insertSpedizione = "INSERT INTO spedizione(IDprodotto, note) VALUES (?, ?)";
+                    PreparedStatement stmtInsertSpedizione = conn.prepareStatement(insertSpedizione);
+                    stmtInsertSpedizione.setInt(1, idProdotto);
+                    stmtInsertSpedizione.setString(2, noteSpedizione);
+                    stmtInsertSpedizione.executeUpdate();
+                } else {
+                    // Se il prodotto è già in spedizione, aggiorna le note di spedizione
+                    String updateNoteSpedizione = "UPDATE spedizione SET note = ? WHERE IDprodotto = ?";
+                    PreparedStatement stmtUpdateSpedizione = conn.prepareStatement(updateNoteSpedizione);
+                    stmtUpdateSpedizione.setString(1, noteSpedizione);
+                    stmtUpdateSpedizione.setInt(2, idProdotto);
+                    stmtUpdateSpedizione.executeUpdate();
+                }
+
             } else if ("in arrivo".equalsIgnoreCase(stato)) {
-                // 5) Se lo stato è "in arrivo", rimuovi il prodotto da Spedizione e aggiungilo in Arrivo
+                // Rimuove il prodotto da "spedizione" e aggiunge a "arrivo"
                 String deleteSpedizione = "DELETE FROM spedizione WHERE IDprodotto = ?";
-                PreparedStatement stmtSpedizione = connessione.getConnection().prepareStatement(deleteSpedizione);
+                PreparedStatement stmtSpedizione = conn.prepareStatement(deleteSpedizione);
                 stmtSpedizione.setInt(1, idProdotto);
                 stmtSpedizione.executeUpdate();
 
-                // Aggiungi il prodotto alla tabella Arrivo con noteArrivo
-                String queryArrivo = "INSERT INTO arrivo(IDprodotto, note) VALUES (?, ?)";
-                PreparedStatement statementArrivo = connessione.getConnection().prepareStatement(queryArrivo);
-                statementArrivo.setInt(1, idProdotto);
-                statementArrivo.setString(2, noteArrivo);
-                statementArrivo.executeUpdate();
-
-                // Aggiungi il prodotto anche alla tabella Spedizione con noteSpedizione, se esistono
-                if (noteSpedizione != null && !noteSpedizione.trim().isEmpty()) {
-                    String querySpedizione = "INSERT INTO spedizione(IDprodotto, note) VALUES (?, ?)";
-                    PreparedStatement statementSpedizione = connessione.getConnection().prepareStatement(querySpedizione);
-                    statementSpedizione.setInt(1, idProdotto);
-                    statementSpedizione.setString(2, noteSpedizione);
-                    statementSpedizione.executeUpdate();
+                // Aggiungi il prodotto alla tabella arrivo solo se non è già presente
+                String checkArrivo = "SELECT COUNT(*) FROM arrivo WHERE IDprodotto = ?";
+                PreparedStatement stmtCheckArrivo = conn.prepareStatement(checkArrivo);
+                stmtCheckArrivo.setInt(1, idProdotto);
+                ResultSet rsCheckArrivo = stmtCheckArrivo.executeQuery();
+                if (rsCheckArrivo.next() && rsCheckArrivo.getInt(1) == 0) {
+                    String insertArrivo = "INSERT INTO arrivo(IDprodotto, note) VALUES (?, ?)";
+                    PreparedStatement stmtInsertArrivo = conn.prepareStatement(insertArrivo);
+                    stmtInsertArrivo.setInt(1, idProdotto);
+                    stmtInsertArrivo.setString(2, noteArrivo);
+                    stmtInsertArrivo.executeUpdate();
+                } else {
+                    // Se il prodotto è già in arrivo, aggiorna le note di arrivo
+                    String updateNoteArrivo = "UPDATE arrivo SET note = ? WHERE IDprodotto = ?";
+                    PreparedStatement stmtUpdateArrivo = conn.prepareStatement(updateNoteArrivo);
+                    stmtUpdateArrivo.setString(1, noteArrivo);
+                    stmtUpdateArrivo.setInt(2, idProdotto);
+                    stmtUpdateArrivo.executeUpdate();
                 }
             }
 
-            // 6) Query per aggiornare i dettagli del prodotto
-            String queryProdotto = "UPDATE prodotto SET "
+            // 4) Aggiornamento dei dettagli del prodotto
+            String queryUpdateProdotto = "UPDATE prodotto SET "
                     + "IDcategoria = ?, codice = ?, stato = ?, nome = ?, descrizione = ?, "
                     + "dataArrivo = ?, noteArrivo = ?, partenza = ?, dataSpedizione = ?, "
                     + "noteSpedizione = ?, destinazione = ?, noteGenerali = ? "
                     + "WHERE ID = ?";
+            PreparedStatement stmtUpdateProdotto = conn.prepareStatement(queryUpdateProdotto);
+            stmtUpdateProdotto.setInt(1, idCategoria);
+            stmtUpdateProdotto.setString(2, codice);
+            stmtUpdateProdotto.setString(3, stato);
+            stmtUpdateProdotto.setString(4, nome);
+            stmtUpdateProdotto.setString(5, descrizione);
+            stmtUpdateProdotto.setDate(6, dataArrivo);
+            stmtUpdateProdotto.setString(7, noteArrivo);
+            stmtUpdateProdotto.setString(8, partenza);
+            stmtUpdateProdotto.setDate(9, dataSpedizione);
+            stmtUpdateProdotto.setString(10, noteSpedizione);
+            stmtUpdateProdotto.setString(11, destinazione);
+            stmtUpdateProdotto.setString(12, noteGenerali);
+            stmtUpdateProdotto.setInt(13, idProdotto);
 
-            PreparedStatement statementProdotto = connessione.getConnection().prepareStatement(queryProdotto);
-            statementProdotto.setInt(1, idCategoria);
-            statementProdotto.setString(2, codice);
-            statementProdotto.setString(3, stato);
-            statementProdotto.setString(4, nome);
-            statementProdotto.setString(5, descrizione);
-            statementProdotto.setDate(6, dataArrivo);
-            statementProdotto.setString(7, noteArrivo);
-            statementProdotto.setString(8, partenza);
-            statementProdotto.setDate(9, dataSpedizione);
-            statementProdotto.setString(10, noteSpedizione);
-            statementProdotto.setString(11, destinazione);
-            statementProdotto.setString(12, noteGenerali);
-            statementProdotto.setInt(13, idProdotto);
-
-            int rowsAffectedProdotto = statementProdotto.executeUpdate();
-
-            // 7) Verifica il risultato dell'aggiornamento del prodotto
-            if (rowsAffectedProdotto > 0) {
+            int rowsAffected = stmtUpdateProdotto.executeUpdate();
+            if (rowsAffected > 0) {
                 result = "2"; // Modifica avvenuta con successo
             }
 
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
-            if (connessione != null) {
+            // Chiudi la connessione
+            if (conn != null) {
                 try {
-                    connessione.closeConnection();
+                    conn.close();
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }

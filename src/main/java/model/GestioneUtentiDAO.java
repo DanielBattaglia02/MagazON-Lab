@@ -132,55 +132,25 @@ public class GestioneUtentiDAO
         return utenti;
     }
 
-    public List<Utente> visualizzaUtentiXRuolo(String ruolo) {
-
-        List<Utente> utenti = new ArrayList<>();
-        String query = "SELECT * FROM utente u WHERE u.ruolo = ?";
+    public void aggiornaStatoUtente(int userID, String nuovoStato) {
+        String query = "UPDATE utente SET stato = ? WHERE ID = ?";
 
         try {
             PreparedStatement statement = connessione.getConnection().prepareStatement(query);
-            statement.setString(1, ruolo);
-
-            ResultSet resultSet = statement.executeQuery();
-
-            while (resultSet.next()) {
-                int ID = resultSet.getInt("ID");
-                String nome = resultSet.getString("nome");
-                String cognome = resultSet.getString("cognome");
-                String ruoloUtente = resultSet.getString("ruolo");
-                String username = resultSet.getString("username");
-                String stato = resultSet.getString("stato");
-                String email = resultSet.getString("email");
-                String telefono = resultSet.getString("telefono");
-                Date dataDiNascita = resultSet.getDate("data_Di_Nascita");
-                String luogoDiNascita = resultSet.getString("luogoDiNascita");
-
-                Utente utente = new Utente(ID, nome, cognome, ruoloUtente, username, stato, email, telefono, dataDiNascita, luogoDiNascita);
-                utenti.add(utente);
-            }
-
-            resultSet.close();
+            statement.setString(1, nuovoStato);
+            statement.setInt(2, userID);
+            statement.executeUpdate();
             statement.close();
-        }
-        catch (SQLException e)
-        {
-            throw new RuntimeException(e);
-        }
-        finally
-        {
-            if (connessione != null)
-            {
-                try
-                {
+        } catch (SQLException e) {
+            throw new RuntimeException("Errore durante l'aggiornamento dello stato dell'utente: " + e.getMessage(), e);
+        } finally {
+            if (connessione != null) {
+                try {
                     connessione.closeConnection();
-                }
-                catch (SQLException e)
-                {
+                } catch (SQLException e) {
                     throw new RuntimeException(e);
                 }
             }
         }
-
-        return utenti;
     }
 }

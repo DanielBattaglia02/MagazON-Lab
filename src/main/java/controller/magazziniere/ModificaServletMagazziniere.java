@@ -77,6 +77,24 @@ public class ModificaServletMagazziniere extends HttpServlet
             request.setAttribute("message", result);
             pageName = "notifiche";
         }
+        else if(pageName.equals("arrivo"))
+        {
+            String note = request.getParameter("note");
+            int ID = Integer.parseInt(request.getParameter("IDarrivo"));
+
+            GestioneLogisticaDAO gestioneLogisticaDAO = new GestioneLogisticaDAO();
+            gestioneLogisticaDAO.modificaNoteArrivo(ID, note);
+            pageName = "arrivi";
+        }
+        else if(pageName.equals("spedizione"))
+        {
+            String note = request.getParameter("note");
+            int ID = Integer.parseInt(request.getParameter("IDspedizione"));
+
+            GestioneLogisticaDAO gestioneLogisticaDAO = new GestioneLogisticaDAO();
+            gestioneLogisticaDAO.modificaNoteSpedizione(ID, note);
+            pageName = "spedizioni";
+        }
 
         RequestDispatcher requestDispatcher = request.getRequestDispatcher("visualizza-servlet-magazziniere?pageName=" + pageName);
         requestDispatcher.forward(request, response);

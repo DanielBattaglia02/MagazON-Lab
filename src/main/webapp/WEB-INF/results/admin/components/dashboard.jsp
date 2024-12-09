@@ -7,14 +7,19 @@ Autore: Daniel Battaglia
 <html>
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/admin/components/dashboard.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/magazziniere/components/dashboard.css">
 </head>
 <body>
 <div class="header">
     <div class="box-superiore">
-        <div class="box-arancione">GESTIONE ARRIVI</div>
-        <div class="box-rosso">GESTIONE SPEDIZIONI</div>
+        <div class="box-arancione" onclick="redirectTo('arrivi')">GESTIONE ARRIVI</div>
+        <div class="box-rosso" onclick="redirectTo('spedizioni')">GESTIONE SPEDIZIONI</div>
     </div>
+
+    <!-- form nascosto1 -->
+    <form id="hiddenForm" action="inserisci-servlet-magazziniere" method="post" style="display:none;">
+        <input type="hidden" name="pageName" id="hiddenPageName" value="">
+    </form>
 
     <div class="box-filtri">
 
@@ -89,14 +94,14 @@ Autore: Daniel Battaglia
                     <td>${prodotto.noteArrivo}</td>
                     <td>${prodotto.dataSpedizione}</td>
                     <td>${prodotto.noteSpedizione}</td>
-                    <form action="visualizza-servlet-admin" method="post">
+                    <form action="visualizza-servlet-magazziniere" method="post">
                         <td>
                             <input type="hidden" name="IDprodotto" value="${prodotto.ID}">
                             <input type="hidden" name="pageName" value="dettagliProdotto">
                             <input class="bottone" type="submit" value="Dettagli">
                         </td>
                     </form>
-                    <form action="visualizza-servlet-admin" method="post">
+                    <form action="visualizza-servlet-magazziniere" method="post">
                         <td>
                             <input type="hidden" name="IDprodotto" value="${prodotto.ID}">
                             <input type="hidden" name="pageName" value="modificaProdotto">
@@ -109,5 +114,13 @@ Autore: Daniel Battaglia
         </table>
     </div>
 </div>
+
+<script>
+    function redirectTo(pageName)
+    {
+        document.getElementById('hiddenPageName').value = pageName;
+        document.getElementById('hiddenForm').submit();
+    }
+</script>
 </body>
 </html>

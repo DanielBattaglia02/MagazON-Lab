@@ -95,9 +95,9 @@ autore: daniel battaglia
             <textarea id="descrizione" name="descrizione" rows="4" cols="50" required>${prodotto.descrizione}</textarea>
             <br><br>
 
-            <!-- Campo Data di Arrivo -->
+            <!-- Campo Data di Arrivo (con tipo date) -->
             <label for="dataArrivo">Data di Arrivo:</label>
-            <input type="text" id="dataArrivo" name="dataArrivo" value="${prodotto.dataArrivo}" required>
+            <input type="date" id="dataArrivo" name="dataArrivo" value="${prodotto.dataArrivo}" required>
             <br><br>
 
             <!-- Campo Note di Arrivo -->
@@ -110,9 +110,9 @@ autore: daniel battaglia
             <input type="text" id="partenza" name="partenza" value="${prodotto.partenza}">
             <br><br>
 
-            <!-- Campo Data di Spedizione -->
+            <!-- Campo Data di Spedizione (con tipo date) -->
             <label for="dataSpedizione">Data di Spedizione:</label>
-            <input type="text" id="dataSpedizione" name="dataSpedizione" value="${prodotto.dataSpedizione}">
+            <input type="date" id="dataSpedizione" name="dataSpedizione" value="${prodotto.dataSpedizione}">
             <br><br>
 
             <!-- Campo Note di Spedizione -->
@@ -131,6 +131,7 @@ autore: daniel battaglia
 
             <button type="submit">Modifica prodotto</button>
         </form>
+
     </div>
 </div>
 

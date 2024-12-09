@@ -33,6 +33,24 @@ public class EliminaServletMagazziniere extends HttpServlet
             request.setAttribute("message", result);
             pageName = "eliminaProdotto";
         }
+        else if(pageName.equals("arrivo"))
+        {
+            int IDarrivo = Integer.parseInt(request.getParameter("IDarrivo"));
+            int IDprodotto = Integer.parseInt(request.getParameter("IDprodotto"));
+
+            GestioneLogisticaDAO gestioneLogisticaDAO = new GestioneLogisticaDAO();
+            gestioneLogisticaDAO.eliminaArrivo(IDarrivo, IDprodotto);
+            pageName = "arrivi";
+        }
+        else if(pageName.equals("spedizione"))
+        {
+            int IDspedizione = Integer.parseInt(request.getParameter("IDspedizione"));
+            int IDprodotto = Integer.parseInt(request.getParameter("IDprodotto"));
+
+            GestioneLogisticaDAO gestioneLogisticaDAO = new GestioneLogisticaDAO();
+            gestioneLogisticaDAO.eliminaSpedizione(IDspedizione, IDprodotto);
+            pageName = "spedizioni";
+        }
 
         RequestDispatcher requestDispatcher = request.getRequestDispatcher("visualizza-servlet-magazziniere?pageName=" + pageName);
         requestDispatcher.forward(request, response);

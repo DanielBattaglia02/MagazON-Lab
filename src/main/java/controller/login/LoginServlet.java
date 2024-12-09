@@ -30,6 +30,10 @@ public class LoginServlet extends HttpServlet
 
         if(utente!=null)
         {
+            // Aggiorna lo stato dell'utente a "online"
+            GestioneUtentiDAO gestioneUtentiDAO2 = new GestioneUtentiDAO();
+            gestioneUtentiDAO2.aggiornaStatoUtente(utente.getID(), "online");
+
             HttpSession session = request.getSession();
 
             synchronized (session)
