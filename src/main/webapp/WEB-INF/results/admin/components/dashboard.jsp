@@ -7,7 +7,7 @@ Autore: Daniel Battaglia
 <html>
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/magazziniere/components/dashboard.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/admin/components/dashboard.css">
 </head>
 <body>
 <div class="header">
@@ -17,13 +17,13 @@ Autore: Daniel Battaglia
     </div>
 
     <!-- form nascosto1 -->
-    <form id="hiddenForm" action="inserisci-servlet-magazziniere" method="post" style="display:none;">
+    <form id="hiddenForm" action="visualizza-servlet-admin" method="post" style="display:none;">
         <input type="hidden" name="pageName" id="hiddenPageName" value="">
     </form>
 
     <div class="box-filtri">
 
-        <form class="filtri" method="post" action="visualizza-servlet-magazziniere">
+        <form class="filtri" method="post" action="visualizza-servlet-admin">
             <input type="hidden" name="pageName" value="prodottiFiltrati">
             <div class="filtro">
                 <label for="codice">Codice:</label>
@@ -94,14 +94,14 @@ Autore: Daniel Battaglia
                     <td>${prodotto.noteArrivo}</td>
                     <td>${prodotto.dataSpedizione}</td>
                     <td>${prodotto.noteSpedizione}</td>
-                    <form action="visualizza-servlet-magazziniere" method="post">
+                    <form action="visualizza-servlet-admin" method="post">
                         <td>
                             <input type="hidden" name="IDprodotto" value="${prodotto.ID}">
                             <input type="hidden" name="pageName" value="dettagliProdotto">
                             <input class="bottone" type="submit" value="Dettagli">
                         </td>
                     </form>
-                    <form action="visualizza-servlet-magazziniere" method="post">
+                    <form action="visualizza-servlet-admin" method="post">
                         <td>
                             <input type="hidden" name="IDprodotto" value="${prodotto.ID}">
                             <input type="hidden" name="pageName" value="modificaProdotto">

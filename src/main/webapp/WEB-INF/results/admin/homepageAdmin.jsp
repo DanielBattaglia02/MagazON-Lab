@@ -18,7 +18,7 @@ Autore: Daniel Battaglia
     }
     else
     {
-        pageName = "/WEB-INF/results/admin/components/" + pageName +".jsp";
+        pageName = "/WEB-INF/results/admin/components/" + pageName + ".jsp";
         title = request.getParameter("title");
     }
 %>

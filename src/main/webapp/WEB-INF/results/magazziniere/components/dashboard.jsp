@@ -17,7 +17,7 @@ Autore: Daniel Battaglia
         </div>
 
         <!-- form nascosto1 -->
-        <form id="hiddenForm" action="inserisci-servlet-magazziniere" method="post" style="display:none;">
+        <form id="hiddenForm" action="visualizza-servlet-magazziniere" method="post" style="display:none;">
             <input type="hidden" name="pageName" id="hiddenPageName" value="">
         </form>
 
