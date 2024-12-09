@@ -1,3 +1,7 @@
+/*
+Autore: Ruben Gigante
+ */
+
 package model;
 
 import java.sql.Date;

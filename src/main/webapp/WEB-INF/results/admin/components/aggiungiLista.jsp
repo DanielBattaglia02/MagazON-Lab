@@ -25,10 +25,7 @@ Autore: Ruben Gigante
 
 <div class="header">
     <div class="box-scritta" onclick="redirectTo('liste')">Torna indietro</div>
-    <div class="titolo">Aggiungi un prodotto</div>
-    <div class="descrizione">
-        Inserisci le informazioni nei seguenti campi.
-    </div>
+    <div class="titolo">Aggiungi Lista</div>
 </div>
 
 <!-- form nascosto1 -->

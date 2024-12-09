@@ -12,28 +12,22 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import model.GestioneCategorieDAO;
 import model.GestioneLogisticaDAO;
-import model.GestioneNotificheDAO;
 import model.GestioneProdottiDAO;
-import jakarta.servlet.RequestDispatcher;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import model.GestioneListeDAO;
-import model.GestioneNotificheDAO;
-import model.GestioneProdottiDAO;
 import model.GestioneUtentiDAO;
 import utils.utils;
-
 import java.io.File;
 import java.io.IOException;
 import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.http.Part;
 import java.nio.file.Paths;
 
-import java.io.IOException;
 
+@MultipartConfig( //Serve per supportare l'invio di file dal form
+        fileSizeThreshold = 1024 * 1024 * 2, // 2MB
+        maxFileSize = 1024 * 1024 * 10, // 10MB
+        maxRequestSize = 1024 * 1024 * 50 // 50MB
+)
 @WebServlet(name="inserisci-servlet-admin", value="/inserisci-servlet-admin")
 public class InserisciServletAdmin extends HttpServlet
 {

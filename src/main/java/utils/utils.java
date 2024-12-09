@@ -1,3 +1,7 @@
+/*
+Autore: Ruben Gigante
+ */
+
 package utils;
 
 import java.security.SecureRandom;
