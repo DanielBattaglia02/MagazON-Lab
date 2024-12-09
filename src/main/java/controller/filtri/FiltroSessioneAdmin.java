@@ -23,7 +23,7 @@ public class FiltroSessioneAdmin implements Filter
 
             /*Controlla se l'utente ha una sessione attiva*/
         HttpSession session = httpRequest.getSession();
-        boolean loggedIn = session != null && session.getAttribute("ID") != null;
+        boolean loggedIn = session != null && session.getAttribute("ID") != null && session.getAttribute("ruolo").equals("admin");
 
             /*Se l'utente non ha una sessione attiva, reindirizzalo alla pagina di login*/
         if (!loggedIn)

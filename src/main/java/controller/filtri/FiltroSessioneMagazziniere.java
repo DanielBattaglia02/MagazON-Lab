@@ -23,7 +23,7 @@ public class FiltroSessioneMagazziniere implements Filter
 
         /*Controlla se l'utente ha una sessione attiva*/
         HttpSession session = httpRequest.getSession();
-        boolean loggedIn = session != null && session.getAttribute("ID") != null && session.getAttribute("ruolo").equals("utente");
+        boolean loggedIn = session != null && session.getAttribute("ID") != null && session.getAttribute("ruolo").equals("magazziniere");
 
         /*Se l'utente non ha una sessione attiva, reindirizzalo alla pagina di login*/
         if (!loggedIn)

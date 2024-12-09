@@ -86,7 +86,7 @@ Autore: Ruben Gigante
                     </c:if>
                     </td>
                     <td>
-                    <c:if test="${'magazziniere' == utente.ruolo or utente.ID==IDutente}">
+                    <c:if test="${'magazziniere' == utente.ruolo}">
                     <form action="elimina-servlet-admin" method="post">
                             <input type="hidden" name="IDutente" value="${utente.ID}">
                             <input type="hidden" name="pageName" value="utenti">
