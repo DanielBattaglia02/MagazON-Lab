@@ -62,6 +62,17 @@ public class InserisciServletMagazziniere extends HttpServlet
             request.setAttribute("message", result);
             pageName = "aggiungiProdotto";
         }
+        else if(pageName.equals("categoria"))
+        {
+            String nome = request.getParameter("nome");
+            String descrizione = request.getParameter("descrizione");
+            String note = request.getParameter("note");
+
+            GestioneCategorieDAO gestioneCategorieDAO = new GestioneCategorieDAO();
+            String result = gestioneCategorieDAO.aggiungiCategoria(nome, descrizione, note);
+            request.setAttribute("message", result);
+            pageName = "aggiungiCategoria";
+        }
         else if(pageName.equals("arrivo"))
         {
             int IDprodotto= Integer.parseInt(request.getParameter("prodotto"));

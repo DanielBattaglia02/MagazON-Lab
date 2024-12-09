@@ -10,6 +10,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import model.GestioneCategorieDAO;
 import model.GestioneLogisticaDAO;
 import model.GestioneProdottiDAO;
 
@@ -31,6 +32,15 @@ public class EliminaServletAdmin extends HttpServlet
             String result = gestioneProdottiDAO.eliminaProdotto(id);
             request.setAttribute("message", result);
             pageName = "eliminaProdotto";
+        }
+        else if(pageName.equals("categoria"))
+        {
+            int id = Integer.parseInt(request.getParameter("IDcategoria"));
+
+            GestioneCategorieDAO gestioneCategorieDAO = new GestioneCategorieDAO();
+            String result = gestioneCategorieDAO.eliminaCategoria(id);
+            request.setAttribute("message", result);
+            pageName = "categorie";
         }
         else if(pageName.equals("arrivo"))
         {

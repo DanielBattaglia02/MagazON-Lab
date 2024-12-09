@@ -33,6 +33,16 @@ public class EliminaServletMagazziniere extends HttpServlet
             request.setAttribute("message", result);
             pageName = "eliminaProdotto";
         }
+        else if(pageName.equals("categoria"))
+        {
+            int id = Integer.parseInt(request.getParameter("IDcategoria"));
+
+            GestioneCategorieDAO gestioneCategorieDAO = new GestioneCategorieDAO();
+            String result = gestioneCategorieDAO.eliminaCategoria(id);
+            request.setAttribute("message", result);
+            pageName = "categorie";
+        }
+
         else if(pageName.equals("arrivo"))
         {
             int IDarrivo = Integer.parseInt(request.getParameter("IDarrivo"));
