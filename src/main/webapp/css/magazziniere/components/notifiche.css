@@ -1,0 +1,170 @@
+/*
+Autore: Daniel Battaglia
+ */
+
+.header{
+    position: relative;
+    top: 0;
+    width: 100%;
+    height: 10%;
+    padding: 10px;
+}
+
+.sezione{
+    position: relative;
+    top: 0;
+    width: 100%;
+    height: 90%;
+    padding: 10px;
+}
+
+/**************************************************/
+
+.box-scritta{
+    width: 100%;
+    background-color: #0d2949;
+    padding: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    border-radius: 8px;
+    color: white;
+    transition: transform 0.6s;
+}
+
+.box-scritta:hover{
+    cursor: pointer;
+    transform: scale(1.05);
+}
+
+.titolo{
+    padding: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    font-size: 25px;
+    font-weight: bold;
+}
+
+.descrizione{
+    width: 100%;
+    padding: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    border-radius: 8px;
+}
+
+/**********************************************************************/
+
+.input {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.input input{
+    border-radius: 8px;
+    padding: 5px;
+}
+
+/***********************************************************************/
+
+/* Contenitore della tabella */
+.contenitore-tabella {
+    width: 100%; /* Larghezza del contenitore */
+    height: 100%; /* Altezza fissa del contenitore */
+    overflow: auto; /* Scorrimento se i contenuti eccedono */
+    border: 2px solid #333; /* Bordo del contenitore */
+    border-top-left-radius: 8px;
+    border-bottom-left-radius: 8px;
+    background-color: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 10px; /* Spaziatura interna */
+}
+
+/* Tabella */
+.tabella {
+    width: 100%; /* Larghezza della tabella */
+    border-collapse: collapse; /* Rimuove spazi tra celle */
+}
+
+/* Rimuove i bordi tra le celle, ma li aggiunge solo tra le righe */
+.tabella td {
+    padding: 8px;
+    text-align: center;
+    color: black;
+}
+
+/* Bordo solo tra le righe */
+.tabella tr {
+    border-bottom: 1px solid #ddd; /* Bordo tra le righe */
+}
+
+/* Intestazione della tabella */
+.tabella th {
+    padding: 8px;
+    text-align: center;
+    background-color: rgb(14, 23, 69);
+    color: white; /* Colore del testo */
+    top: 0; /* Posizione dall'alto per "sticky" */
+    z-index: 2;
+}
+
+/* Cambia colore di sfondo al passaggio del mouse sopra una riga */
+.tabella td:hover {
+    background-color: #d1d1d1; /* Scurisce quando si passa sopra */
+    cursor: pointer; /* Mostra il cursore come "cliccabile" */
+}
+
+/* Effetto hover sui submit button */
+.tabella input[type=submit]:hover {
+    cursor: pointer;
+}
+
+/******************************************************************/
+
+/* Stili per le righe della tabella */
+.notification-row td{
+    padding: 10px;
+    border-bottom: 1px solid #ddd; /* Aggiungi una linea sottile tra le righe della tabella */
+    text-align: left;
+    transition: background-color 0.3s ease; /* Aggiungi una transizione per l'effetto hover */
+}
+
+/* Stili per le notifiche lette e non lette */
+.notification-read {
+    background-color: #f1f1f1;  /* Colore di sfondo più scuro per le notifiche lette */
+    opacity: 0.4;  /* Rendi la riga più trasparente */
+}
+
+.notification-unread {
+    background-color: #ffffff;  /* Colore di sfondo normale per le notifiche non lette */
+    opacity: 1;  /* Opacità normale per le notifiche non lette */
+}
+
+/* Quando si passa sopra una riga (hover), cambia lo sfondo */
+.notification-row:hover {
+    background-color: #d1d1d1; /* Cambia il colore di sfondo quando si passa sopra la riga */
+}
+
+.notification-oggetto {
+    font-weight: bold;  /* Oggetto in grassetto */
+    font-size: 16px;
+    margin-bottom: 5px; /* Distanza tra oggetto e messaggio */
+}
+
+.notification-messaggio {
+    font-size: 12px; /* Impostiamo la dimensione del messaggio */
+    margin-bottom: 5px; /* Distanza tra messaggio e data */
+}
+
+.notification-data {
+    font-style: italic;  /* Data in corsivo */
+    font-size: 11px;
+}
+
