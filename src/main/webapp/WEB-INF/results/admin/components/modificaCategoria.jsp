@@ -68,7 +68,7 @@ else if (message.equals("2"))
             <textarea id="note" name="note" rows="4" cols="50">${categoria.note}</textarea>
             <br><br>
 
-            <button type="submit">Modifica prodotto</button>
+            <button type="submit">Modifica categoria</button>
         </form>
     </div>
 </div>

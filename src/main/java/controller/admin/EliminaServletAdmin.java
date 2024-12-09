@@ -10,10 +10,9 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import model.GestioneCategorieDAO;
-import model.GestioneLogisticaDAO;
-import model.GestioneProdottiDAO;
+import model.*;
 
+import java.io.File;
 import java.io.IOException;
 
 @WebServlet(name="elimina-servlet-admin", value="/elimina-servlet-admin")
@@ -41,6 +40,44 @@ public class EliminaServletAdmin extends HttpServlet
             String result = gestioneCategorieDAO.eliminaCategoria(id);
             request.setAttribute("message", result);
             pageName = "categorie";
+        }
+        else if(pageName.equals("utenti")){
+            int id = Integer.parseInt(request.getParameter("IDutente"));
+
+            GestioneUtentiDAO gestioneUtentiDAO = new GestioneUtentiDAO();
+            String result = gestioneUtentiDAO.eliminaUtente(id);
+            request.setAttribute("message", result);
+        }else if(pageName.equals("liste")){
+            int idLista = Integer.parseInt(request.getParameter("IDlista"));
+            // Crea un'istanza del DAO per interagire con il database
+            GestioneListeDAO gestioneListeDAO = new GestioneListeDAO();
+
+            // Ottieni il nome del file da eliminare dal database usando l'ID
+            String nomeFile = gestioneListeDAO.getListaFileName(idLista);
+
+            // Se il nome del file non è null o vuoto
+            if (nomeFile != null && !nomeFile.isEmpty()) {
+                // Definisci il percorso completo del file
+                String uploadPath = getServletContext().getRealPath("/") + "liste" + File.separator + nomeFile;
+                File file = new File(uploadPath);
+
+                // Controlla se il file esiste
+                if (file.exists()) {
+                    // Elimina il file dal server
+                    boolean deleted = file.delete();
+                    if (deleted) {
+                        // Se il file è stato eliminato, elimina la voce dal database
+                        gestioneListeDAO.eliminaLista(idLista);
+                        request.setAttribute("message", "Lista eliminata con successo.");
+                    } else {
+                        request.setAttribute("message", "Errore durante l'eliminazione del file.");
+                    }
+                } else {
+                    request.setAttribute("message", "File non trovato.");
+                }
+            } else {
+                request.setAttribute("message", "ID Lista non valido o file non associato.");
+            }
         }
         else if(pageName.equals("arrivo"))
         {

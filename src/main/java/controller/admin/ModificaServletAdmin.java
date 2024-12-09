@@ -10,10 +10,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import model.GestioneCategorieDAO;
-import model.GestioneLogisticaDAO;
-import model.GestioneNotificheDAO;
-import model.GestioneProdottiDAO;
+import model.*;
 
 import java.io.IOException;
 
@@ -90,6 +87,39 @@ public class ModificaServletAdmin extends HttpServlet
             request.setAttribute("IDcategoria", id);
             request.setAttribute("message", result);
             pageName = "modificaCategoria";
+        }
+        else if(pageName.equals("utenti")){
+
+            int id = Integer.parseInt(request.getParameter("IDutente"));
+
+            String nome = request.getParameter("nome");
+            String cognome= request.getParameter("cognome");
+            String ruolo= request.getParameter("ruolo");
+
+            String username = request.getParameter("username");
+            String password = request.getParameter("password");
+            String email = request.getParameter("email");
+            String telefono = request.getParameter("telefono");
+
+            String dataNascita = request.getParameter("dataNascita");
+            String luogoNascita = request.getParameter("luogoNascita");
+
+
+            GestioneUtentiDAO gestioneUtentiDAO = new GestioneUtentiDAO();
+            String result= gestioneUtentiDAO.modificaUtente(id,nome,cognome,ruolo,username,password,email,telefono,dataNascita,luogoNascita);
+            request.setAttribute("message", result);
+        }else if(pageName.equals("liste")){
+            int id = Integer.parseInt(request.getParameter("IDlista"));
+            String note = request.getParameter("note");
+
+            GestioneListeDAO gestioneListeDAO = new GestioneListeDAO();
+            boolean listaAggiornata = gestioneListeDAO.aggiornaLista(id, note);
+
+            if (listaAggiornata) {
+                request.setAttribute("message", "Lista " + id + " aggiornata");
+            } else {
+                request.setAttribute("message", "Errore modifica lista");
+            }
         }
         else if(pageName.equals("arrivo"))
         {

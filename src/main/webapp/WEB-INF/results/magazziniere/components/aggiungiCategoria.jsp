@@ -65,7 +65,7 @@ Autore: Francesco Vaiano
                 <textarea id="note" name="note" rows="3" cols="50"></textarea>
                 <br><br>
 
-                <button type="submit">Inserisci prodotto</button>
+                <button type="submit">Inserisci categoria</button>
             </form>
 
         </div>

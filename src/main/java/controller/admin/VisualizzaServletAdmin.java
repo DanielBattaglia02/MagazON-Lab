@@ -110,6 +110,36 @@ public class VisualizzaServletAdmin extends HttpServlet
             Categoria categoria = gestioneCategorieDAO.CercaCategoria(ID);
             request.setAttribute("categoria", categoria);
         }
+        else if(pageName.equals("utenti")){
+            GestioneUtentiDAO gestioneUtentiDAO = new GestioneUtentiDAO();
+            List<Utente> listaUtenti = gestioneUtentiDAO.visualizzaUtenti();
+            request.setAttribute("listaUtenti", listaUtenti);
+        }
+        else if (pageName.equals("aggiungiUtente"))
+        {
+            GestioneUtentiDAO gestioneUtentiDAO = new GestioneUtentiDAO();
+            List<Utente> listaUtenti = gestioneUtentiDAO.visualizzaUtenti();
+            request.setAttribute("listaUtenti", listaUtenti);
+        }
+        else if (pageName.equals("modificaUtente")){
+            int ID = Integer.parseInt(request.getParameter("IDutente"));
+
+            GestioneUtentiDAO gestioneUtentiDAO = new GestioneUtentiDAO();
+            Utente u = gestioneUtentiDAO.cercaUtente(ID);
+
+            request.setAttribute("utente", u);
+        }else if (pageName.equals("liste")){
+            GestioneListeDAO gestioneListeDAO = new GestioneListeDAO();
+            List<Lista> listaListe = gestioneListeDAO.visualizzaListe();
+            request.setAttribute("listaListe", listaListe);
+        }else if (pageName.equals("modificaLista")) {
+            int ID = Integer.parseInt(request.getParameter("IDlista"));
+
+            GestioneListeDAO gestioneListeDAO = new GestioneListeDAO();
+            Lista l = gestioneListeDAO.cercaLista(ID);
+
+            request.setAttribute("lista", l);
+        }
         else if (pageName.equals("arrivi"))
         {
             GestioneLogisticaDAO gestioneLogisticaDAO = new GestioneLogisticaDAO();

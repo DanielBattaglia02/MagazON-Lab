@@ -110,6 +110,12 @@ public class VisualizzaServletMagazziniere extends HttpServlet
             Categoria categoria = gestioneCategorieDAO.CercaCategoria(ID);
             request.setAttribute("categoria", categoria);
         }
+        else if (pageName.equals("liste"))
+        {
+            GestioneListeDAO gestioneListeDAO = new GestioneListeDAO();
+            List<Lista> listaListe = gestioneListeDAO.visualizzaListe();
+            request.setAttribute("listaListe", listaListe);
+        }
         else if (pageName.equals("arrivi"))
         {
             GestioneLogisticaDAO gestioneLogisticaDAO = new GestioneLogisticaDAO();
