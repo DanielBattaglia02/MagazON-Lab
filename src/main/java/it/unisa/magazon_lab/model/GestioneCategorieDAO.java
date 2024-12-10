@@ -1,5 +1,5 @@
 /*
-Autore: Daniel Battaglia
+Autore: Francesco Vaiano
  */
 
 package it.unisa.magazon_lab.model;

@@ -1,3 +1,7 @@
+/*
+Autore: Francesco Vaiano
+ */
+
 package it.unisa.magazon_lab.model;
 
 public class Arrivo {
