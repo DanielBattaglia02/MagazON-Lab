@@ -1,0 +1,613 @@
+/*
+Autore: Daniel Battaglia
+ */
+
+package it.unisa.magazon_lab.model;
+
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
+
+public class GestioneProdottiDAO
+{
+    private Connessione connessione;
+
+    public GestioneProdottiDAO() {
+        connessione = new Connessione();
+    }
+
+    public List<Prodotto> visualizzaProdotti()
+    {
+        List<Prodotto> prodotti = new ArrayList<>();
+
+        String query = "SELECT c.nome, p.* FROM prodotto p " +
+                        "JOIN categoria c ON p.IDcategoria=c.ID " +
+                        "ORDER BY p.ID";
+
+        try
+        {
+            PreparedStatement statement = connessione.getConnection().prepareStatement(query);
+            ResultSet resultSet = statement.executeQuery();
+
+            while (resultSet.next()) {
+                int ID = resultSet.getInt("p.ID");
+                int IDcategoria = resultSet.getInt("p.IDcategoria");
+                String nomeCategoria = resultSet.getString("c.nome");
+                String codice = resultSet.getString("codice");
+                String stato = resultSet.getString("stato");
+                String nome = resultSet.getString("nome");
+                String descrizione = resultSet.getString("descrizione");
+                Date dataArrivo = resultSet.getDate("dataArrivo");
+                String noteArrivo = resultSet.getString("noteArrivo");
+                String partenza = resultSet.getString("partenza");
+                Date dataSpedizione = resultSet.getDate("dataSpedizione");
+                String noteSpedizione = resultSet.getString("noteSpedizione");
+                String destinazione = resultSet.getString("destinazione");
+                String noteGenerali = resultSet.getString("noteGenerali");
+
+                Prodotto prodotto = new Prodotto(ID, IDcategoria, nomeCategoria, codice, stato, nome, descrizione,
+                        dataArrivo, noteArrivo, partenza, dataSpedizione,
+                        noteSpedizione, destinazione, noteGenerali);
+                prodotti.add(prodotto);
+            }
+
+            resultSet.close();
+            statement.close();
+        }
+        catch (SQLException e)
+        {
+            throw new RuntimeException(e);
+        }
+        finally
+        {
+            if (connessione != null)
+            {
+                try
+                {
+                    connessione.closeConnection();
+                }
+                catch (SQLException e)
+                {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+
+        return prodotti;
+    }
+
+    public List<Prodotto> visualizzaProdottiPerSpedizioneArrivo() {
+        List<Prodotto> prodotti = new ArrayList<>();
+
+        String query = "SELECT c.nome, p.* FROM prodotto p " +
+                "JOIN categoria c ON p.IDcategoria=c.ID " +
+                "WHERE p.stato NOT IN ('in arrivo', 'in spedizione') " +  // Filtra i prodotti con stato diverso da 'in arrivo' e 'in spedizione'
+                "ORDER BY p.ID";
+
+        try {
+            PreparedStatement statement = connessione.getConnection().prepareStatement(query);
+            ResultSet resultSet = statement.executeQuery();
+
+            while (resultSet.next()) {
+                int ID = resultSet.getInt("p.ID");
+                int IDcategoria = resultSet.getInt("p.IDcategoria");
+                String nomeCategoria = resultSet.getString("c.nome");
+                String codice = resultSet.getString("codice");
+                String stato = resultSet.getString("stato");
+                String nome = resultSet.getString("nome");
+                String descrizione = resultSet.getString("descrizione");
+                Date dataArrivo = resultSet.getDate("dataArrivo");
+                String noteArrivo = resultSet.getString("noteArrivo");
+                String partenza = resultSet.getString("partenza");
+                Date dataSpedizione = resultSet.getDate("dataSpedizione");
+                String noteSpedizione = resultSet.getString("noteSpedizione");
+                String destinazione = resultSet.getString("destinazione");
+                String noteGenerali = resultSet.getString("noteGenerali");
+
+                Prodotto prodotto = new Prodotto(ID, IDcategoria, nomeCategoria, codice, stato, nome, descrizione,
+                        dataArrivo, noteArrivo, partenza, dataSpedizione,
+                        noteSpedizione, destinazione, noteGenerali);
+                prodotti.add(prodotto);
+            }
+
+            resultSet.close();
+            statement.close();
+        } catch (SQLException e) {
+            throw new RuntimeException("Errore durante il recupero dei prodotti: " + e.getMessage(), e);
+        } finally {
+            if (connessione != null) {
+                try {
+                    connessione.closeConnection();
+                } catch (SQLException e) {
+                    throw new RuntimeException("Errore durante la chiusura della connessione: " + e.getMessage(), e);
+                }
+            }
+        }
+
+        return prodotti;
+    }
+
+
+    public Prodotto cercaProdotto(int ID) {
+        Prodotto prodotto = null;
+
+        String query = "SELECT c.nome AS nomeCategoria, p.* FROM prodotto p " +
+                "JOIN categoria c ON p.IDcategoria = c.ID " +
+                "WHERE p.ID = ?";
+
+        try {
+            PreparedStatement statement = connessione.getConnection().prepareStatement(query);
+            statement.setInt(1, ID);
+
+            ResultSet resultSet = statement.executeQuery();
+
+            if (resultSet.next()) {
+                int IDcategoria = resultSet.getInt("p.IDcategoria");
+                String nomeCategoria = resultSet.getString("nomeCategoria");
+                String codice = resultSet.getString("codice");
+                String stato = resultSet.getString("stato");
+                String nome = resultSet.getString("nome");
+                String descrizione = resultSet.getString("descrizione");
+                Date dataArrivo = resultSet.getDate("dataArrivo");
+                String noteArrivo = resultSet.getString("noteArrivo");
+                String partenza = resultSet.getString("partenza");
+                Date dataSpedizione = resultSet.getDate("dataSpedizione");
+                String noteSpedizione = resultSet.getString("noteSpedizione");
+                String destinazione = resultSet.getString("destinazione");
+                String noteGenerali = resultSet.getString("noteGenerali");
+
+                prodotto = new Prodotto(ID, IDcategoria, nomeCategoria, codice, stato, nome, descrizione,
+                        dataArrivo, noteArrivo, partenza, dataSpedizione,
+                        noteSpedizione, destinazione, noteGenerali);
+            }
+
+            resultSet.close();
+            statement.close();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            if (connessione != null) {
+                try {
+                    connessione.closeConnection();
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+
+        return prodotto;
+    }
+
+    public List<Prodotto> cercaProdottiFiltrati(String codice, Integer categoriaID, String nome, String stato,
+                                                String dataArrivoStr, String dataSpedizioneStr) {
+        List<Prodotto> prodotti = new ArrayList<>();
+
+        StringBuilder query = new StringBuilder("SELECT c.nome AS nomeCategoria, p.* FROM prodotto p " +
+                "JOIN categoria c ON p.IDcategoria = c.ID WHERE 1=1");
+
+        // Aggiungi filtri dinamici
+        if (codice != null && !codice.isEmpty()) {
+            query.append(" AND p.codice LIKE ?");
+        }
+        if (categoriaID != null && categoriaID > 0) { // Corretto controllo su categoriaID
+            query.append(" AND p.IDcategoria = ?");
+        }
+        if (nome != null && !nome.isEmpty()) {
+            query.append(" AND p.nome LIKE ?");
+        }
+        if (stato != null && !stato.isEmpty()) {
+            query.append(" AND p.stato LIKE ?");
+        }
+        if (dataArrivoStr != null && !dataArrivoStr.isEmpty()) {
+            query.append(" AND p.dataArrivo = ?");
+        }
+        if (dataSpedizioneStr != null && !dataSpedizioneStr.isEmpty()) {
+            query.append(" AND p.dataSpedizione = ?");
+        }
+
+        query.append(" ORDER BY p.ID");
+
+        try {
+            PreparedStatement statement = connessione.getConnection().prepareStatement(query.toString());
+
+            int paramIndex = 1;
+
+            // Impostazione dei parametri dinamici
+            if (codice != null && !codice.isEmpty()) {
+                statement.setString(paramIndex++, "%" + codice + "%");
+            }
+            if (categoriaID != null && categoriaID > 0) { // Imposta categoriaID solo se valido
+                statement.setInt(paramIndex++, categoriaID);
+            }
+            if (nome != null && !nome.isEmpty()) {
+                statement.setString(paramIndex++, "%" + nome + "%");
+            }
+            if (stato != null && !stato.isEmpty()) {
+                statement.setString(paramIndex++, "%" + stato + "%");
+            }
+
+            // Conversione delle date da stringa a java.sql.Date
+            java.sql.Date dataArrivo = null;
+            if (dataArrivoStr != null && !dataArrivoStr.trim().isEmpty()) {
+                dataArrivo = java.sql.Date.valueOf(dataArrivoStr);
+            }
+            if (dataArrivo != null) {
+                statement.setDate(paramIndex++, dataArrivo);
+            }
+
+            java.sql.Date dataSpedizione = null;
+            if (dataSpedizioneStr != null && !dataSpedizioneStr.trim().isEmpty()) {
+                dataSpedizione = java.sql.Date.valueOf(dataSpedizioneStr);
+            }
+            if (dataSpedizione != null) {
+                statement.setDate(paramIndex++, dataSpedizione);
+            }
+
+            ResultSet resultSet = statement.executeQuery();
+
+            while (resultSet.next()) {
+                int ID = resultSet.getInt("p.ID");
+                int IDcategoria = resultSet.getInt("p.IDcategoria");
+                String nomeCategoria = resultSet.getString("nomeCategoria");
+                String codiceProdotto = resultSet.getString("codice");
+                String statoProdotto = resultSet.getString("stato");
+                String nomeProdotto = resultSet.getString("nome");
+                String descrizione = resultSet.getString("descrizione");
+                Date dataArrivoProdotto = resultSet.getDate("dataArrivo");
+                String noteArrivo = resultSet.getString("noteArrivo");
+                String partenza = resultSet.getString("partenza");
+                Date dataSpedizioneProdotto = resultSet.getDate("dataSpedizione");
+                String noteSpedizione = resultSet.getString("noteSpedizione");
+                String destinazione = resultSet.getString("destinazione");
+                String noteGenerali = resultSet.getString("noteGenerali");
+
+                Prodotto prodotto = new Prodotto(ID, IDcategoria, nomeCategoria, codiceProdotto, statoProdotto, nomeProdotto,
+                        descrizione, dataArrivoProdotto, noteArrivo, partenza, dataSpedizioneProdotto, noteSpedizione,
+                        destinazione, noteGenerali);
+                prodotti.add(prodotto);
+            }
+
+            resultSet.close();
+            statement.close();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            if (connessione != null) {
+                try {
+                    connessione.closeConnection();
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+
+        return prodotti;
+    }
+
+    public String eliminaProdotto(int id) {
+        String result = null;
+
+        String query1 = "SELECT 1 FROM spedizione WHERE IDprodotto = ?";
+        String query2 = "SELECT 1 FROM arrivo WHERE IDprodotto = ?";
+        String query3 = "SELECT 1 FROM prodotto WHERE ID = ?";
+
+        try {
+            PreparedStatement statement1 = connessione.getConnection().prepareStatement(query1);
+            PreparedStatement statement2 = connessione.getConnection().prepareStatement(query2);
+            PreparedStatement statement3 = connessione.getConnection().prepareStatement(query3);
+
+            statement1.setInt(1, id);
+            statement2.setInt(1, id);
+            statement3.setInt(1, id);
+
+            ResultSet resultSet1 = statement1.executeQuery();
+            ResultSet resultSet2 = statement2.executeQuery();
+            ResultSet resultSet3 = statement3.executeQuery();
+
+            if (resultSet1.next()) {
+                result = "1";  // ID is present in spedizione
+            }
+            else if (resultSet2.next()) {
+                result = "2";  // ID is present in arrivo
+            }
+            else if (resultSet3.next())
+            {
+                try
+                {
+                    String deleteQuery = "DELETE FROM prodotto WHERE ID=?";
+                    PreparedStatement deleteStatement = connessione.getConnection().prepareStatement(deleteQuery);
+                    deleteStatement.setInt(1, id);
+                    int rowsAffected = deleteStatement.executeUpdate();
+
+                    if (rowsAffected > 0) {
+                        result = "3";  // Deletion successful
+                    } else {
+                        result = "4";  // Technical issues during deletion
+                    }
+                }
+                catch (SQLException e)
+                {
+                    result = "4";
+                    throw new RuntimeException(e);
+                }
+            }
+            else
+            {
+                result = "4";  // Product not found in any table (spedizione, arrivo, prodotto), return error
+            }
+        } catch (SQLException e)
+        {
+            result = "4";  // Catch and handle any SQL errors
+            throw new RuntimeException(e);
+        }
+        finally
+        {
+            if (connessione != null)
+            {
+                try
+                {
+                    connessione.closeConnection();
+                }
+                catch (SQLException e)
+                {
+                    result = "4";  // Catch errors during connection closure
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+
+        return result;
+    }
+
+    public String aggiungiProdotto(
+            int idCategoria,
+            String codice,
+            String stato,
+            String nome,
+            String descrizione,
+            String dataArrivoStr,
+            String noteArrivo,
+            String partenza,
+            String dataSpedizioneStr,
+            String noteSpedizione,
+            String destinazione,
+            String noteGenerali) {
+
+        String result = null;
+
+        try {
+            // Verifica se il codice esiste già nella tabella Prodotto
+            String queryCheckCodice = "SELECT COUNT(*) FROM Prodotto WHERE codice = ?";
+            PreparedStatement statementCheckCodice = connessione.getConnection().prepareStatement(queryCheckCodice);
+            statementCheckCodice.setString(1, codice);
+            ResultSet resultSet = statementCheckCodice.executeQuery();
+            if (resultSet.next() && resultSet.getInt(1) > 0) {
+                // Se il codice esiste già, restituire un errore
+                return "5"; // Codice già presente
+            }
+
+            // Conversione delle date da stringa a java.sql.Date
+            java.sql.Date dataArrivo = null;
+            if (dataArrivoStr != null && !dataArrivoStr.trim().isEmpty()) {
+                dataArrivo = java.sql.Date.valueOf(dataArrivoStr);
+            }
+
+            java.sql.Date dataSpedizione = null;
+            if (dataSpedizioneStr != null && !dataSpedizioneStr.trim().isEmpty()) {
+                dataSpedizione = java.sql.Date.valueOf(dataSpedizioneStr);
+            }
+
+            String queryProdotto = "INSERT INTO Prodotto(IDcategoria, codice, stato, nome, descrizione, dataArrivo, noteArrivo, partenza, dataSpedizione, noteSpedizione, destinazione, noteGenerali) "
+                    + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+            PreparedStatement statementProdotto = connessione.getConnection().prepareStatement(queryProdotto, Statement.RETURN_GENERATED_KEYS);
+            statementProdotto.setInt(1, idCategoria);
+            statementProdotto.setString(2, codice);
+            statementProdotto.setString(3, stato);
+            statementProdotto.setString(4, nome);
+            statementProdotto.setString(5, descrizione);
+            statementProdotto.setDate(6, dataArrivo);
+            statementProdotto.setString(7, noteArrivo);
+            statementProdotto.setString(8, partenza);
+            statementProdotto.setDate(9, dataSpedizione);
+            statementProdotto.setString(10, noteSpedizione);
+            statementProdotto.setString(11, destinazione);
+            statementProdotto.setString(12, noteGenerali);
+
+            int rowsAffectedProdotto = statementProdotto.executeUpdate();
+
+            if (rowsAffectedProdotto > 0) {
+                ResultSet generatedKeys = statementProdotto.getGeneratedKeys();
+                if (generatedKeys.next()) {
+                    int idProdotto = generatedKeys.getInt(1);
+
+                    // Se lo stato è "in arrivo", aggiungere alla tabella Arrivo
+                    if ("in arrivo".equalsIgnoreCase(stato)) {
+                        String queryArrivo = "INSERT INTO Arrivo(IDprodotto, note) VALUES (?, ?)";
+                        PreparedStatement statementArrivo = connessione.getConnection().prepareStatement(queryArrivo);
+                        statementArrivo.setInt(1, idProdotto);
+                        statementArrivo.setString(2, noteArrivo);
+
+                        int rowsAffectedArrivo = statementArrivo.executeUpdate();
+                        if (rowsAffectedArrivo > 0) {
+                            result = "1"; // Inserimento avvenuto con successo
+                        } else {
+                            result = "2"; // Problemi nell'inserimento in Arrivo
+                        }
+                    } else {
+                        result = "3"; // Inserimento avvenuto con successo solo nella tabella Prodotto
+                    }
+                }
+            } else {
+                result = "4"; // Problemi nell'inserimento nella tabella Prodotto
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Errore durante l'inserimento del prodotto.", e);
+        } finally {
+            if (connessione != null) {
+                try {
+                    connessione.closeConnection();
+                } catch (SQLException e) {
+                    throw new RuntimeException("Errore durante la chiusura della connessione.", e);
+                }
+            }
+        }
+
+        return result;
+    }
+
+    public String modificaProdotto(
+            int idProdotto,
+            int idCategoria,
+            String codice,
+            String stato,
+            String nome,
+            String descrizione,
+            String dataArrivoStr,
+            String noteArrivo,
+            String partenza,
+            String dataSpedizioneStr,
+            String noteSpedizione,
+            String destinazione,
+            String noteGenerali) {
+
+        String result = "3"; // Default, assume failure unless proven otherwise
+        Connection conn = null;
+
+        try {
+            conn = connessione.getConnection(); // Ottieni la connessione attiva
+
+            // 1) Verifica se il codice è già presente nel database
+            String queryCheckCodice = "SELECT COUNT(*) FROM prodotto WHERE codice = ? AND ID != ?";
+            PreparedStatement stmtCheckCodice = conn.prepareStatement(queryCheckCodice);
+            stmtCheckCodice.setString(1, codice);
+            stmtCheckCodice.setInt(2, idProdotto);
+            ResultSet rsCheckCodice = stmtCheckCodice.executeQuery();
+            if (rsCheckCodice.next() && rsCheckCodice.getInt(1) > 0) {
+                return "1"; // Codice già presente
+            }
+
+            // 2) Conversione delle date
+            java.sql.Date dataArrivo = null;
+            if (dataArrivoStr != null && !dataArrivoStr.trim().isEmpty()) {
+                dataArrivo = java.sql.Date.valueOf(dataArrivoStr);
+            }
+
+            java.sql.Date dataSpedizione = null;
+            if (dataSpedizioneStr != null && !dataSpedizioneStr.trim().isEmpty()) {
+                dataSpedizione = java.sql.Date.valueOf(dataSpedizioneStr);
+            }
+
+            // 3) Gestione stato prodotto
+            if ("in magazzino".equalsIgnoreCase(stato) || "non disponibile".equalsIgnoreCase(stato)) {
+                // Rimuove il prodotto da "arrivo" e "spedizione"
+                String deleteArrivo = "DELETE FROM arrivo WHERE IDprodotto = ?";
+                PreparedStatement stmtArrivo = conn.prepareStatement(deleteArrivo);
+                stmtArrivo.setInt(1, idProdotto);
+                stmtArrivo.executeUpdate();
+
+                String deleteSpedizione = "DELETE FROM spedizione WHERE IDprodotto = ?";
+                PreparedStatement stmtSpedizione = conn.prepareStatement(deleteSpedizione);
+                stmtSpedizione.setInt(1, idProdotto);
+                stmtSpedizione.executeUpdate();
+
+            } else if ("in spedizione".equalsIgnoreCase(stato)) {
+                // Rimuove il prodotto da "arrivo" e aggiunge a "spedizione"
+                String deleteArrivo = "DELETE FROM arrivo WHERE IDprodotto = ?";
+                PreparedStatement stmtArrivo = conn.prepareStatement(deleteArrivo);
+                stmtArrivo.setInt(1, idProdotto);
+                stmtArrivo.executeUpdate();
+
+                // Aggiungi il prodotto alla tabella spedizione solo se non è già presente
+                String checkSpedizione = "SELECT COUNT(*) FROM spedizione WHERE IDprodotto = ?";
+                PreparedStatement stmtCheckSpedizione = conn.prepareStatement(checkSpedizione);
+                stmtCheckSpedizione.setInt(1, idProdotto);
+                ResultSet rsCheckSpedizione = stmtCheckSpedizione.executeQuery();
+                if (rsCheckSpedizione.next() && rsCheckSpedizione.getInt(1) == 0) {
+                    String insertSpedizione = "INSERT INTO spedizione(IDprodotto, note) VALUES (?, ?)";
+                    PreparedStatement stmtInsertSpedizione = conn.prepareStatement(insertSpedizione);
+                    stmtInsertSpedizione.setInt(1, idProdotto);
+                    stmtInsertSpedizione.setString(2, noteSpedizione);
+                    stmtInsertSpedizione.executeUpdate();
+                } else {
+                    // Se il prodotto è già in spedizione, aggiorna le note di spedizione
+                    String updateNoteSpedizione = "UPDATE spedizione SET note = ? WHERE IDprodotto = ?";
+                    PreparedStatement stmtUpdateSpedizione = conn.prepareStatement(updateNoteSpedizione);
+                    stmtUpdateSpedizione.setString(1, noteSpedizione);
+                    stmtUpdateSpedizione.setInt(2, idProdotto);
+                    stmtUpdateSpedizione.executeUpdate();
+                }
+
+            } else if ("in arrivo".equalsIgnoreCase(stato)) {
+                // Rimuove il prodotto da "spedizione" e aggiunge a "arrivo"
+                String deleteSpedizione = "DELETE FROM spedizione WHERE IDprodotto = ?";
+                PreparedStatement stmtSpedizione = conn.prepareStatement(deleteSpedizione);
+                stmtSpedizione.setInt(1, idProdotto);
+                stmtSpedizione.executeUpdate();
+
+                // Aggiungi il prodotto alla tabella arrivo solo se non è già presente
+                String checkArrivo = "SELECT COUNT(*) FROM arrivo WHERE IDprodotto = ?";
+                PreparedStatement stmtCheckArrivo = conn.prepareStatement(checkArrivo);
+                stmtCheckArrivo.setInt(1, idProdotto);
+                ResultSet rsCheckArrivo = stmtCheckArrivo.executeQuery();
+                if (rsCheckArrivo.next() && rsCheckArrivo.getInt(1) == 0) {
+                    String insertArrivo = "INSERT INTO arrivo(IDprodotto, note) VALUES (?, ?)";
+                    PreparedStatement stmtInsertArrivo = conn.prepareStatement(insertArrivo);
+                    stmtInsertArrivo.setInt(1, idProdotto);
+                    stmtInsertArrivo.setString(2, noteArrivo);
+                    stmtInsertArrivo.executeUpdate();
+                } else {
+                    // Se il prodotto è già in arrivo, aggiorna le note di arrivo
+                    String updateNoteArrivo = "UPDATE arrivo SET note = ? WHERE IDprodotto = ?";
+                    PreparedStatement stmtUpdateArrivo = conn.prepareStatement(updateNoteArrivo);
+                    stmtUpdateArrivo.setString(1, noteArrivo);
+                    stmtUpdateArrivo.setInt(2, idProdotto);
+                    stmtUpdateArrivo.executeUpdate();
+                }
+            }
+
+            // 4) Aggiornamento dei dettagli del prodotto
+            String queryUpdateProdotto = "UPDATE prodotto SET "
+                    + "IDcategoria = ?, codice = ?, stato = ?, nome = ?, descrizione = ?, "
+                    + "dataArrivo = ?, noteArrivo = ?, partenza = ?, dataSpedizione = ?, "
+                    + "noteSpedizione = ?, destinazione = ?, noteGenerali = ? "
+                    + "WHERE ID = ?";
+            PreparedStatement stmtUpdateProdotto = conn.prepareStatement(queryUpdateProdotto);
+            stmtUpdateProdotto.setInt(1, idCategoria);
+            stmtUpdateProdotto.setString(2, codice);
+            stmtUpdateProdotto.setString(3, stato);
+            stmtUpdateProdotto.setString(4, nome);
+            stmtUpdateProdotto.setString(5, descrizione);
+            stmtUpdateProdotto.setDate(6, dataArrivo);
+            stmtUpdateProdotto.setString(7, noteArrivo);
+            stmtUpdateProdotto.setString(8, partenza);
+            stmtUpdateProdotto.setDate(9, dataSpedizione);
+            stmtUpdateProdotto.setString(10, noteSpedizione);
+            stmtUpdateProdotto.setString(11, destinazione);
+            stmtUpdateProdotto.setString(12, noteGenerali);
+            stmtUpdateProdotto.setInt(13, idProdotto);
+
+            int rowsAffected = stmtUpdateProdotto.executeUpdate();
+            if (rowsAffected > 0) {
+                result = "2"; // Modifica avvenuta con successo
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            // Chiudi la connessione
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        return result;
+    }
+
+}
