@@ -4,18 +4,27 @@ Autore: Ruben Gigante
 
 package it.unisa.magazon_lab.utils.lista;
 
+import it.unisa.magazon_lab.model.DAO.GestioneListeDAO;
+import it.unisa.magazon_lab.model.Facade.Facade;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import it.unisa.magazon_lab.model.*;
 
 import java.io.IOException;
 
 @WebServlet(name="scarica-lista-servlet", value="/scarica-lista-servlet")
 public class ScaricaListaServlet extends HttpServlet
 {
+    private Facade facade;
+
+    @Override
+    public void init() throws ServletException
+    {
+        super.init();
+        this.facade = new Facade();
+    }
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
     {
@@ -23,7 +32,7 @@ public class ScaricaListaServlet extends HttpServlet
 
         if (pageName.equals("liste")) {
             int id = Integer.parseInt(request.getParameter("IDlista"));
-            GestioneListeDAO gestioneListeDAO = new GestioneListeDAO();
+            GestioneListeDAO gestioneListeDAO = facade.getGestioneListeDAO();
 
             String nomeFile = gestioneListeDAO.getListaFileName(id);
             if (!nomeFile.isEmpty()) {

@@ -8,8 +8,8 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import it.unisa.magazon_lab.model.Prodotto;
-import it.unisa.magazon_lab.model.Connessione;
+import it.unisa.magazon_lab.model.Entity.Prodotto;
+import it.unisa.magazon_lab.model.Entity.Connessione;
 
 import java.io.*;
 import java.rmi.ServerException;
@@ -30,7 +30,7 @@ public class SearchProdottoDaEliminareAJAX extends HttpServlet {
 
         // Inizializza la connessione e gli oggetti
         ArrayList<Prodotto> prodotti = new ArrayList<>();
-        Connessione connessione = new Connessione();
+        Connessione connessione = Connessione.getInstance();
 
         try {
             String sql;

@@ -4,19 +4,30 @@ Autore: Daniel Battaglia
 
 package it.unisa.magazon_lab.controller.magazziniere;
 
+import it.unisa.magazon_lab.model.DAO.GestioneCategorieDAO;
+import it.unisa.magazon_lab.model.DAO.GestioneLogisticaDAO;
+import it.unisa.magazon_lab.model.DAO.GestioneProdottiDAO;
+import it.unisa.magazon_lab.model.Facade.Facade;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import it.unisa.magazon_lab.model.*;
 
 import java.io.IOException;
 
 @WebServlet(name="elimina-servlet-magazziniere", value="/elimina-servlet-magazziniere")
 public class EliminaServletMagazziniere extends HttpServlet
 {
+    private Facade facade;
+
+    @Override
+    public void init() throws ServletException
+    {
+        super.init();
+        this.facade = new Facade();
+    }
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
     {
@@ -26,7 +37,7 @@ public class EliminaServletMagazziniere extends HttpServlet
         {
             int id = Integer.parseInt(request.getParameter("IDprodotto"));
 
-            GestioneProdottiDAO gestioneProdottiDAO = new GestioneProdottiDAO();
+            GestioneProdottiDAO gestioneProdottiDAO = facade.getGestioneProdottiDAO();
             String result = gestioneProdottiDAO.eliminaProdotto(id);
             request.setAttribute("message", result);
             pageName = "eliminaProdotto";
@@ -35,7 +46,7 @@ public class EliminaServletMagazziniere extends HttpServlet
         {
             int id = Integer.parseInt(request.getParameter("IDcategoria"));
 
-            GestioneCategorieDAO gestioneCategorieDAO = new GestioneCategorieDAO();
+            GestioneCategorieDAO gestioneCategorieDAO = facade.getGestioneCategorieDAO();
             String result = gestioneCategorieDAO.eliminaCategoria(id);
             request.setAttribute("message", result);
             pageName = "categorie";
@@ -46,7 +57,7 @@ public class EliminaServletMagazziniere extends HttpServlet
             int IDarrivo = Integer.parseInt(request.getParameter("IDarrivo"));
             int IDprodotto = Integer.parseInt(request.getParameter("IDprodotto"));
 
-            GestioneLogisticaDAO gestioneLogisticaDAO = new GestioneLogisticaDAO();
+            GestioneLogisticaDAO gestioneLogisticaDAO = facade.getGestioneLogisticaDAO();
             gestioneLogisticaDAO.eliminaArrivo(IDarrivo, IDprodotto);
             pageName = "arrivi";
         }
@@ -55,7 +66,7 @@ public class EliminaServletMagazziniere extends HttpServlet
             int IDspedizione = Integer.parseInt(request.getParameter("IDspedizione"));
             int IDprodotto = Integer.parseInt(request.getParameter("IDprodotto"));
 
-            GestioneLogisticaDAO gestioneLogisticaDAO = new GestioneLogisticaDAO();
+            GestioneLogisticaDAO gestioneLogisticaDAO = facade.getGestioneLogisticaDAO();
             gestioneLogisticaDAO.eliminaSpedizione(IDspedizione, IDprodotto);
             pageName = "spedizioni";
         }

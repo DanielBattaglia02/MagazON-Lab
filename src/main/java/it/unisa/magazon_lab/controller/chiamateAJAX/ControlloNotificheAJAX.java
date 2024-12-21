@@ -4,15 +4,26 @@ autore: daniel battaglia
 
 package it.unisa.magazon_lab.controller.chiamateAJAX;
 
+import it.unisa.magazon_lab.model.Facade.Facade;
+import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import it.unisa.magazon_lab.model.GestioneNotificheDAO;
+import it.unisa.magazon_lab.model.DAO.GestioneNotificheDAO;
 import java.io.IOException;
 
 @WebServlet(name="controllo-notifiche-ajax", value="/controllo-notifiche-ajax")
-public class ControlloNotificheAJAX extends HttpServlet {
+public class ControlloNotificheAJAX extends HttpServlet
+{
+    private Facade facade;
+
+    @Override
+    public void init() throws ServletException
+    {
+        super.init();
+        this.facade = new Facade();
+    }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException
     {
@@ -25,7 +36,7 @@ public class ControlloNotificheAJAX extends HttpServlet {
             return;
         }
 
-        GestioneNotificheDAO gestioneNotificheDAO = new GestioneNotificheDAO();
+        GestioneNotificheDAO gestioneNotificheDAO = facade.getGestioneNotificheDAO();
         int notificationCount = gestioneNotificheDAO.controlloNotifiche(userID);
 
         String jsonResponse = "{\"notificationCount\": " + notificationCount + "}";

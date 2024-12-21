@@ -2,7 +2,7 @@
 Autore: Ruben Gigante
  */
 
- package it.unisa.magazon_lab.model;
+ package it.unisa.magazon_lab.model.Entity;
 
  import java.sql.Date;
  

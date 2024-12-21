@@ -4,22 +4,17 @@ Autore: Daniel Battaglia
 
 package it.unisa.magazon_lab.controller.admin;
 
+import it.unisa.magazon_lab.model.DAO.*;
+import it.unisa.magazon_lab.model.Facade.Facade;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import it.unisa.magazon_lab.model.GestioneCategorieDAO;
-import it.unisa.magazon_lab.model.GestioneLogisticaDAO;
-import it.unisa.magazon_lab.model.GestioneProdottiDAO;
-import it.unisa.magazon_lab.model.GestioneListeDAO;
-import it.unisa.magazon_lab.model.GestioneUtentiDAO;
+import jakarta.servlet.http.*;
 import it.unisa.magazon_lab.utils.utils;
 import java.io.File;
 import java.io.IOException;
 import jakarta.servlet.annotation.MultipartConfig;
-import jakarta.servlet.http.Part;
+
 import java.nio.file.Paths;
 
 
@@ -31,6 +26,14 @@ import java.nio.file.Paths;
 @WebServlet(name="inserisci-servlet-admin", value="/inserisci-servlet-admin")
 public class InserisciServletAdmin extends HttpServlet
 {
+    private Facade facade;
+
+    @Override
+    public void init() throws ServletException
+    {
+        super.init();
+        this.facade = new Facade();
+    }
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
     {
@@ -65,7 +68,7 @@ public class InserisciServletAdmin extends HttpServlet
             noteGenerali = (noteGenerali == null || noteGenerali.trim().isEmpty()) ? null : noteGenerali;
 
 
-            GestioneProdottiDAO gestioneProdottiDAO = new GestioneProdottiDAO();
+            GestioneProdottiDAO gestioneProdottiDAO = facade.getGestioneProdottiDAO();
             String result = gestioneProdottiDAO.aggiungiProdotto(
                     idCategoria, codice, stato, nome, descrizione,
                     dataArrivo, noteArrivo, partenza,
@@ -80,7 +83,7 @@ public class InserisciServletAdmin extends HttpServlet
             String descrizione = request.getParameter("descrizione");
             String note = request.getParameter("note");
 
-            GestioneCategorieDAO gestioneCategorieDAO = new GestioneCategorieDAO();
+            GestioneCategorieDAO gestioneCategorieDAO = facade.getGestioneCategorieDAO();
             String result = gestioneCategorieDAO.aggiungiCategoria(nome, descrizione, note);
             request.setAttribute("message", result);
             pageName = "aggiungiCategoria";
@@ -98,7 +101,7 @@ public class InserisciServletAdmin extends HttpServlet
             String dataNascita = request.getParameter("dataNascita");
             String luogoNascita = request.getParameter("luogoNascita");
 
-            GestioneUtentiDAO gestioneUtentiDAO = new GestioneUtentiDAO();
+            GestioneUtentiDAO gestioneUtentiDAO = facade.getGestioneUtentiDAO();
             String result= gestioneUtentiDAO.aggiungiUtente(nome,cognome,ruolo,username,password,email,telefono,dataNascita,luogoNascita);
             request.setAttribute("message", result);
             request.setAttribute("username", username);
@@ -150,7 +153,7 @@ public class InserisciServletAdmin extends HttpServlet
 
                 // Salva i dettagli nel database
                 if (fileName != null && !fileName.isEmpty()) {
-                    GestioneListeDAO gestioneListeDAO = new GestioneListeDAO();
+                    GestioneListeDAO gestioneListeDAO = facade.getGestioneListeDAO();
                     if(note.isEmpty()){
                         gestioneListeDAO.inserisciLista(fileName);
                     }else{
@@ -172,18 +175,31 @@ public class InserisciServletAdmin extends HttpServlet
             int IDprodotto= Integer.parseInt(request.getParameter("prodotto"));
             String note = request.getParameter("note");
 
-            GestioneLogisticaDAO gestioneLogisticaDAO = new GestioneLogisticaDAO();
+            GestioneLogisticaDAO gestioneLogisticaDAO = facade.getGestioneLogisticaDAO();
             gestioneLogisticaDAO.inserisciArrivo(IDprodotto, note);
             pageName = "arrivi";
         }
-        else if(pageName.equals("spedizioni"))
+        else if(pageName.equals("spedizione"))
         {
             int IDprodotto= Integer.parseInt(request.getParameter("prodotto"));
             String note = request.getParameter("note");
 
-            GestioneLogisticaDAO gestioneLogisticaDAO = new GestioneLogisticaDAO();
+            GestioneLogisticaDAO gestioneLogisticaDAO = facade.getGestioneLogisticaDAO();
             gestioneLogisticaDAO.inserisciSpedizione(IDprodotto, note);
             pageName = "spedizioni";
+        }
+        else if(pageName.equals("notifica"))
+        {
+            HttpSession session = request.getSession();
+            Integer userID = (Integer) session.getAttribute("ID");
+
+            String oggetto = request.getParameter("oggetto");
+            String messaggio = request.getParameter("messaggio");
+
+            GestioneNotificheDAO gestioneNotificheDAO = facade.getGestioneNotificheDAO();
+            gestioneNotificheDAO.inviaNotifica(userID, oggetto, messaggio);
+
+            pageName = "notifiche";
         }
 
         RequestDispatcher requestDispatcher = request.getRequestDispatcher("visualizza-servlet-admin?pageName=" + pageName);

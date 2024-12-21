@@ -4,19 +4,29 @@ Autore: Daniel Battaglia
 
 package it.unisa.magazon_lab.controller.login;
 
+import it.unisa.magazon_lab.model.Facade.Facade;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import it.unisa.magazon_lab.model.GestioneUtentiDAO;
+import it.unisa.magazon_lab.model.DAO.GestioneUtentiDAO;
 
 import java.io.IOException;
 
 @WebServlet(name="logout-servlet", value="/logout-servlet")
 public class LogoutServlet extends HttpServlet
 {
+    private Facade facade;
+
+    @Override
+    public void init() throws ServletException
+    {
+        super.init();
+        this.facade = new Facade();
+    }
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
     {
@@ -29,7 +39,7 @@ public class LogoutServlet extends HttpServlet
                 int userID = (int) userIDObj;
 
                 // Aggiorna lo stato dell'utente a "offline"
-                GestioneUtentiDAO gestioneUtentiDAO = new GestioneUtentiDAO();
+                GestioneUtentiDAO gestioneUtentiDAO = facade.getGestioneUtentiDAO();
                 gestioneUtentiDAO.aggiornaStatoUtente(userID, "offline");
             }
 
@@ -43,5 +53,12 @@ public class LogoutServlet extends HttpServlet
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException
     {
         doGet(req, resp);
+    }
+
+    @Override
+    public void destroy()
+    {
+        super.destroy();
+        facade.chiudiConnessione();
     }
 }

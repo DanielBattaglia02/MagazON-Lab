@@ -2,7 +2,10 @@
 Autore: Daniel Battaglia
  */
 
-package it.unisa.magazon_lab.model;
+package it.unisa.magazon_lab.model.DAO;
+
+import it.unisa.magazon_lab.model.Entity.Connessione;
+import it.unisa.magazon_lab.model.Entity.Notifica;
 
 import java.sql.*;
 import java.text.SimpleDateFormat;
@@ -11,11 +14,22 @@ import java.util.List;
 
 public class GestioneNotificheDAO
 {
+    private static GestioneNotificheDAO instance;
     private Connessione connessione;
 
-    // Costruttore
-    public GestioneNotificheDAO() {
-        connessione = new Connessione();
+    // Costruttore privato per impedire creazioni multiple
+    private GestioneNotificheDAO() {
+        connessione = Connessione.getInstance();
+    }
+
+    // Metodo per ottenere l'istanza Singleton
+    public static GestioneNotificheDAO getInstance()
+    {
+        if (instance == null)
+        {
+            instance = new GestioneNotificheDAO();
+        }
+        return instance;
     }
 
     public List<Notifica> visualizzaNotifiche(int userID) {
@@ -51,16 +65,10 @@ public class GestioneNotificheDAO
                     notifiche.add(notifica);
                 }
             }
-        } catch (SQLException e) {
+        }
+        catch (SQLException e)
+        {
             throw new RuntimeException(e);
-        } finally {
-            if (connessione != null) {
-                try {
-                    connessione.closeConnection();
-                } catch (SQLException e) {
-                    throw new RuntimeException(e);
-                }
-            }
         }
 
         return notifiche;
@@ -69,8 +77,6 @@ public class GestioneNotificheDAO
     public int controlloNotifiche(int userID)
     {
         int notificationCount = 0;
-
-        Connessione connessione = new Connessione();
 
         try {
             // Esegui la query per contare le notifiche non lette per l'utente
@@ -87,17 +93,11 @@ public class GestioneNotificheDAO
                 }
             }
 
-        } catch (SQLException e) {
+        }
+        catch (SQLException e)
+        {
             e.printStackTrace();
             notificationCount = 0;
-        } finally {
-            if (connessione != null) {
-                try {
-                    connessione.closeConnection();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
         }
 
         return notificationCount;
@@ -119,19 +119,12 @@ public class GestioneNotificheDAO
 
             // Se rowsAffected è maggiore di 0, l'aggiornamento è riuscito
             return "1";
-        } catch (SQLException e) {
+        }
+        catch (SQLException e)
+        {
             // Gestione dell'errore SQL
             e.printStackTrace();
             return "2";
-        } finally {
-            // Chiude la connessione
-            if (connessione != null) {
-                try {
-                    connessione.closeConnection();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
         }
     }
 
@@ -206,7 +199,9 @@ public class GestioneNotificheDAO
                 result = "4"; // Problemi nell'inserimento della notifica
             }
 
-        } catch (SQLException e) {
+        }
+        catch (SQLException e)
+        {
             e.printStackTrace();
             try {
                 connessione.getConnection().rollback(); // Rollback in caso di errore
@@ -214,15 +209,6 @@ public class GestioneNotificheDAO
                 rollbackEx.printStackTrace();
             }
             throw new RuntimeException("Errore durante l'invio della notifica.", e);
-        } finally {
-            try {
-                if (connessione != null) {
-                    connessione.getConnection().setAutoCommit(true); // Ripristino l'autocommit
-                    connessione.closeConnection();
-                }
-            } catch (SQLException e) {
-                throw new RuntimeException("Errore durante la chiusura della connessione.", e);
-            }
         }
 
         return result;

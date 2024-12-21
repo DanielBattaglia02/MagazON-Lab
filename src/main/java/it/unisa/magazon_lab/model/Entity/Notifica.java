@@ -2,7 +2,7 @@
 Autore: Daniel Battaglia
  */
 
-package it.unisa.magazon_lab.model;
+package it.unisa.magazon_lab.model.Entity;
 
 public class Notifica {
     private int ID;

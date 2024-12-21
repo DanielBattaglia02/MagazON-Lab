@@ -5,17 +5,28 @@ autore: daniel battaglia
 package it.unisa.magazon_lab.controller.chiamateAJAX;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import it.unisa.magazon_lab.model.Facade.Facade;
+import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import it.unisa.magazon_lab.model.GestioneNotificheDAO;
-import it.unisa.magazon_lab.model.Notifica;
+import it.unisa.magazon_lab.model.DAO.GestioneNotificheDAO;
+import it.unisa.magazon_lab.model.Entity.Notifica;
 import java.io.IOException;
 import java.util.List;
 
 @WebServlet(name="visualizza-notifiche-ajax", value="/visualizza-notifiche-ajax")
-public class VisualizzaNotificheAJAX extends HttpServlet {
+public class VisualizzaNotificheAJAX extends HttpServlet
+{
+    private Facade facade;
+
+    @Override
+    public void init() throws ServletException
+    {
+        super.init();
+        this.facade = new Facade();
+    }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException
     {
@@ -28,7 +39,7 @@ public class VisualizzaNotificheAJAX extends HttpServlet {
             return;
         }
 
-        GestioneNotificheDAO gestioneNotificheDAO = new GestioneNotificheDAO();
+        GestioneNotificheDAO gestioneNotificheDAO = facade.getGestioneNotificheDAO();
         List<Notifica> notifiche = gestioneNotificheDAO.visualizzaNotifiche(userID);
 
         if (notifiche == null) {

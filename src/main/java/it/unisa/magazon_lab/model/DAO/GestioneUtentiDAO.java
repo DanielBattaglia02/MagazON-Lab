@@ -2,7 +2,10 @@
 Autore: Ruben Gigante
  */
 
-package it.unisa.magazon_lab.model;
+package it.unisa.magazon_lab.model.DAO;
+
+import it.unisa.magazon_lab.model.Entity.Connessione;
+import it.unisa.magazon_lab.model.Entity.Utente;
 
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -13,71 +16,22 @@ import java.util.List;
 
 public class GestioneUtentiDAO
 {
+    private static GestioneUtentiDAO instance;
     private Connessione connessione;
 
-    public GestioneUtentiDAO() {
-        connessione = new Connessione();
+    // Costruttore privato per impedire creazioni multiple
+    private GestioneUtentiDAO() {
+        connessione = Connessione.getInstance();
     }
 
-    public Utente loginUtente(String user, String password, String ruoloo)
+    // Metodo per ottenere l'istanza Singleton
+    public static GestioneUtentiDAO getInstance()
     {
-        Utente utente = null;
-        String query;
-
-        if(ruoloo.equals("magazziniere"))
+        if (instance == null)
         {
-            query = "SELECT * FROM utente where username = ? AND password=SHA1(?) AND ruolo='magazziniere'";
+            instance = new GestioneUtentiDAO();
         }
-        else
-        {
-            query = "SELECT * FROM utente where username = ? AND password=SHA1(?) AND ruolo='admin'";
-        }
-
-        try
-        {
-            PreparedStatement statement = connessione.getConnection().prepareStatement(query);
-            statement.setString(1, user);
-            statement.setString(2, password);
-            ResultSet resultSet = statement.executeQuery();
-
-            while (resultSet.next()) {
-                int ID = resultSet.getInt("ID");
-                String nome = resultSet.getString("nome");
-                String cognome = resultSet.getString("cognome");
-                String ruolo = resultSet.getString("ruolo");
-                String username = resultSet.getString("username");
-                String stato = resultSet.getString("stato");
-                String email = resultSet.getString("email");
-                String telefono = resultSet.getString("telefono");
-                Date dataDiNascita = resultSet.getDate("dataDiNascita");
-                String luogoDiNascita = resultSet.getString("luogoDiNascita");
-
-                utente = new Utente(ID, nome, cognome, ruolo, username, stato, email, telefono, dataDiNascita, luogoDiNascita);
-            }
-
-            resultSet.close();
-            statement.close();
-        }
-        catch (SQLException e)
-        {
-            throw new RuntimeException(e);
-        }
-        finally
-        {
-            if (connessione != null)
-            {
-                try
-                {
-                    connessione.closeConnection();
-                }
-                catch (SQLException e)
-                {
-                    throw new RuntimeException(e);
-                }
-            }
-        }
-
-        return utente;
+        return instance;
     }
 
     public List<Utente> visualizzaUtenti()
@@ -114,25 +68,12 @@ public class GestioneUtentiDAO
         {
             throw new RuntimeException(e);
         }
-        finally
-        {
-            if (connessione != null)
-            {
-                try
-                {
-                    connessione.closeConnection();
-                }
-                catch (SQLException e)
-                {
-                    throw new RuntimeException(e);
-                }
-            }
-        }
 
         return utenti;
     }
 
-    public void aggiornaStatoUtente(int userID, String nuovoStato) {
+    public void aggiornaStatoUtente(int userID, String nuovoStato)
+    {
         String query = "UPDATE utente SET stato = ? WHERE ID = ?";
 
         try {
@@ -141,23 +82,17 @@ public class GestioneUtentiDAO
             statement.setInt(2, userID);
             statement.executeUpdate();
             statement.close();
-        } catch (SQLException e) {
+        }
+        catch (SQLException e)
+        {
             throw new RuntimeException("Errore durante l'aggiornamento dello stato dell'utente: " + e.getMessage(), e);
-        } finally {
-            if (connessione != null) {
-                try {
-                    connessione.closeConnection();
-                } catch (SQLException e) {
-                    throw new RuntimeException(e);
-                }
-            }
         }
     }
 
     public String aggiungiUtente(String nome, String cognome, String ruolo,
                                  String username, String password, String email,
-                                 String telefono, String dataNascitaStr, String luogoNascita) {
-
+                                 String telefono, String dataNascitaStr, String luogoNascita)
+    {
         Date dataNascita = java.sql.Date.valueOf(dataNascitaStr);
 
         String query = "INSERT INTO utente (nome, cognome, ruolo, username, password, email, telefono, dataDiNascita, luogoDiNascita) VALUES (?, ?, ?, ?, SHA1(?), ?, ?, ?, ?)";
@@ -181,21 +116,18 @@ public class GestioneUtentiDAO
             } else {
                 result = "2"; // Problemi nell'inserimento in Utente
             }
-        } catch (SQLException e) {
+        }
+        catch (SQLException e)
+        {
             result = "3"; // Eccezione durante l'inserimento
             throw new RuntimeException(e);
-        } finally {
-            try {
-                connessione.closeConnection();
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
         }
 
         return result;
     }
 
-    public String eliminaUtente(int id) {
+    public String eliminaUtente(int id)
+    {
         String result = null;
 
         String query = "SELECT 1 FROM Utente WHERE ID = ?";
@@ -226,18 +158,11 @@ public class GestioneUtentiDAO
             } else {
                 result = "Errore nella cancellazione dell'utente";  // Utente non trovato
             }
-        } catch (SQLException e) {
+        }
+        catch (SQLException e)
+        {
             result = "Errore nella cancellazione dell'utente";  // Gestione errori SQL
             throw new RuntimeException(e);
-        } finally {
-            if (connessione != null) {
-                try {
-                    connessione.closeConnection();
-                } catch (SQLException e) {
-                    result = "Errore nella cancellazione dell'utente";  // Errore durante la chiusura della connessione
-                    throw new RuntimeException(e);
-                }
-            }
         }
 
         return result;
@@ -271,22 +196,18 @@ public class GestioneUtentiDAO
 
                 return u;
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            if (connessione != null) {
-                try {
-                    connessione.closeConnection();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
         }
+        catch (SQLException e)
+        {
+            e.printStackTrace();
+        }
+
         return u;
     }
 
 
-    public String modificaUtente(int id, String nome, String cognome, String ruolo, String username, String password, String email, String telefono, String dataDiNascitaStr, String luogoDiNascita) {
+    public String modificaUtente(int id, String nome, String cognome, String ruolo, String username, String password, String email, String telefono, String dataDiNascitaStr, String luogoDiNascita)
+    {
         String result = "0";
         String query="";
 
@@ -335,27 +256,18 @@ public class GestioneUtentiDAO
                 result = "Errore nella modifica dell'utente"; // Nessun utente trovato con l'ID specificato
             }
 
-        } catch (SQLException e) {
+        }
+        catch (SQLException e)
+        {
             result = "Errore nella modifica dell'utente"; // Errore durante la modifica
             e.printStackTrace();
-        } finally {
-            // Chiude la connessione
-            if (connessione != null) {
-                try {
-                    connessione.closeConnection();
-                } catch (SQLException e) {
-                    result = "Errore nella modifica dell'utente"; // Errore durante la chiusura della connessione
-                    e.printStackTrace();
-                }
-            }
         }
 
         return result;
     }
 
-    public void setStato(int id, int statoInt) {
-        connessione = new Connessione();
-
+    public void setStato(int id, int statoInt)
+    {
         String query = "UPDATE Utente SET stato = ? WHERE ID = ?";
         String stato = "";
 
@@ -376,16 +288,10 @@ public class GestioneUtentiDAO
             // Esegui l'aggiornamento
             statement.executeUpdate();
 
-        } catch (SQLException e) {
+        }
+        catch (SQLException e)
+        {
             throw new RuntimeException(e);
-        } finally {
-            if (connessione != null) {
-                try {
-                    connessione.closeConnection();
-                } catch (SQLException e) {
-                    throw new RuntimeException(e);
-                }
-            }
         }
     }
 }

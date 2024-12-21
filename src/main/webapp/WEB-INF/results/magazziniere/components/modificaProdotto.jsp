@@ -102,7 +102,7 @@ autore: daniel battaglia
 
             <!-- Campo Note di Arrivo -->
             <label for="noteArrivo">Note Arrivo:</label>
-            <textarea id="noteArrivo" name="noteArrivo" rows="3" cols="50" readonly>${prodotto.noteArrivo}</textarea>
+            <textarea id="noteArrivo" name="noteArrivo" rows="3" cols="50">${prodotto.noteArrivo}</textarea>
             <br><br>
 
             <!-- Campo Partenza -->

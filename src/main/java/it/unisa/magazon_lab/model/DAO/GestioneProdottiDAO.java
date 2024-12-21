@@ -2,7 +2,10 @@
 Autore: Daniel Battaglia
  */
 
-package it.unisa.magazon_lab.model;
+package it.unisa.magazon_lab.model.DAO;
+
+import it.unisa.magazon_lab.model.Entity.Connessione;
+import it.unisa.magazon_lab.model.Entity.Prodotto;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -10,10 +13,22 @@ import java.util.List;
 
 public class GestioneProdottiDAO
 {
+    private static GestioneProdottiDAO instance;
     private Connessione connessione;
 
-    public GestioneProdottiDAO() {
-        connessione = new Connessione();
+    // Costruttore privato per impedire creazioni multiple
+    private GestioneProdottiDAO() {
+        connessione = Connessione.getInstance();
+    }
+
+    // Metodo per ottenere l'istanza Singleton
+    public static GestioneProdottiDAO getInstance()
+    {
+        if (instance == null)
+        {
+            instance = new GestioneProdottiDAO();
+        }
+        return instance;
     }
 
     public List<Prodotto> visualizzaProdotti()
@@ -58,20 +73,6 @@ public class GestioneProdottiDAO
         {
             throw new RuntimeException(e);
         }
-        finally
-        {
-            if (connessione != null)
-            {
-                try
-                {
-                    connessione.closeConnection();
-                }
-                catch (SQLException e)
-                {
-                    throw new RuntimeException(e);
-                }
-            }
-        }
 
         return prodotti;
     }
@@ -112,16 +113,10 @@ public class GestioneProdottiDAO
 
             resultSet.close();
             statement.close();
-        } catch (SQLException e) {
+        }
+        catch (SQLException e)
+        {
             throw new RuntimeException("Errore durante il recupero dei prodotti: " + e.getMessage(), e);
-        } finally {
-            if (connessione != null) {
-                try {
-                    connessione.closeConnection();
-                } catch (SQLException e) {
-                    throw new RuntimeException("Errore durante la chiusura della connessione: " + e.getMessage(), e);
-                }
-            }
         }
 
         return prodotti;
@@ -163,16 +158,10 @@ public class GestioneProdottiDAO
 
             resultSet.close();
             statement.close();
-        } catch (SQLException e) {
+        }
+        catch (SQLException e)
+        {
             throw new RuntimeException(e);
-        } finally {
-            if (connessione != null) {
-                try {
-                    connessione.closeConnection();
-                } catch (SQLException e) {
-                    throw new RuntimeException(e);
-                }
-            }
         }
 
         return prodotto;
@@ -269,16 +258,10 @@ public class GestioneProdottiDAO
 
             resultSet.close();
             statement.close();
-        } catch (SQLException e) {
+        }
+        catch (SQLException e)
+        {
             throw new RuntimeException(e);
-        } finally {
-            if (connessione != null) {
-                try {
-                    connessione.closeConnection();
-                } catch (SQLException e) {
-                    throw new RuntimeException(e);
-                }
-            }
         }
 
         return prodotti;
@@ -335,25 +318,11 @@ public class GestioneProdottiDAO
             {
                 result = "4";  // Product not found in any table (spedizione, arrivo, prodotto), return error
             }
-        } catch (SQLException e)
+        }
+        catch (SQLException e)
         {
             result = "4";  // Catch and handle any SQL errors
             throw new RuntimeException(e);
-        }
-        finally
-        {
-            if (connessione != null)
-            {
-                try
-                {
-                    connessione.closeConnection();
-                }
-                catch (SQLException e)
-                {
-                    result = "4";  // Catch errors during connection closure
-                    throw new RuntimeException(e);
-                }
-            }
         }
 
         return result;
@@ -442,17 +411,11 @@ public class GestioneProdottiDAO
                 result = "4"; // Problemi nell'inserimento nella tabella Prodotto
             }
 
-        } catch (SQLException e) {
+        }
+        catch (SQLException e)
+        {
             e.printStackTrace();
             throw new RuntimeException("Errore durante l'inserimento del prodotto.", e);
-        } finally {
-            if (connessione != null) {
-                try {
-                    connessione.closeConnection();
-                } catch (SQLException e) {
-                    throw new RuntimeException("Errore durante la chiusura della connessione.", e);
-                }
-            }
         }
 
         return result;
@@ -594,20 +557,12 @@ public class GestioneProdottiDAO
                 result = "2"; // Modifica avvenuta con successo
             }
 
-        } catch (SQLException e) {
+        }
+        catch (SQLException e)
+        {
             e.printStackTrace();
-        } finally {
-            // Chiudi la connessione
-            if (conn != null) {
-                try {
-                    conn.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
         }
 
         return result;
     }
-
 }

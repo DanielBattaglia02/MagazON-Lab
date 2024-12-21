@@ -4,11 +4,13 @@ Autore: Daniel Battaglia
 
 package it.unisa.magazon_lab.controller.login;
 
+import it.unisa.magazon_lab.model.DAO.AutenticazioneDAO;
+import it.unisa.magazon_lab.model.Facade.Facade;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
-import it.unisa.magazon_lab.model.GestioneUtentiDAO;
-import it.unisa.magazon_lab.model.Utente;
+import it.unisa.magazon_lab.model.DAO.GestioneUtentiDAO;
+import it.unisa.magazon_lab.model.Entity.Utente;
 
 import java.io.IOException;
 
@@ -16,6 +18,15 @@ import java.io.IOException;
 @WebServlet(name="login-servlet", value="/login-servlet")
 public class LoginServlet extends HttpServlet
 {
+    private Facade facade;
+
+    @Override
+    public void init() throws ServletException
+    {
+        super.init();
+        this.facade = new Facade();
+    }
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
     {
@@ -23,15 +34,14 @@ public class LoginServlet extends HttpServlet
         String username = request.getParameter("username");
         String ruolo = request.getParameter("ruolo");
 
-        GestioneUtentiDAO gestioneUtentiDAO = new GestioneUtentiDAO();
-        Utente utente;
 
-        utente = gestioneUtentiDAO.loginUtente(username, password, ruolo);
+        AutenticazioneDAO autenticazioneDAO = facade.getAutenticazioneDAO();
+        Utente utente = autenticazioneDAO.loginUtente(username, password, ruolo);
 
         if(utente!=null)
         {
             // Aggiorna lo stato dell'utente a "online"
-            GestioneUtentiDAO gestioneUtentiDAO2 = new GestioneUtentiDAO();
+            GestioneUtentiDAO gestioneUtentiDAO2 = facade.getGestioneUtentiDAO();
             gestioneUtentiDAO2.aggiornaStatoUtente(utente.getID(), "online");
 
             HttpSession session = request.getSession();

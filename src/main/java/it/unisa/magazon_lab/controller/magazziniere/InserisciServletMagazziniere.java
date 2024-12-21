@@ -4,19 +4,30 @@ Autore: Daniel Battaglia
 
 package it.unisa.magazon_lab.controller.magazziniere;
 
+import it.unisa.magazon_lab.model.DAO.GestioneCategorieDAO;
+import it.unisa.magazon_lab.model.DAO.GestioneLogisticaDAO;
+import it.unisa.magazon_lab.model.DAO.GestioneProdottiDAO;
+import it.unisa.magazon_lab.model.Facade.Facade;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import it.unisa.magazon_lab.model.*;
 
 import java.io.IOException;
 
 @WebServlet(name="inserisci-servlet-magazziniere", value="/inserisci-servlet-magazziniere")
 public class InserisciServletMagazziniere extends HttpServlet
 {
+    private Facade facade;
+
+    @Override
+    public void init() throws ServletException
+    {
+        super.init();
+        this.facade = new Facade();
+    }
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
     {
@@ -51,7 +62,7 @@ public class InserisciServletMagazziniere extends HttpServlet
             noteGenerali = (noteGenerali == null || noteGenerali.trim().isEmpty()) ? null : noteGenerali;
 
 
-            GestioneProdottiDAO gestioneProdottiDAO = new GestioneProdottiDAO();
+            GestioneProdottiDAO gestioneProdottiDAO = facade.getGestioneProdottiDAO();
             String result = gestioneProdottiDAO.aggiungiProdotto(
                     idCategoria, codice, stato, nome, descrizione,
                     dataArrivo, noteArrivo, partenza,
@@ -66,7 +77,7 @@ public class InserisciServletMagazziniere extends HttpServlet
             String descrizione = request.getParameter("descrizione");
             String note = request.getParameter("note");
 
-            GestioneCategorieDAO gestioneCategorieDAO = new GestioneCategorieDAO();
+            GestioneCategorieDAO gestioneCategorieDAO = facade.getGestioneCategorieDAO();
             String result = gestioneCategorieDAO.aggiungiCategoria(nome, descrizione, note);
             request.setAttribute("message", result);
             pageName = "aggiungiCategoria";
@@ -76,16 +87,16 @@ public class InserisciServletMagazziniere extends HttpServlet
             int IDprodotto= Integer.parseInt(request.getParameter("prodotto"));
             String note = request.getParameter("note");
 
-            GestioneLogisticaDAO gestioneLogisticaDAO = new GestioneLogisticaDAO();
+            GestioneLogisticaDAO gestioneLogisticaDAO = facade.getGestioneLogisticaDAO();
             gestioneLogisticaDAO.inserisciArrivo(IDprodotto, note);
             pageName = "arrivi";
         }
-        else if(pageName.equals("spedizioni"))
+        else if(pageName.equals("spedizione"))
         {
             int IDprodotto= Integer.parseInt(request.getParameter("prodotto"));
             String note = request.getParameter("note");
 
-            GestioneLogisticaDAO gestioneLogisticaDAO = new GestioneLogisticaDAO();
+            GestioneLogisticaDAO gestioneLogisticaDAO = facade.getGestioneLogisticaDAO();
             gestioneLogisticaDAO.inserisciSpedizione(IDprodotto, note);
             pageName = "spedizioni";
         }

@@ -4,19 +4,28 @@ Autore: Daniel Battaglia
 
 package it.unisa.magazon_lab.controller.admin;
 
+import it.unisa.magazon_lab.model.DAO.*;
+import it.unisa.magazon_lab.model.Facade.Facade;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import it.unisa.magazon_lab.model.*;
 
 import java.io.IOException;
 
 @WebServlet(name="modifica-servlet-admin", value="/modifica-servlet-admin")
 public class ModificaServletAdmin extends HttpServlet
 {
+    private Facade facade;
+
+    @Override
+    public void init() throws ServletException
+    {
+        super.init();
+        this.facade = new Facade();
+    }
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
     {
@@ -52,7 +61,7 @@ public class ModificaServletAdmin extends HttpServlet
             noteGenerali = (noteGenerali == null || noteGenerali.trim().isEmpty()) ? null : noteGenerali;
 
 
-            GestioneProdottiDAO gestioneProdottiDAO = new GestioneProdottiDAO();
+            GestioneProdottiDAO gestioneProdottiDAO = facade.getGestioneProdottiDAO();
             String result = gestioneProdottiDAO.modificaProdotto(id,
                     idCategoria, codice, stato, nome, descrizione,
                     dataArrivo, noteArrivo, partenza,
@@ -69,7 +78,7 @@ public class ModificaServletAdmin extends HttpServlet
             Integer userID = (Integer) request.getSession().getAttribute("ID");
             int notificaID = Integer.parseInt(request.getParameter("notificaID"));
 
-            GestioneNotificheDAO gestioneNotificheDAO = new GestioneNotificheDAO();
+            GestioneNotificheDAO gestioneNotificheDAO = facade.getGestioneNotificheDAO();
             String result = gestioneNotificheDAO.modificaStatoNotifica(notificaID, userID, stato);
             request.setAttribute("message", result);
             pageName = "notifiche";
@@ -81,7 +90,7 @@ public class ModificaServletAdmin extends HttpServlet
             String descrizione = request.getParameter("descrizione");
             String note = request.getParameter("note");
 
-            GestioneCategorieDAO gestioneCategorieDAO = new GestioneCategorieDAO();
+            GestioneCategorieDAO gestioneCategorieDAO = facade.getGestioneCategorieDAO();
             String result =  gestioneCategorieDAO.modificaCategoria(id,nome, descrizione, note);
 
             request.setAttribute("IDcategoria", id);
@@ -105,14 +114,14 @@ public class ModificaServletAdmin extends HttpServlet
             String luogoNascita = request.getParameter("luogoNascita");
 
 
-            GestioneUtentiDAO gestioneUtentiDAO = new GestioneUtentiDAO();
+            GestioneUtentiDAO gestioneUtentiDAO = facade.getGestioneUtentiDAO();
             String result= gestioneUtentiDAO.modificaUtente(id,nome,cognome,ruolo,username,password,email,telefono,dataNascita,luogoNascita);
             request.setAttribute("message", result);
         }else if(pageName.equals("liste")){
             int id = Integer.parseInt(request.getParameter("IDlista"));
             String note = request.getParameter("note");
 
-            GestioneListeDAO gestioneListeDAO = new GestioneListeDAO();
+            GestioneListeDAO gestioneListeDAO = facade.getGestioneListeDAO();
             boolean listaAggiornata = gestioneListeDAO.aggiornaLista(id, note);
 
             if (listaAggiornata) {
@@ -126,7 +135,7 @@ public class ModificaServletAdmin extends HttpServlet
             String note = request.getParameter("note");
             int ID = Integer.parseInt(request.getParameter("IDarrivo"));
 
-            GestioneLogisticaDAO gestioneLogisticaDAO = new GestioneLogisticaDAO();
+            GestioneLogisticaDAO gestioneLogisticaDAO = facade.getGestioneLogisticaDAO();
             gestioneLogisticaDAO.modificaNoteArrivo(ID, note);
             pageName = "arrivi";
         }
@@ -135,7 +144,7 @@ public class ModificaServletAdmin extends HttpServlet
             String note = request.getParameter("note");
             int ID = Integer.parseInt(request.getParameter("IDspedizione"));
 
-            GestioneLogisticaDAO gestioneLogisticaDAO = new GestioneLogisticaDAO();
+            GestioneLogisticaDAO gestioneLogisticaDAO = facade.getGestioneLogisticaDAO();
             gestioneLogisticaDAO.modificaNoteSpedizione(ID, note);
             pageName = "spedizioni";
         }

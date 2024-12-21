@@ -55,7 +55,7 @@ autore: daniel battaglia
 <!-- Sezione contenente il form di modifica -->
 <div class="sezione">
     <div class="contenitore-form">
-        <form action="modifica-servlet-magazziniere" method="POST">
+        <form action="modifica-servlet-admin" method="POST">
             <input type="hidden" name="pageName" value="prodotto">
             <input type="hidden" name="IDprodotto" value="${prodotto.ID}">
 
@@ -102,7 +102,7 @@ autore: daniel battaglia
 
             <!-- Campo Note di Arrivo -->
             <label for="noteArrivo">Note Arrivo:</label>
-            <textarea id="noteArrivo" name="noteArrivo" rows="3" cols="50" readonly>${prodotto.noteArrivo}</textarea>
+            <textarea id="noteArrivo" name="noteArrivo" rows="3" cols="50">${prodotto.noteArrivo}</textarea>
             <br><br>
 
             <!-- Campo Partenza -->

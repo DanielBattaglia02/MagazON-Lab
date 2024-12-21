@@ -2,7 +2,10 @@
 Autore: Francesco Vaiano
  */
 
-package it.unisa.magazon_lab.model;
+package it.unisa.magazon_lab.model.DAO;
+
+import it.unisa.magazon_lab.model.Entity.Categoria;
+import it.unisa.magazon_lab.model.Entity.Connessione;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -13,10 +16,22 @@ import java.util.List;
 
 public class GestioneCategorieDAO
 {
+    private static GestioneCategorieDAO instance;
     private Connessione connessione;
 
-    public GestioneCategorieDAO() {
-        connessione = new Connessione();
+    // Costruttore privato per impedire creazioni multiple
+    private GestioneCategorieDAO() {
+        connessione = Connessione.getInstance();
+    }
+
+    // Metodo per ottenere l'istanza Singleton
+    public static GestioneCategorieDAO getInstance()
+    {
+        if (instance == null)
+        {
+            instance = new GestioneCategorieDAO();
+        }
+        return instance;
     }
 
     public List<Categoria> visualizzaCategorie()
@@ -46,20 +61,6 @@ public class GestioneCategorieDAO
         catch (SQLException e)
         {
             throw new RuntimeException(e);
-        }
-        finally
-        {
-            if (connessione != null)
-            {
-                try
-                {
-                    connessione.closeConnection();
-                }
-                catch (SQLException e)
-                {
-                    throw new RuntimeException(e);
-                }
-            }
         }
 
         return categorie;
@@ -97,16 +98,10 @@ public class GestioneCategorieDAO
                 result = "4";   //problemi nell'inserimento
             }
 
-        } catch (SQLException e) {
+        }
+        catch (SQLException e)
+        {
             throw new RuntimeException(e);
-        } finally {
-            if (connessione != null) {
-                try {
-                    connessione.closeConnection();
-                } catch (SQLException e) {
-                    throw new RuntimeException(e);
-                }
-            }
         }
 
         return result;
@@ -136,22 +131,17 @@ public class GestioneCategorieDAO
                 result = "1"; // Modifica avvenuta con successo
             }
 
-        } catch (SQLException e) {
+        }
+        catch (SQLException e)
+        {
             e.printStackTrace();
-        } finally {
-            if (connessione != null) {
-                try {
-                    connessione.closeConnection();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
         }
 
         return result;
     }
 
-    public Categoria CercaCategoria(int ID) {
+    public Categoria CercaCategoria(int ID)
+    {
         Categoria categoria = null;
 
         String query = "SELECT * FROM categoria WHERE ID = ?";
@@ -172,22 +162,17 @@ public class GestioneCategorieDAO
             }
             resultSet.close();
             statement.close();
-        } catch (SQLException e) {
+        }
+        catch (SQLException e)
+        {
             throw new RuntimeException(e);
-        } finally {
-            if (connessione != null) {
-                try {
-                    connessione.closeConnection();
-                } catch (SQLException e) {
-                    throw new RuntimeException(e);
-                }
-            }
         }
 
         return categoria;
     }
 
-    public String eliminaCategoria(int ID) {
+    public String eliminaCategoria(int ID)
+    {
         String result = null;
 
         String query = "SELECT 1 FROM categoria WHERE ID = ?";
@@ -221,25 +206,11 @@ public class GestioneCategorieDAO
             {
                 result = "4";  // Product not found in any table (spedizione, arrivo, prodotto), return error
             }
-        } catch (SQLException e)
+        }
+        catch (SQLException e)
         {
             result = "4";  // Catch and handle any SQL errors
             throw new RuntimeException(e);
-        }
-        finally
-        {
-            if (connessione != null)
-            {
-                try
-                {
-                    connessione.closeConnection();
-                }
-                catch (SQLException e)
-                {
-                    result = "4";  // Catch errors during connection closure
-                    throw new RuntimeException(e);
-                }
-            }
         }
 
         return result;

@@ -2,7 +2,7 @@
 Autore: Francesco Vaiano
  */
 
-package it.unisa.magazon_lab.model;
+package it.unisa.magazon_lab.model.Entity;
 
 public class Categoria {
     private int ID;

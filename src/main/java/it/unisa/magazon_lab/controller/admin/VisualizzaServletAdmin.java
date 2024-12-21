@@ -4,13 +4,15 @@ Autore: Daniel Battaglia
 
 package it.unisa.magazon_lab.controller.admin;
 
+import it.unisa.magazon_lab.model.DAO.*;
+import it.unisa.magazon_lab.model.Entity.*;
+import it.unisa.magazon_lab.model.Facade.Facade;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import it.unisa.magazon_lab.model.*;
 
 import java.io.IOException;
 import java.util.List;
@@ -18,6 +20,14 @@ import java.util.List;
 @WebServlet(name="visualizza-servlet-admin", value="/visualizza-servlet-admin")
 public class VisualizzaServletAdmin extends HttpServlet
 {
+    private Facade facade;
+
+    @Override
+    public void init() throws ServletException
+    {
+        super.init();
+        this.facade = new Facade();
+    }
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
     {
@@ -25,11 +35,11 @@ public class VisualizzaServletAdmin extends HttpServlet
 
         if(pageName.equals("dashboard"))
         {
-            GestioneProdottiDAO gestioneProdottiDAO = new GestioneProdottiDAO();
+            GestioneProdottiDAO gestioneProdottiDAO = facade.getGestioneProdottiDAO();
             List<Prodotto> listaProdotti = gestioneProdottiDAO.visualizzaProdotti();
             request.setAttribute("listaProdotti", listaProdotti);
 
-            GestioneCategorieDAO gestioneCategorieDAO = new GestioneCategorieDAO();
+            GestioneCategorieDAO gestioneCategorieDAO = facade.getGestioneCategorieDAO();
             List<Categoria> listaCategorie = gestioneCategorieDAO.visualizzaCategorie();
             request.setAttribute("listaCategorie", listaCategorie);
         }
@@ -59,11 +69,11 @@ public class VisualizzaServletAdmin extends HttpServlet
                     ? request.getParameter("data-spedizione")
                     : null;
 
-            GestioneProdottiDAO gestioneProdottiDAO = new GestioneProdottiDAO();
+            GestioneProdottiDAO gestioneProdottiDAO = facade.getGestioneProdottiDAO();
             List<Prodotto> listaProdotti = gestioneProdottiDAO.cercaProdottiFiltrati(codice, categoria, nome, stato, dataArrivo, dataSpedizione);
             request.setAttribute("listaProdotti", listaProdotti);
 
-            GestioneCategorieDAO gestioneCategorieDAO = new GestioneCategorieDAO();
+            GestioneCategorieDAO gestioneCategorieDAO = facade.getGestioneCategorieDAO();
             List<Categoria> listaCategorie = gestioneCategorieDAO.visualizzaCategorie();
             request.setAttribute("listaCategorie", listaCategorie);
 
@@ -71,7 +81,7 @@ public class VisualizzaServletAdmin extends HttpServlet
         }
         else if (pageName.equals("aggiungiProdotto"))
         {
-            GestioneCategorieDAO gestioneCategorieDAO = new GestioneCategorieDAO();
+            GestioneCategorieDAO gestioneCategorieDAO = facade.getGestioneCategorieDAO();
             List<Categoria> listaCategorie = gestioneCategorieDAO.visualizzaCategorie();
             request.setAttribute("listaCategorie", listaCategorie);
         }
@@ -79,7 +89,7 @@ public class VisualizzaServletAdmin extends HttpServlet
         {
             int ID = Integer.parseInt(request.getParameter("IDprodotto"));
 
-            GestioneProdottiDAO gestioneProdottiDAO = new GestioneProdottiDAO();
+            GestioneProdottiDAO gestioneProdottiDAO = facade.getGestioneProdottiDAO();
             Prodotto prodotto = gestioneProdottiDAO.cercaProdotto(ID);
             request.setAttribute("prodotto", prodotto);
         }
@@ -87,17 +97,17 @@ public class VisualizzaServletAdmin extends HttpServlet
         {
             int ID = Integer.parseInt(request.getParameter("IDprodotto"));
 
-            GestioneCategorieDAO gestioneCategorieDAO = new GestioneCategorieDAO();
+            GestioneCategorieDAO gestioneCategorieDAO = facade.getGestioneCategorieDAO();
             List<Categoria> listaCategorie = gestioneCategorieDAO.visualizzaCategorie();
             request.setAttribute("listaCategorie", listaCategorie);
 
-            GestioneProdottiDAO gestioneProdottiDAO = new GestioneProdottiDAO();
+            GestioneProdottiDAO gestioneProdottiDAO = facade.getGestioneProdottiDAO();
             Prodotto prodotto = gestioneProdottiDAO.cercaProdotto(ID);
             request.setAttribute("prodotto", prodotto);
         }
         else if (pageName.equals("categorie"))
         {
-            GestioneCategorieDAO gestioneCategorieDAO = new GestioneCategorieDAO();
+            GestioneCategorieDAO gestioneCategorieDAO = facade.getGestioneCategorieDAO();
             List<Categoria> listaCategorie = gestioneCategorieDAO.visualizzaCategorie();
             request.setAttribute("listaCategorie", listaCategorie);
         }
@@ -105,49 +115,49 @@ public class VisualizzaServletAdmin extends HttpServlet
         {
             int ID = Integer.parseInt(request.getParameter("IDcategoria"));
 
-            GestioneCategorieDAO gestioneCategorieDAO = new GestioneCategorieDAO();
+            GestioneCategorieDAO gestioneCategorieDAO = facade.getGestioneCategorieDAO();
             Categoria categoria = gestioneCategorieDAO.CercaCategoria(ID);
             request.setAttribute("categoria", categoria);
         }
         else if(pageName.equals("utenti")){
-            GestioneUtentiDAO gestioneUtentiDAO = new GestioneUtentiDAO();
+            GestioneUtentiDAO gestioneUtentiDAO = facade.getGestioneUtentiDAO();
             List<Utente> listaUtenti = gestioneUtentiDAO.visualizzaUtenti();
             request.setAttribute("listaUtenti", listaUtenti);
         }
         else if (pageName.equals("aggiungiUtente"))
         {
-            GestioneUtentiDAO gestioneUtentiDAO = new GestioneUtentiDAO();
+            GestioneUtentiDAO gestioneUtentiDAO = facade.getGestioneUtentiDAO();
             List<Utente> listaUtenti = gestioneUtentiDAO.visualizzaUtenti();
             request.setAttribute("listaUtenti", listaUtenti);
         }
         else if (pageName.equals("modificaUtente")){
             int ID = Integer.parseInt(request.getParameter("IDutente"));
 
-            GestioneUtentiDAO gestioneUtentiDAO = new GestioneUtentiDAO();
+            GestioneUtentiDAO gestioneUtentiDAO = facade.getGestioneUtentiDAO();
             Utente u = gestioneUtentiDAO.cercaUtente(ID);
 
             request.setAttribute("utente", u);
         }else if (pageName.equals("liste")){
-            GestioneListeDAO gestioneListeDAO = new GestioneListeDAO();
+            GestioneListeDAO gestioneListeDAO = facade.getGestioneListeDAO();
             List<Lista> listaListe = gestioneListeDAO.visualizzaListe();
             request.setAttribute("listaListe", listaListe);
         }else if (pageName.equals("modificaLista")) {
             int ID = Integer.parseInt(request.getParameter("IDlista"));
 
-            GestioneListeDAO gestioneListeDAO = new GestioneListeDAO();
+            GestioneListeDAO gestioneListeDAO = facade.getGestioneListeDAO();
             Lista l = gestioneListeDAO.cercaLista(ID);
 
             request.setAttribute("lista", l);
         }
         else if (pageName.equals("arrivi"))
         {
-            GestioneLogisticaDAO gestioneLogisticaDAO = new GestioneLogisticaDAO();
+            GestioneLogisticaDAO gestioneLogisticaDAO = facade.getGestioneLogisticaDAO();
             List<Arrivo> listaArrivi = gestioneLogisticaDAO.visualizzaArrivi();
             request.setAttribute("listaArrivi", listaArrivi);
         }
         else if (pageName.equals("spedizioni"))
         {
-            GestioneLogisticaDAO gestioneLogisticaDAO = new GestioneLogisticaDAO();
+            GestioneLogisticaDAO gestioneLogisticaDAO = facade.getGestioneLogisticaDAO();
             List<Spedizione> listaSpedizioni = gestioneLogisticaDAO.visualizzaSpedizioni();
             request.setAttribute("listaSpedizioni", listaSpedizioni);
         }
@@ -155,7 +165,7 @@ public class VisualizzaServletAdmin extends HttpServlet
         {
             int ID = Integer.parseInt(request.getParameter("IDarrivo"));
 
-            GestioneLogisticaDAO gestioneLogisticaDAO = new GestioneLogisticaDAO();
+            GestioneLogisticaDAO gestioneLogisticaDAO = facade.getGestioneLogisticaDAO();
             Arrivo arrivo = gestioneLogisticaDAO.visualizzaArrivo(ID);
             request.setAttribute("arrivo", arrivo);
         }
@@ -163,19 +173,19 @@ public class VisualizzaServletAdmin extends HttpServlet
         {
             int ID = Integer.parseInt(request.getParameter("IDspedizione"));
 
-            GestioneLogisticaDAO gestioneLogisticaDAO = new GestioneLogisticaDAO();
+            GestioneLogisticaDAO gestioneLogisticaDAO = facade.getGestioneLogisticaDAO();
             Spedizione spedizione = gestioneLogisticaDAO.visualizzaSpedizione(ID);
             request.setAttribute("spedizione", spedizione);
         }
         else if (pageName.equals("aggiungiArrivo"))
         {
-            GestioneProdottiDAO gestioneProdottiDAO = new GestioneProdottiDAO();
+            GestioneProdottiDAO gestioneProdottiDAO = facade.getGestioneProdottiDAO();
             List<Prodotto> listaProdotti = gestioneProdottiDAO.visualizzaProdottiPerSpedizioneArrivo();
             request.setAttribute("listaProdotti", listaProdotti);
         }
         else if (pageName.equals("aggiungiSpedizione"))
         {
-            GestioneProdottiDAO gestioneProdottiDAO = new GestioneProdottiDAO();
+            GestioneProdottiDAO gestioneProdottiDAO = facade.getGestioneProdottiDAO();
             List<Prodotto> listaProdotti = gestioneProdottiDAO.visualizzaProdottiPerSpedizioneArrivo();
             request.setAttribute("listaProdotti", listaProdotti);
         }

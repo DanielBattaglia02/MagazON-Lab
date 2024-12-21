@@ -2,19 +2,19 @@
 Autore: Francesco Vaiano
  */
 
-package it.unisa.magazon_lab.model;
+package it.unisa.magazon_lab.model.Entity;
 
-public class Arrivo {
+public class Spedizione {
     private int ID;
     private int IDprodotto;
     private String codice;
     private String note;
 
     // Costruttore vuoto
-    public Arrivo() {
+    public Spedizione() {
     }
 
-    public Arrivo(int ID, int IDprodotto, String codice, String note) {
+    public Spedizione(int ID, int IDprodotto, String codice, String note) {
         this.ID = ID;
         this.IDprodotto = IDprodotto;
         this.codice = codice;
@@ -53,3 +53,4 @@ public class Arrivo {
         this.note = note;
     }
 }
+

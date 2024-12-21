@@ -4,13 +4,14 @@ Autore: Daniel Battaglia
 
 package it.unisa.magazon_lab.controller.admin;
 
+import it.unisa.magazon_lab.model.DAO.*;
+import it.unisa.magazon_lab.model.Facade.Facade;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import it.unisa.magazon_lab.model.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -18,6 +19,15 @@ import java.io.IOException;
 @WebServlet(name="elimina-servlet-admin", value="/elimina-servlet-admin")
 public class EliminaServletAdmin extends HttpServlet
 {
+    private Facade facade;
+
+    @Override
+    public void init() throws ServletException
+    {
+        super.init();
+        this.facade = new Facade();
+    }
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
     {
@@ -27,7 +37,7 @@ public class EliminaServletAdmin extends HttpServlet
         {
             int id = Integer.parseInt(request.getParameter("IDprodotto"));
 
-            GestioneProdottiDAO gestioneProdottiDAO = new GestioneProdottiDAO();
+            GestioneProdottiDAO gestioneProdottiDAO = facade.getGestioneProdottiDAO();
             String result = gestioneProdottiDAO.eliminaProdotto(id);
             request.setAttribute("message", result);
             pageName = "eliminaProdotto";
@@ -36,7 +46,7 @@ public class EliminaServletAdmin extends HttpServlet
         {
             int id = Integer.parseInt(request.getParameter("IDcategoria"));
 
-            GestioneCategorieDAO gestioneCategorieDAO = new GestioneCategorieDAO();
+            GestioneCategorieDAO gestioneCategorieDAO = facade.getGestioneCategorieDAO();
             String result = gestioneCategorieDAO.eliminaCategoria(id);
             request.setAttribute("message", result);
             pageName = "categorie";
@@ -44,19 +54,19 @@ public class EliminaServletAdmin extends HttpServlet
         else if(pageName.equals("utenti")){
             int id = Integer.parseInt(request.getParameter("IDutente"));
 
-            GestioneUtentiDAO gestioneUtentiDAO = new GestioneUtentiDAO();
+            GestioneUtentiDAO gestioneUtentiDAO = facade.getGestioneUtentiDAO();
             String result = gestioneUtentiDAO.eliminaUtente(id);
             request.setAttribute("message", result);
-        }else if(pageName.equals("liste")){
+        }
+        else if(pageName.equals("liste"))
+        {
             int idLista = Integer.parseInt(request.getParameter("IDlista"));
-            // Crea un'istanza del DAO per interagire con il database
-            GestioneListeDAO gestioneListeDAO = new GestioneListeDAO();
 
-            // Ottieni il nome del file da eliminare dal database usando l'ID
+            GestioneListeDAO gestioneListeDAO = facade.getGestioneListeDAO();
             String nomeFile = gestioneListeDAO.getListaFileName(idLista);
 
-            // Se il nome del file non è null o vuoto
-            if (nomeFile != null && !nomeFile.isEmpty()) {
+            if (nomeFile != null && !nomeFile.isEmpty())
+            {
                 // Definisci il percorso completo del file
                 String uploadPath = getServletContext().getRealPath("/") + "liste" + File.separator + nomeFile;
                 File file = new File(uploadPath);
@@ -84,7 +94,7 @@ public class EliminaServletAdmin extends HttpServlet
             int IDarrivo = Integer.parseInt(request.getParameter("IDarrivo"));
             int IDprodotto = Integer.parseInt(request.getParameter("IDprodotto"));
 
-            GestioneLogisticaDAO gestioneLogisticaDAO = new GestioneLogisticaDAO();
+            GestioneLogisticaDAO gestioneLogisticaDAO = facade.getGestioneLogisticaDAO();
             gestioneLogisticaDAO.eliminaArrivo(IDarrivo, IDprodotto);
             pageName = "arrivi";
         }
@@ -93,7 +103,7 @@ public class EliminaServletAdmin extends HttpServlet
             int IDspedizione = Integer.parseInt(request.getParameter("IDspedizione"));
             int IDprodotto = Integer.parseInt(request.getParameter("IDprodotto"));
 
-            GestioneLogisticaDAO gestioneLogisticaDAO = new GestioneLogisticaDAO();
+            GestioneLogisticaDAO gestioneLogisticaDAO = facade.getGestioneLogisticaDAO();
             gestioneLogisticaDAO.eliminaSpedizione(IDspedizione, IDprodotto);
             pageName = "spedizioni";
         }
