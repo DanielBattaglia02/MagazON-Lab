@@ -10,7 +10,7 @@ import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
-import it.unisa.magazon_lab.model.Entity.utils;
+import it.unisa.magazon_lab.model.Utils.*;
 import java.io.File;
 import java.io.IOException;
 import jakarta.servlet.annotation.MultipartConfig;
@@ -94,7 +94,7 @@ public class InserisciServletAdmin extends HttpServlet
             String ruolo= request.getParameter("ruolo");
 
             String username = request.getParameter("username");
-            String password= utils.generatePassword(10);
+            String password= Utils.generatePassword(10);
             String email = request.getParameter("email");
             String telefono = request.getParameter("telefono");
 
