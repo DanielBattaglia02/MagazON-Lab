@@ -1,15 +1,15 @@
 -- Inserimento di 3 account admin
 INSERT INTO Utente (nome, cognome, ruolo, username, password, stato, email, telefono, dataDiNascita, luogoDiNascita)
 VALUES 
-('Daniel', 'Battaglia', 'admin', 'daniel.battaglia', SHA1('d'), 'offline', 'daniel.battaglia@example.com', '1234567890', '1990-01-01', 'Napoli'),
-('Ruben', 'Gigante', 'admin', 'ruben.gigante', SHA1('r'), 'offline', 'ruben.gigante@example.com', '0987654321', '1988-05-15', 'Caserta'),
-('Francesco', 'Vaiano', 'admin', 'francesco.vaiano', SHA1('f'), 'offline', 'francesco.vaiano@example.com', '1122334455', '1992-09-21', 'Bari');
+('Daniel', 'Battaglia', 'admin', 'daniel.battaglia', SHA1('ddd'), 'offline', 'daniel.battaglia@example.com', '1234567890', '1990-01-01', 'Napoli'),
+('Ruben', 'Gigante', 'admin', 'ruben.gigante', SHA1('rrr'), 'offline', 'ruben.gigante@example.com', '0987654321', '1988-05-15', 'Caserta'),
+('Francesco', 'Vaiano', 'admin', 'francesco.vaiano', SHA1('fff'), 'offline', 'francesco.vaiano@example.com', '1122334455', '1992-09-21', 'Bari');
 
 -- Inserimento di 2 magazzinieri
 INSERT INTO Utente (nome, cognome, ruolo, username, password, stato, email, telefono, dataDiNascita, luogoDiNascita)
 VALUES 
-('Antonio', 'Prete', 'magazziniere', 'antonio.prete', SHA1('d'), 'offline', 'antonio.prete@example.com', '3344556677', '1995-03-10', 'Roma'),
-('Giuseppe', 'Rossi', 'magazziniere', 'giuseppe.rossi', SHA1('d'), 'offline', 'giuseppe.rossi@example.com', '4455667788', '1987-11-30', 'Milano');
+('Antonio', 'Prete', 'magazziniere', 'antonio.prete', SHA1('ddd'), 'offline', 'antonio.prete@example.com', '3344556677', '1995-03-10', 'Roma'),
+('Giuseppe', 'Rossi', 'magazziniere', 'giuseppe.rossi', SHA1('ddd'), 'offline', 'giuseppe.rossi@example.com', '4455667788', '1987-11-30', 'Milano');
 
 -- Inserimento di 3 categorie
 INSERT INTO Categoria (nome, descrizione, note)
