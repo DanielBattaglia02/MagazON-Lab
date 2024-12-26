@@ -171,48 +171,56 @@ public class GestioneCategorieDAO
         return categoria;
     }
 
-    public String eliminaCategoria(int ID)
-    {
+    public String eliminaCategoria(int ID) {
         String result = null;
 
-        String query = "SELECT 1 FROM categoria WHERE ID = ?";
+        // Verifica che non ci siano prodotti con l'ID della categoria
+        String checkProdottiQuery = "SELECT COUNT(*) FROM prodotto WHERE IDcategoria = ?";
 
-        try{
-            PreparedStatement statement = connessione.getConnection().prepareStatement(query);
+        try {
+            // Verifica se esistono prodotti con quella categoria
+            PreparedStatement checkStatement = connessione.getConnection().prepareStatement(checkProdottiQuery);
+            checkStatement.setInt(1, ID);
 
-            statement.setInt(1,ID);
+            ResultSet checkResult = checkStatement.executeQuery();
 
-            ResultSet resultSet =statement.executeQuery();
+            if (checkResult.next() && checkResult.getInt(1) > 0) {
+                // Se ci sono prodotti associati, non si può eliminare la categoria
+                result = "3"; // Categoria non eliminabile, ci sono prodotti associati
+            } else {
+                // La categoria può essere eliminata
+                String query = "SELECT * FROM categoria WHERE ID = ?";
+                PreparedStatement statement = connessione.getConnection().prepareStatement(query);
+                statement.setInt(1, ID);
+                ResultSet resultSet = statement.executeQuery();
 
-            if(resultSet.next()){
-                try {
-                    String deleteQuery = "DELETE FROM categoria WHERE ID = ?";
-                    PreparedStatement deleteStatement = connessione.getConnection().prepareStatement(deleteQuery);
-                    deleteStatement.setInt(1, ID);
+                if (resultSet.next()) {
+                    try {
+                        String deleteQuery = "DELETE FROM categoria WHERE ID = ?";
+                        PreparedStatement deleteStatement = connessione.getConnection().prepareStatement(deleteQuery);
+                        deleteStatement.setInt(1, ID);
 
-                    int rowsAffected = deleteStatement.executeUpdate();
+                        int rowsAffected = deleteStatement.executeUpdate();
 
-                    if (rowsAffected > 0) {
-                        result = "1";
-                    } else {
-                        result = "2";
+                        if (rowsAffected > 0) {
+                            result = "1"; // Categoria eliminata con successo
+                        } else {
+                            result = "2"; // Errore durante l'eliminazione
+                        }
+                    } catch (SQLException e) {
+                        result = "2";  // Errore di SQL durante l'eliminazione
+                        throw new RuntimeException(e);
                     }
+                } else {
+                    result = "4";  // Categoria non trovata
                 }
-                catch (SQLException e) {
-                    result = "2";
-                    throw new RuntimeException(e);
-                }
-            }else
-            {
-                result = "4";  // Product not found in any table (spedizione, arrivo, prodotto), return error
             }
-        }
-        catch (SQLException e)
-        {
-            result = "4";  // Catch and handle any SQL errors
+        } catch (SQLException e) {
+            result = "4";  // Errore di SQL durante la ricerca dei prodotti
             throw new RuntimeException(e);
         }
 
         return result;
     }
+
 }

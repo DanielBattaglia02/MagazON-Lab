@@ -1,5 +1,6 @@
 package it.unisa.magazon_lab.model.Entity;
 
+import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -91,6 +92,7 @@ public class Prodotto {
         this.noteSpedizione = noteSpedizione;
         this.destinazione = destinazione;
         this.noteGenerali = noteGenerali;
+        validaDate();
     }
 
     /**
@@ -235,6 +237,7 @@ public class Prodotto {
      */
     public void setDataArrivo(Date dataArrivo) {
         this.dataArrivo = dataArrivo;
+        validaDate();
     }
 
     /**
@@ -287,8 +290,10 @@ public class Prodotto {
      *
      * @param dataSpedizione La data di spedizione da impostare.
      */
-    public void setDataSpedizione(Date dataSpedizione) {
+    public void setDataSpedizione(Date dataSpedizione)
+    {
         this.dataSpedizione = dataSpedizione;
+        validaDate();
     }
 
     /**
@@ -343,5 +348,39 @@ public class Prodotto {
      */
     public void setNoteGenerali(String noteGenerali) {
         this.noteGenerali = noteGenerali;
+    }
+
+    /**
+     * Valida che le date rispettino i requisiti specificati.
+     *
+     * @throws IllegalStateException se le date non rispettano le regole definite.
+     */
+    public void validaDate() {
+        int annoMinimo = 2025;
+
+        // Controllo su dataArrivo
+        if (dataArrivo != null) {
+            Calendar calArrivo = Calendar.getInstance();
+            calArrivo.setTime(dataArrivo);
+            int annoArrivo = calArrivo.get(Calendar.YEAR);
+            if (annoArrivo < annoMinimo) {
+                throw new IllegalStateException("La data di arrivo deve essere almeno nel 2025.");
+            }
+        }
+
+        // Controllo su dataSpedizione
+        if (dataSpedizione != null) {
+            Calendar calSpedizione = Calendar.getInstance();
+            calSpedizione.setTime(dataSpedizione);
+            int annoSpedizione = calSpedizione.get(Calendar.YEAR);
+            if (annoSpedizione < annoMinimo) {
+                throw new IllegalStateException("La data di spedizione deve essere almeno nel 2025.");
+            }
+
+            // Controllo che dataSpedizione sia >= dataArrivo
+            if (dataArrivo != null && dataSpedizione.before(dataArrivo)) {
+                throw new IllegalStateException("La data di spedizione deve essere uguale o successiva alla data di arrivo.");
+            }
+        }
     }
 }
