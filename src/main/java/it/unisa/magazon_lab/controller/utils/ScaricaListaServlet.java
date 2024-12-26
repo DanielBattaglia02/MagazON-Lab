@@ -2,7 +2,7 @@
 Autore: Ruben Gigante
  */
 
-package it.unisa.magazon_lab.utils.lista;
+package it.unisa.magazon_lab.controller.utils;
 
 import it.unisa.magazon_lab.model.DAO.GestioneListeDAO;
 import it.unisa.magazon_lab.model.Facade.Facade;

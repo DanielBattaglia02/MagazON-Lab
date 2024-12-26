@@ -2,7 +2,7 @@
 Autore: Ruben Gigante
  */
 
-package it.unisa.magazon_lab.utils;
+package it.unisa.magazon_lab.model.Entity;
 
 import java.security.SecureRandom;
 

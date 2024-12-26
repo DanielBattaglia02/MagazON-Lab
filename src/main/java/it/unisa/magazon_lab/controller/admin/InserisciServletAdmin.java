@@ -10,7 +10,7 @@ import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
-import it.unisa.magazon_lab.utils.utils;
+import it.unisa.magazon_lab.model.Entity.utils;
 import java.io.File;
 import java.io.IOException;
 import jakarta.servlet.annotation.MultipartConfig;
