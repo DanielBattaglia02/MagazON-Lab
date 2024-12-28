@@ -18,13 +18,13 @@
   </properties>
 
   <dependencies>
-<dependency>
+    <dependency>
       <groupId>jakarta.servlet</groupId>
       <artifactId>jakarta.servlet-api</artifactId>
       <version>6.0.0</version>
       <scope>provided</scope>
     </dependency>
-<dependency>
+    <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-api</artifactId>
       <version>${junit.version}</version>
@@ -69,8 +69,13 @@
           <artifactId>jackson-databind</artifactId>
           <version>2.15.2</version>
       </dependency>
-
-
+      <!-- Junit test -->
+      <dependency>
+          <groupId>org.junit.jupiter</groupId>
+          <artifactId>junit-jupiter</artifactId>
+          <version>5.10.0</version> <!-- Sostituisci con l'ultima versione disponibile -->
+          <scope>test</scope>
+      </dependency>
   </dependencies>
 
   <build>

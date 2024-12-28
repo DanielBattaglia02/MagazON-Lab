@@ -2,6 +2,7 @@ package it.unisa.magazon_lab.model.DAO;
 
 import it.unisa.magazon_lab.model.Entity.Connessione;
 import it.unisa.magazon_lab.model.Entity.Utente;
+import it.unisa.magazon_lab.model.Utils.Patterns;
 
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -13,9 +14,9 @@ import java.sql.SQLException;
  * le operazioni di autenticazione degli utenti nel sistema.
  * Fornisce metodi per il login basato su credenziali.
  *
- *  @author Battaglia Daniel
- *  @see Connessione
- *  @see Utente
+ * @author Battaglia Daniel
+ * @see Connessione
+ * @see Utente
  */
 public class AutenticazioneDAO {
 
@@ -56,13 +57,22 @@ public class AutenticazioneDAO {
      *         altrimenti {@code null}.
      * @throws RuntimeException In caso di errori SQL.
      */
-    public Utente loginUtente(String user, String password, String ruoloo) {
+    public Utente loginUtente(String user, String password, String ruoloo)
+    {
+        // Verifica formato username e password
+        if (!isValidCredentials(user, password)) {
+            return null; // Ritorna null se i formati sono invalidi
+        }
+
         Utente utente = null;
         String query;
 
-        if (ruoloo.equals("magazziniere")) {
+        if (ruoloo.equals("magazziniere"))
+        {
             query = "SELECT * FROM utente where username = ? AND password=SHA1(?) AND ruolo='magazziniere'";
-        } else {
+        }
+        else
+        {
             query = "SELECT * FROM utente where username = ? AND password=SHA1(?) AND ruolo='admin'";
         }
 
@@ -89,12 +99,25 @@ public class AutenticazioneDAO {
 
             resultSet.close();
             statement.close();
-        }
-        catch (SQLException e)
-        {
+        } catch (SQLException e) {
             throw new RuntimeException(e);
         }
 
         return utente;
+    }
+
+    // Verifica se sia username che password rispettano il pattern
+    private boolean isValidCredentials(String username, String password) {
+        return isValidUsername(username) && isValidPassword(password);
+    }
+
+    // Verifica se il formato dell'username è valido (usa il pattern LOGIN)
+    private boolean isValidUsername(String username) {
+        return username != null && Patterns.LOGIN.matcher(username).matches();
+    }
+
+    // Verifica se il formato della password è valido (usa il pattern LOGIN)
+    private boolean isValidPassword(String password) {
+        return password != null && Patterns.LOGIN.matcher(password).matches();
     }
 }

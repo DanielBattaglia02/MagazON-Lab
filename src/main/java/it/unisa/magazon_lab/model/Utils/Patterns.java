@@ -5,6 +5,7 @@ import java.util.regex.Pattern;
 
 /**
  * La classe <code>Patterns</code> ha al suo interno tutte i pattern utili nel progetto per i controlli
+ * @author Battaglia Daniel
  */
 
 public class Patterns {
