@@ -2,7 +2,7 @@ package it.unisa.magazon_lab.model.DAO;
 
 import it.unisa.magazon_lab.model.Entity.Connessione;
 import it.unisa.magazon_lab.model.Entity.Utente;
-import it.unisa.magazon_lab.model.Utils.Patterns;
+import it.unisa.magazon_lab.model.utils.Patterns;
 
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -106,18 +106,37 @@ public class AutenticazioneDAO {
         return utente;
     }
 
-    // Verifica se sia username che password rispettano il pattern
+    /**
+     * Verifica se sia l'username che la password rispettano i rispettivi pattern di validazione.
+     *
+     * @param username l'username da verificare.
+     * @param password la password da verificare.
+     * @return <code>true</code> se sia l'username che la password sono validi; <code>false</code> altrimenti.
+     */
     private boolean isValidCredentials(String username, String password) {
         return isValidUsername(username) && isValidPassword(password);
     }
 
-    // Verifica se il formato dell'username è valido (usa il pattern LOGIN)
+    /**
+     * Verifica se il formato dell'username è valido.
+     * Il controllo viene eseguito utilizzando il pattern definito in {@link Patterns#LOGIN}.
+     *
+     * @param username l'username da verificare.
+     * @return <code>true</code> se l'username è valido; <code>false</code> altrimenti.
+     */
     private boolean isValidUsername(String username) {
         return username != null && Patterns.LOGIN.matcher(username).matches();
     }
 
-    // Verifica se il formato della password è valido (usa il pattern LOGIN)
+    /**
+     * Verifica se il formato della password è valido.
+     * Il controllo viene eseguito utilizzando il pattern definito in {@link Patterns#LOGIN}.
+     *
+     * @param password la password da verificare.
+     * @return <code>true</code> se la password è valida; <code>false</code> altrimenti.
+     */
     private boolean isValidPassword(String password) {
         return password != null && Patterns.LOGIN.matcher(password).matches();
     }
+
 }

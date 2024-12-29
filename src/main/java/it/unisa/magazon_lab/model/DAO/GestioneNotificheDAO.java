@@ -1,49 +1,59 @@
-/*
-Autore: Daniel Battaglia
- */
-
 package it.unisa.magazon_lab.model.DAO;
-
 import it.unisa.magazon_lab.model.Entity.Connessione;
 import it.unisa.magazon_lab.model.Entity.Notifica;
+import it.unisa.magazon_lab.model.utils.Patterns;
 
 import java.sql.*;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GestioneNotificheDAO
-{
+/**
+ * Classe DAO per la gestione delle notifiche nel sistema.
+ * Implementa il pattern Singleton per garantire una singola istanza.
+ *
+ * @author Battaglia Daniel
+ */
+public class GestioneNotificheDAO {
     private static GestioneNotificheDAO instance;
     private Connessione connessione;
 
-    // Costruttore privato per impedire creazioni multiple
+    /**
+     * Costruttore privato per impedire la creazione di istanze multiple.
+     * Recupera un'istanza della connessione al database.
+     */
     private GestioneNotificheDAO() {
         connessione = Connessione.getInstance();
     }
 
-    // Metodo per ottenere l'istanza Singleton
-    public static GestioneNotificheDAO getInstance()
-    {
-        if (instance == null)
-        {
+    /**
+     * Metodo per ottenere l'istanza Singleton della classe.
+     *
+     * @return L'unica istanza di GestioneNotificheDAO.
+     */
+    public static GestioneNotificheDAO getInstance() {
+        if (instance == null) {
             instance = new GestioneNotificheDAO();
         }
         return instance;
     }
 
+    /**
+     * Recupera tutte le notifiche relative a un determinato utente.
+     *
+     * @param userID L'ID dell'utente di cui recuperare le notifiche.
+     * @return Una lista di oggetti Notifica che rappresentano le notifiche dell'utente.
+     */
     public List<Notifica> visualizzaNotifiche(int userID) {
         List<Notifica> notifiche = new ArrayList<>();
 
-        // Query per recuperare tutte le notifiche dell'utente
         String query = "SELECT n.ID, n.oggetto, n.messaggio, n.dataDiInvio, s.stato " +
                 "FROM Notifica n " +
                 "JOIN StatoNotifica s ON n.ID = s.IDnotifica " +
                 "WHERE s.IDutente = ? " +
-                "ORDER BY n.dataDiInvio DESC"; // Ordina per data di invio
+                "ORDER BY n.dataDiInvio DESC";
 
         try (PreparedStatement statement = connessione.getConnection().prepareStatement(query)) {
-            // Impostiamo il parametro dell'ID utente nella query
             statement.setInt(1, userID);
 
             try (ResultSet resultSet = statement.executeQuery()) {
@@ -52,50 +62,42 @@ public class GestioneNotificheDAO
                     String oggetto = resultSet.getString("n.oggetto");
                     String messaggio = resultSet.getString("n.messaggio");
                     java.sql.Timestamp dataDiInvio = resultSet.getTimestamp("n.dataDiInvio");
-                    String stato = resultSet.getString("s.stato"); // Stato "letto" o "non letto"
+                    String stato = resultSet.getString("s.stato");
 
-                    // Formatta il Timestamp in una stringa
                     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                     String formattedDate = sdf.format(dataDiInvio);
 
-                    // Crea una nuova istanza di Notifica con la data formattata come stringa
                     Notifica notifica = new Notifica(ID, userID, oggetto, messaggio, stato, formattedDate);
-
-                    // Aggiungi la notifica alla lista
                     notifiche.add(notifica);
                 }
             }
-        }
-        catch (SQLException e)
-        {
+        } catch (SQLException e) {
             throw new RuntimeException(e);
         }
 
         return notifiche;
     }
 
-    public int controlloNotifiche(int userID)
-    {
+    /**
+     * Conta il numero di notifiche non lette per un determinato utente.
+     *
+     * @param userID L'ID dell'utente per cui contare le notifiche non lette.
+     * @return Il numero di notifiche non lette.
+     */
+    public int controlloNotifiche(int userID) {
         int notificationCount = 0;
 
-        try {
-            // Esegui la query per contare le notifiche non lette per l'utente
-            String sql = "SELECT COUNT(*) AS unreadCount FROM StatoNotifica WHERE IDutente = ? AND stato = 'non letto'";
+        String sql = "SELECT COUNT(*) AS unreadCount FROM StatoNotifica WHERE IDutente = ? AND stato = 'non letto'";
 
-            try (PreparedStatement stmt = connessione.getConnection().prepareStatement(sql)) {
-                stmt.setInt(1, userID);  // Imposta l'ID utente come parametro nella query
+        try (PreparedStatement stmt = connessione.getConnection().prepareStatement(sql)) {
+            stmt.setInt(1, userID);
 
-                try (ResultSet rs = stmt.executeQuery()) {
-                    // Se c'è un risultato, prendi il conteggio delle notifiche non lette
-                    if (rs.next()) {
-                        notificationCount = rs.getInt("unreadCount");
-                    }
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    notificationCount = rs.getInt("unreadCount");
                 }
             }
-
-        }
-        catch (SQLException e)
-        {
+        } catch (SQLException e) {
             e.printStackTrace();
             notificationCount = 0;
         }
@@ -103,61 +105,63 @@ public class GestioneNotificheDAO
         return notificationCount;
     }
 
-    public String modificaStatoNotifica(int notificaID, int utenteID, String nuovoStato)
-    {
-        String result = null;
+    /**
+     * Modifica lo stato di una notifica specifica per un determinato utente.
+     *
+     * @param notificaID L'ID della notifica da aggiornare.
+     * @param utenteID   L'ID dell'utente destinatario.
+     * @param nuovoStato Il nuovo stato della notifica ("letto", "non letto").
+     * @return "1" se l'operazione è completata con successo, "2" altrimenti.
+     */
+    public String modificaStatoNotifica(int notificaID, int utenteID, String nuovoStato) {
         String query = "UPDATE StatoNotifica SET stato = ? WHERE IDnotifica = ? AND IDutente = ?";
 
         try (PreparedStatement statement = connessione.getConnection().prepareStatement(query)) {
-            // Imposta i parametri della query
             statement.setString(1, nuovoStato);
             statement.setInt(2, notificaID);
             statement.setInt(3, utenteID);
 
-            // Esegui l'aggiornamento
             int rowsAffected = statement.executeUpdate();
-
-            // Se rowsAffected è maggiore di 0, l'aggiornamento è riuscito
-            return "1";
-        }
-        catch (SQLException e)
-        {
-            // Gestione dell'errore SQL
+            return rowsAffected > 0 ? "1" : "2";
+        } catch (SQLException e) {
             e.printStackTrace();
             return "2";
         }
     }
 
+    /**
+     * Invia una notifica a tutti gli utenti o a un utente specifico.
+     *
+     * @param ID       L'ID dell'utente destinatario (0 per notifiche globali).
+     * @param oggetto  L'oggetto della notifica.
+     * @param messaggio Il contenuto della notifica.
+     * @return "3" se l'operazione è completata con successo, "4" per problemi generali, o null per formato non valido.
+     */
     public String inviaNotifica(int ID, String oggetto, String messaggio) {
-        String result = null;
+        if (!isValidNotify(oggetto, messaggio)) {
+            return "5";
+        }
 
         try {
-            // Disattiva l'auto-commit all'inizio della transazione
             connessione.getConnection().setAutoCommit(false);
 
-            // Inserimento della notifica nella tabella Notifica
             String queryNotifica = "INSERT INTO Notifica (IDutente, oggetto, messaggio) VALUES (?, ?, ?)";
             PreparedStatement statementNotifica = connessione.getConnection().prepareStatement(queryNotifica, Statement.RETURN_GENERATED_KEYS);
 
-            // IDutente è 0 perché la notifica sarà generica per tutti
-            int idUtenteGenerico = 0; // Usa 0 per identificare una notifica globale o aggiorna il modello
             statementNotifica.setInt(1, ID);
             statementNotifica.setString(2, oggetto);
             statementNotifica.setString(3, messaggio);
 
             int rowsAffectedNotifica = statementNotifica.executeUpdate();
             if (rowsAffectedNotifica > 0) {
-                // Recupero l'ID della notifica appena creata
                 ResultSet generatedKeys = statementNotifica.getGeneratedKeys();
                 if (generatedKeys.next()) {
                     int idNotifica = generatedKeys.getInt(1);
 
-                    // Recupero tutti gli utenti dalla tabella Utente
                     String queryUtenti = "SELECT ID FROM Utente";
                     PreparedStatement statementUtenti = connessione.getConnection().prepareStatement(queryUtenti);
                     ResultSet resultSetUtenti = statementUtenti.executeQuery();
 
-                    // Inserisco una riga per ogni utente nella tabella StatoNotifica
                     String queryStatoNotifica = "INSERT INTO StatoNotifica (IDnotifica, IDutente, stato) VALUES (?, ?, ?)";
                     PreparedStatement statementStatoNotifica = connessione.getConnection().prepareStatement(queryStatoNotifica);
 
@@ -165,15 +169,12 @@ public class GestioneNotificheDAO
                         int idUtente = resultSetUtenti.getInt("ID");
                         statementStatoNotifica.setInt(1, idNotifica);
                         statementStatoNotifica.setInt(2, idUtente);
-                        statementStatoNotifica.setString(3, "non letto"); // Stato predefinito
+                        statementStatoNotifica.setString(3, "non letto");
 
-                        statementStatoNotifica.addBatch(); // Accumulo le query
+                        statementStatoNotifica.addBatch();
                     }
 
-                    // Eseguo il batch di inserimenti
                     int[] batchResults = statementStatoNotifica.executeBatch();
-
-                    // Verifico se tutti gli inserimenti sono andati a buon fine
                     boolean success = true;
                     for (int resultCode : batchResults) {
                         if (resultCode == Statement.EXECUTE_FAILED) {
@@ -183,34 +184,59 @@ public class GestioneNotificheDAO
                     }
 
                     if (success) {
-                        // Confermo la transazione
                         connessione.getConnection().commit();
-                        result = "3"; // Operazione completata con successo
+                        return "3";
                     } else {
                         connessione.getConnection().rollback();
-                        result = "4"; // Problemi nell'inserimento degli stati delle notifiche
+                        return "4";
                     }
                 } else {
                     connessione.getConnection().rollback();
-                    result = "4"; // Problemi nel recupero dell'ID della notifica
+                    return "4";
                 }
             } else {
                 connessione.getConnection().rollback();
-                result = "4"; // Problemi nell'inserimento della notifica
+                return "4";
             }
-
-        }
-        catch (SQLException e)
-        {
+        } catch (SQLException e) {
             e.printStackTrace();
             try {
-                connessione.getConnection().rollback(); // Rollback in caso di errore
+                connessione.getConnection().rollback();
             } catch (SQLException rollbackEx) {
                 rollbackEx.printStackTrace();
             }
             throw new RuntimeException("Errore durante l'invio della notifica.", e);
         }
+    }
 
-        return result;
+    /**
+     * Verifica se l'oggetto e il messaggio rispettano i pattern definiti.
+     *
+     * @param oggetto  L'oggetto della notifica.
+     * @param messaggio Il messaggio della notifica.
+     * @return true se entrambi sono validi, false altrimenti.
+     */
+    private boolean isValidNotify(String oggetto, String messaggio) {
+        return isValidOggetto(oggetto) && isValidMessaggio(messaggio);
+    }
+
+    /**
+     * Verifica se il formato dell'oggetto è valido.
+     *
+     * @param oggetto L'oggetto da verificare.
+     * @return true se valido, false altrimenti.
+     */
+    private boolean isValidOggetto(String oggetto) {
+        return oggetto != null && Patterns.NOTIFY.matcher(oggetto).matches();
+    }
+
+    /**
+     * Verifica se il formato del messaggio è valido.
+     *
+     * @param messaggio Il messaggio da verificare.
+     * @return true se valido, false altrimenti.
+     */
+    private boolean isValidMessaggio(String messaggio) {
+        return messaggio != null && Patterns.NOTIFY.matcher(messaggio).matches();
     }
 }

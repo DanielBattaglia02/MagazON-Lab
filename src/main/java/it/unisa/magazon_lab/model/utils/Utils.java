@@ -1,4 +1,4 @@
-package it.unisa.magazon_lab.model.Utils;
+package it.unisa.magazon_lab.model.utils;
 
 import java.security.SecureRandom;
 

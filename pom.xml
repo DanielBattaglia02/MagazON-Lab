@@ -12,12 +12,12 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <maven.compiler.target>11</maven.compiler.target>
-    <maven.compiler.source>11</maven.compiler.source>
+    <maven.compiler.target>21</maven.compiler.target>
+    <maven.compiler.source>21</maven.compiler.source>
     <junit.version>5.10.0</junit.version>
   </properties>
 
-  <dependencies>
+    <dependencies>
     <dependency>
       <groupId>jakarta.servlet</groupId>
       <artifactId>jakarta.servlet-api</artifactId>
@@ -69,11 +69,36 @@
           <artifactId>jackson-databind</artifactId>
           <version>2.15.2</version>
       </dependency>
-      <!-- Junit test -->
+      <!-- Dipendenza di Mockito -->
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>5.1.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-inline</artifactId>
+            <version>5.1.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.bytebuddy</groupId>
+            <artifactId>byte-buddy</artifactId>
+            <version>1.15.11</version>  <!-- O la versione più recente disponibile -->
+        </dependency>
+
+        <!-- Dipendenza di JUnit 5 (se non la hai già) -->
       <dependency>
           <groupId>org.junit.jupiter</groupId>
-          <artifactId>junit-jupiter</artifactId>
-          <version>5.10.0</version> <!-- Sostituisci con l'ultima versione disponibile -->
+          <artifactId>junit-jupiter-api</artifactId>
+          <version>5.9.0</version> <!-- Sostituisci con la versione più recente -->
+          <scope>test</scope>
+      </dependency>
+      <dependency>
+          <groupId>org.junit.jupiter</groupId>
+          <artifactId>junit-jupiter-engine</artifactId>
+          <version>5.9.0</version> <!-- Sostituisci con la versione più recente -->
           <scope>test</scope>
       </dependency>
   </dependencies>

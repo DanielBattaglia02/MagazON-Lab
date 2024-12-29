@@ -31,6 +31,12 @@ Autore: Daniel Battaglia
 <script>alert("Errore nell'invio della notifica!")</script>
 <%
         }
+        else if (message.equals("5"))
+        {
+%>
+<script>alert("Errore nel formato della notifica!")</script>
+<%
+        }
     }
 %>
 

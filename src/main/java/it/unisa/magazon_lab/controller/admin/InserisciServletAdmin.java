@@ -5,12 +5,13 @@ Autore: Daniel Battaglia
 package it.unisa.magazon_lab.controller.admin;
 
 import it.unisa.magazon_lab.model.DAO.*;
+import it.unisa.magazon_lab.model.utils.Utils;
 import it.unisa.magazon_lab.model.Facade.Facade;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
-import it.unisa.magazon_lab.model.Utils.*;
+
 import java.io.File;
 import java.io.IOException;
 import jakarta.servlet.annotation.MultipartConfig;
@@ -197,8 +198,9 @@ public class InserisciServletAdmin extends HttpServlet
             String messaggio = request.getParameter("messaggio");
 
             GestioneNotificheDAO gestioneNotificheDAO = facade.getGestioneNotificheDAO();
-            gestioneNotificheDAO.inviaNotifica(userID, oggetto, messaggio);
+            String message = gestioneNotificheDAO.inviaNotifica(userID, oggetto, messaggio);
 
+            request.setAttribute("message", message);
             pageName = "notifiche";
         }
 
