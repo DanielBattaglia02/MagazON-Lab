@@ -121,9 +121,16 @@ public class GestioneListeDAO {
      *
      * @param nomeFile il nome del file della lista.
      * @param note     eventuali note associate alla lista.
+     *
+     * @throws IllegalArgumentException se il nomeFile non rispetta uno dei seguenti formati: .doc, .docx, .pdf, .jpg.
+     * @throws RuntimeException se si verifica un errore durante l'esecuzione della query SQL.
      */
     public void inserisciLista(String nomeFile, String note)
     {
+
+        if (!nomeFile.matches(".*\\.(doc|docx|pdf|jpg)$"))
+            throw new IllegalArgumentException("nomeFile non rispetta il formato");
+
         String query="INSERT INTO Lista(nomeFile,note) VALUES(?,?)";
 
         try
@@ -143,9 +150,17 @@ public class GestioneListeDAO {
      * Inserisce una nuova lista nel database con solo il nome del file.
      *
      * @param nomeFile il nome del file della lista.
+     *
+     * @throws IllegalArgumentException se il nomeFile non rispetta uno dei seguenti formati: .doc, .docx, .pdf, .jpg.
+     * @throws RuntimeException se si verifica un errore durante l'esecuzione della query SQL.
      */
     public void inserisciLista(String nomeFile)
     {
+
+
+        if (!nomeFile.matches(".*\\.(doc|docx|pdf|jpg|txt)$"))
+            throw new IllegalArgumentException("nomeFile non rispetta il formato");
+
         String query="INSERT INTO Lista(nomeFile) VALUES(?)";
 
         try
