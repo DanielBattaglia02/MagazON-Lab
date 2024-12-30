@@ -14,17 +14,31 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Classe DAO per la gestione degli utenti.
+ * Implementa il pattern Singleton per garantire una sola istanza.
+ *
+ * @author Gigante Ruben
+ */
+
 public class GestioneUtentiDAO
 {
     private static GestioneUtentiDAO instance;
     private Connessione connessione;
 
-    // Costruttore privato per impedire creazioni multiple
+    /**
+     * Costruttore privato per impedire la creazione di istanze multiple.
+     * Recupera un'istanza della connessione al database.
+     */
     private GestioneUtentiDAO() {
         connessione = Connessione.getInstance();
     }
 
-    // Metodo per ottenere l'istanza Singleton
+    /**
+     * Ottiene l'istanza Singleton della classe.
+     *
+     * @return L'istanza Singleton di GestioneUtentiDAO.
+     */
     public static GestioneUtentiDAO getInstance()
     {
         if (instance == null)
@@ -33,6 +47,12 @@ public class GestioneUtentiDAO
         }
         return instance;
     }
+
+    /**
+     * Recupera la lista di tutti gli utenti presenti nel database.
+     *
+     * @return Una lista di oggetti Utente.
+     */
 
     public List<Utente> visualizzaUtenti()
     {
@@ -72,6 +92,13 @@ public class GestioneUtentiDAO
         return utenti;
     }
 
+    /**
+     * Aggiorna lo stato di un utente.
+     *
+     * @param userID     ID dell'utente da aggiornare.
+     * @param nuovoStato Nuovo stato da assegnare all'utente.
+     */
+
     public void aggiornaStatoUtente(int userID, String nuovoStato)
     {
         String query = "UPDATE utente SET stato = ? WHERE ID = ?";
@@ -88,6 +115,24 @@ public class GestioneUtentiDAO
             throw new RuntimeException("Errore durante l'aggiornamento dello stato dell'utente: " + e.getMessage(), e);
         }
     }
+
+    /**
+     * Aggiunge un nuovo utente al database.
+     *
+     * @param nome          Nome dell'utente.
+     * @param cognome       Cognome dell'utente.
+     * @param ruolo         Ruolo dell'utente.
+     * @param username      Username dell'utente.
+     * @param password      Password dell'utente.
+     * @param email         Email dell'utente.
+     * @param telefono      Telefono dell'utente.
+     * @param dataNascitaStr Data di nascita dell'utente (formato stringa).
+     * @param luogoNascita  Luogo di nascita dell'utente.
+     * @return Un codice che indica il risultato dell'operazione:
+     *         "1" se l'inserimento è avvenuto con successo,
+     *         "2" in caso di problemi tecnici,
+     *         "3" in caso di eccezioni SQL.
+     */
 
     public String aggiungiUtente(String nome, String cognome, String ruolo,
                                  String username, String password, String email,
@@ -125,6 +170,13 @@ public class GestioneUtentiDAO
 
         return result;
     }
+
+    /**
+     * Elimina un utente dal database.
+     *
+     * @param id ID dell'utente da eliminare.
+     * @return Messaggio che indica il risultato dell'operazione.
+     */
 
     public String eliminaUtente(int id)
     {
@@ -168,6 +220,13 @@ public class GestioneUtentiDAO
         return result;
     }
 
+    /**
+     * Cerca un utente nel database in base al suo ID.
+     *
+     * @param id ID dell'utente da cercare.
+     * @return Oggetto Utente se trovato, altrimenti null.
+     */
+
     public Utente cercaUtente(int id) {
         String result = null;
         String query = "SELECT * FROM Utente WHERE ID = ?";
@@ -205,6 +264,24 @@ public class GestioneUtentiDAO
         return u;
     }
 
+
+    /**
+     * Modifica un utente esistente nel database con i dati forniti.
+     *
+     * @param id                ID dell'utente da modificare.
+     * @param nome              Nome dell'utente.
+     * @param cognome           Cognome dell'utente.
+     * @param ruolo             Ruolo dell'utente (es. amministratore, utente normale).
+     * @param username          Username dell'utente.
+     * @param password          Password dell'utente (opzionale; se vuota, non verrà modificata).
+     * @param email             Indirizzo email dell'utente.
+     * @param telefono          Numero di telefono dell'utente.
+     * @param dataDiNascitaStr  Data di nascita dell'utente in formato stringa (es. "YYYY-MM-DD").
+     * @param luogoDiNascita    Luogo di nascita dell'utente.
+     * @return Una stringa indicante il risultato dell'operazione:
+     *         "Utente modificato con successo!" in caso di successo,
+     *         "Errore nella modifica dell'utente" in caso di errore o se l'utente non è stato trovato.
+     */
 
     public String modificaUtente(int id, String nome, String cognome, String ruolo, String username, String password, String email, String telefono, String dataDiNascitaStr, String luogoDiNascita)
     {
@@ -265,6 +342,14 @@ public class GestioneUtentiDAO
 
         return result;
     }
+
+    /**
+     * Imposta lo stato di un utente (online o offline) nel database.
+     *
+     * @param id        ID dell'utente di cui aggiornare lo stato.
+     * @param statoInt  Stato dell'utente: 1 per "online", 0 per "offline".
+     * @throws RuntimeException In caso di errore durante l'aggiornamento dello stato.
+     */
 
     public void setStato(int id, int statoInt)
     {

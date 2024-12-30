@@ -1,7 +1,3 @@
-/*
-Autore: Ruben Gigante
- */
-
 package it.unisa.magazon_lab.model.DAO;
 
 import it.unisa.magazon_lab.model.Entity.Connessione;
@@ -14,17 +10,31 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Classe DAO per la gestione delle operazioni relative alle liste nel database.
+ * Implementa il pattern Singleton per garantire l'unicità dell'istanza.
+ *
+ * @author Gigante Ruben
+ */
+
 public class GestioneListeDAO {
 
     private static GestioneListeDAO instance;
     private Connessione connessione;
 
-    // Costruttore privato per impedire creazioni multiple
+    /**
+     * Costruttore privato per impedire la creazione di istanze multiple.
+     * Recupera un'istanza della connessione al database.
+     */
     private GestioneListeDAO() {
         connessione = Connessione.getInstance();
     }
 
-    // Metodo per ottenere l'istanza Singleton
+    /**
+     * Metodo per ottenere l'istanza Singleton della classe.
+     *
+     * @return L'unica istanza di GestioneListeDAO.
+     */
     public static GestioneListeDAO getInstance()
     {
         if (instance == null)
@@ -33,6 +43,13 @@ public class GestioneListeDAO {
         }
         return instance;
     }
+
+
+    /**
+     * Recupera tutte le liste dal database, ordinate per data di invio.
+     *
+     * @return una lista di oggetti Lista.
+     */
 
     public List<Lista> visualizzaListe(){
         List<Lista> lista = new ArrayList<Lista>();
@@ -68,6 +85,12 @@ public class GestioneListeDAO {
     }
 
 
+    /**
+     * Recupera il nome del file associato a una lista dato il suo ID.
+     *
+     * @param id l'ID della lista.
+     * @return il nome del file della lista, oppure una stringa vuota se non trovata.
+     */
     public String getListaFileName(int id)
     {
         String query = "SELECT * FROM Lista WHERE ID=?";
@@ -93,6 +116,12 @@ public class GestioneListeDAO {
     }
 
 
+    /**
+     * Inserisce una nuova lista nel database.
+     *
+     * @param nomeFile il nome del file della lista.
+     * @param note     eventuali note associate alla lista.
+     */
     public void inserisciLista(String nomeFile, String note)
     {
         String query="INSERT INTO Lista(nomeFile,note) VALUES(?,?)";
@@ -110,6 +139,11 @@ public class GestioneListeDAO {
         }
     }
 
+    /**
+     * Inserisce una nuova lista nel database con solo il nome del file.
+     *
+     * @param nomeFile il nome del file della lista.
+     */
     public void inserisciLista(String nomeFile)
     {
         String query="INSERT INTO Lista(nomeFile) VALUES(?)";
@@ -126,6 +160,12 @@ public class GestioneListeDAO {
         }
     }
 
+
+    /**
+     * Elimina una lista dal database dato il suo ID.
+     *
+     * @param id l'ID della lista da eliminare.
+     */
     public void eliminaLista(int id)
     {
         String query = "DELETE FROM Lista WHERE ID=?";
@@ -141,6 +181,14 @@ public class GestioneListeDAO {
         }
     }
 
+
+    /**
+     * Aggiorna le note di una lista nel database dato il suo ID.
+     *
+     * @param id   l'ID della lista.
+     * @param note le nuove note da associare alla lista.
+     * @return true se almeno una riga è stata aggiornata, altrimenti false.
+     */
     public boolean aggiornaLista(int id, String note)
     {
         String query = "UPDATE lista SET note=? WHERE ID=?";
@@ -160,6 +208,13 @@ public class GestioneListeDAO {
         }
     }
 
+
+    /**
+     * Cerca una lista nel database dato il suo ID.
+     *
+     * @param id l'ID della lista da cercare.
+     * @return un oggetto Lista se trovato, altrimenti null.
+     */
     public Lista cercaLista(int id)
     {
         String query="SELECT * FROM Lista WHERE ID=?";
