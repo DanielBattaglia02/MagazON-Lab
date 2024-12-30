@@ -14,6 +14,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
+
 /**
  * Classe DAO per la gestione degli utenti.
  * Implementa il pattern Singleton per garantire una sola istanza.
@@ -138,6 +141,15 @@ public class GestioneUtentiDAO
                                  String username, String password, String email,
                                  String telefono, String dataNascitaStr, String luogoNascita)
     {
+        // Espressione regolare per verificare l'email
+        String regex = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
+        // Creazione del Pattern per verificare l'email
+        Pattern pattern = Pattern.compile(regex);
+        // Creazione del Matcher per verificare l'email
+        Matcher matcher = pattern.matcher(email);
+        if(!matcher.matches())
+            return "Errore email";
+
         Date dataNascita = java.sql.Date.valueOf(dataNascitaStr);
 
         String query = "INSERT INTO utente (nome, cognome, ruolo, username, password, email, telefono, dataDiNascita, luogoDiNascita) VALUES (?, ?, ?, ?, SHA1(?), ?, ?, ?, ?)";
@@ -264,6 +276,52 @@ public class GestioneUtentiDAO
         return u;
     }
 
+    /**
+     * Cerca un utente nel database in base al suo ID.
+     *
+     * @param user Username dell'utente
+     * @return ID dell'utente se trovato, altrimenti -1.
+     */
+
+    public int cercaIDUtente(String user) {
+        String result = null;
+        String query = "SELECT * FROM Utente WHERE username = ?";
+        Utente u = null;
+
+        try {
+            PreparedStatement statement = connessione.getConnection().prepareStatement(query);
+            statement.setString(1, user);
+
+            ResultSet resultSet = statement.executeQuery();
+
+            if (resultSet.next()) {
+                // Estrai i dettagli dell'utente
+                int id = resultSet.getInt("ID");
+                String nome = resultSet.getString("nome");
+                String cognome = resultSet.getString("cognome");
+                String ruolo = resultSet.getString("ruolo");
+                String username = resultSet.getString("username");
+                String stato = resultSet.getString("stato");
+                String email = resultSet.getString("email");
+                String telefono = resultSet.getString("telefono");
+                Date dataDiNascita = resultSet.getDate("dataDiNascita");
+                String luogoDiNascita = resultSet.getString("luogoDiNascita");
+
+                u = new Utente(id, nome, cognome, ruolo, username, stato, email, telefono, dataDiNascita, luogoDiNascita);
+
+
+                return u.getID();
+            }
+        }
+        catch (SQLException e)
+        {
+            e.printStackTrace();
+        }
+
+        return -1;
+    }
+
+
 
     /**
      * Modifica un utente esistente nel database con i dati forniti.
@@ -287,6 +345,16 @@ public class GestioneUtentiDAO
     {
         String result = "0";
         String query="";
+
+
+        // Espressione regolare per verificare l'email
+        String regex = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
+        // Creazione del Pattern per verificare l'email
+        Pattern pattern = Pattern.compile(regex);
+        // Creazione del Matcher per verificare l'email
+        Matcher matcher = pattern.matcher(email);
+        if(!matcher.matches())
+            return "Errore email";
 
         Date dataDiNascita = java.sql.Date.valueOf(dataDiNascitaStr);
 
@@ -337,7 +405,6 @@ public class GestioneUtentiDAO
         catch (SQLException e)
         {
             result = "Errore nella modifica dell'utente"; // Errore durante la modifica
-            e.printStackTrace();
         }
 
         return result;
