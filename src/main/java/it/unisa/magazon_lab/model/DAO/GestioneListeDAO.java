@@ -125,8 +125,9 @@ public class GestioneListeDAO {
      * @throws IllegalArgumentException se il nomeFile non rispetta uno dei seguenti formati: .doc, .docx, .pdf, .jpg.
      * @throws RuntimeException se si verifica un errore durante l'esecuzione della query SQL.
      */
-    public void inserisciLista(String nomeFile, String note)
+    public String inserisciLista(String nomeFile, String note)
     {
+        String result="";
 
         if (!nomeFile.matches(".*\\.(doc|docx|pdf|jpg)$"))
             throw new IllegalArgumentException("nomeFile non rispetta il formato");
@@ -139,11 +140,15 @@ public class GestioneListeDAO {
             statement.setString(1, nomeFile);
             statement.setString(2, note);
             statement.executeUpdate();
+            result="Lista aggiunta";
         }
         catch (SQLException e)
         {
+            result="Errore aggiunta lista";
             throw new RuntimeException(e);
         }
+
+        return result;
     }
 
     /**
@@ -154,9 +159,10 @@ public class GestioneListeDAO {
      * @throws IllegalArgumentException se il nomeFile non rispetta uno dei seguenti formati: .doc, .docx, .pdf, .jpg.
      * @throws RuntimeException se si verifica un errore durante l'esecuzione della query SQL.
      */
-    public void inserisciLista(String nomeFile)
+    public String inserisciLista(String nomeFile)
     {
 
+        String result="";
 
         if (!nomeFile.matches(".*\\.(doc|docx|pdf|jpg|txt)$"))
             throw new IllegalArgumentException("nomeFile non rispetta il formato");
@@ -168,11 +174,14 @@ public class GestioneListeDAO {
             PreparedStatement statement = connessione.getConnection().prepareStatement(query);
             statement.setString(1, nomeFile);
             statement.executeUpdate();
+            result="Lista aggiunta";
         }
         catch (SQLException e)
         {
+            result="Errore aggiunta lista";
             throw new RuntimeException(e);
         }
+        return result;
     }
 
 

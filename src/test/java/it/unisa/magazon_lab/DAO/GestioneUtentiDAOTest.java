@@ -244,7 +244,7 @@ public class GestioneUtentiDAOTest {
 
     @Test
     public void Aggiungi_Utente_Mockito() {
-        GestioneUtentiDAO test = Mockito.mock(GestioneUtentiDAO.class);
+        GestioneUtentiDAO gestioneUtentiDAO = Mockito.mock(GestioneUtentiDAO.class);
 
         String nome = "Mario";
         String cognome = "Rossi";
@@ -256,11 +256,11 @@ public class GestioneUtentiDAOTest {
         String dataNascita = "1990-12-12";
         String luogoNascita = "Milano";
 
-        when(test.aggiungiUtente(
+        when(gestioneUtentiDAO.aggiungiUtente(
                 nome, cognome, ruolo, username, password, email, telefono, dataNascita, luogoNascita))
                 .thenReturn("1");
 
-        String result = test.aggiungiUtente(
+        String result = gestioneUtentiDAO.aggiungiUtente(
                 nome, cognome, ruolo, username, password, email, telefono, dataNascita, luogoNascita);
 
         assertEquals("1", result);

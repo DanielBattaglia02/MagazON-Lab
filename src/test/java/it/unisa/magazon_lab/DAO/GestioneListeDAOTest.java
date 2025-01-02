@@ -1,9 +1,13 @@
 package it.unisa.magazon_lab.DAO;
 
 import it.unisa.magazon_lab.model.DAO.GestioneListeDAO;
+import it.unisa.magazon_lab.model.Entity.Lista;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 /**
  * Classe di test per verificare i casi di validazione del metodo inserisciLista di GestioneListeDAO.
@@ -57,5 +61,22 @@ public class GestioneListeDAOTest {
         } catch (Exception e) {
             fail("Non dovrebbe dare errore");
         }
+    }
+
+
+    @Test
+    public void Aggiungi_Lista_Mockito(){
+        GestioneListeDAO gestioneListeDAO = Mockito.mock(GestioneListeDAO.class);
+
+        String nomeFile="lista.pdf";
+        String note = "Merce di valore";
+
+        when(gestioneListeDAO.inserisciLista(nomeFile,note)).thenReturn("Lista aggiunta");
+
+        String result = gestioneListeDAO.inserisciLista(nomeFile,note);
+
+        assertEquals("Lista aggiunta", result);
+
+
     }
 }
