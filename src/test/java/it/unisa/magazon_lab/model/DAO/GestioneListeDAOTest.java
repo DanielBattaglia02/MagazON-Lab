@@ -1,13 +1,9 @@
 package it.unisa.magazon_lab.model.DAO;
 
-import it.unisa.magazon_lab.model.DAO.GestioneListeDAO;
-import it.unisa.magazon_lab.model.Entity.Lista;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
 
 /**
  * Classe di test per verificare i casi di validazione del metodo inserisciLista di GestioneListeDAO.
