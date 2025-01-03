@@ -1,7 +1,6 @@
 package it.unisa.magazon_lab.controller;
 
 import it.unisa.magazon_lab.model.DAO.GestioneListeDAO;
-import it.unisa.magazon_lab.model.DAO.GestioneListeDAOTest;
 import it.unisa.magazon_lab.model.Facade.Facade;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
@@ -91,6 +90,7 @@ public class InserisciListaTest {
 
         // Verifica che il file sia stato salvato
         verify(gestioneListeDAO).inserisciLista(fileName,note);
+        verify(request).setAttribute("message", "File caricato con successo!");
         verify(filePart, times(1)).write(filePath);
     }
 
