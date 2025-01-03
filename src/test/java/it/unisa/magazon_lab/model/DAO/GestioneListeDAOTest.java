@@ -1,4 +1,4 @@
-package it.unisa.magazon_lab.DAO;
+package it.unisa.magazon_lab.model.DAO;
 
 import it.unisa.magazon_lab.model.DAO.GestioneListeDAO;
 import it.unisa.magazon_lab.model.Entity.Lista;
@@ -61,22 +61,5 @@ public class GestioneListeDAOTest {
         } catch (Exception e) {
             fail("Non dovrebbe dare errore");
         }
-    }
-
-
-    @Test
-    public void Aggiungi_Lista_Mockito(){
-        GestioneListeDAO gestioneListeDAO = Mockito.mock(GestioneListeDAO.class);
-
-        String nomeFile="lista.pdf";
-        String note = "Merce di valore";
-
-        when(gestioneListeDAO.inserisciLista(nomeFile,note)).thenReturn("Lista aggiunta");
-
-        String result = gestioneListeDAO.inserisciLista(nomeFile,note);
-
-        assertEquals("Lista aggiunta", result);
-
-
     }
 }
