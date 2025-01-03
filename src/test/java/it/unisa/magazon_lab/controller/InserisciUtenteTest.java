@@ -14,16 +14,21 @@ import jakarta.servlet.http.HttpServletRequest;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
+/**
+ * Classe di test per verificare la porzione di codice eseguita dalla servlet
+ * per la corretta registrazione di un utente all'interno del sistema.
+ * @author Gigante Ruben
+ */
+
 public class InserisciUtenteTest {
 
     @Test
     public void Aggiungi_Utente(){
 
+        //Creo i mock
         HttpServletRequest request= Mockito.mock(HttpServletRequest.class);
         Facade facade = Mockito.mock(Facade.class);
         GestioneUtentiDAO gestioneUtentiDAO = Mockito.mock(GestioneUtentiDAO.class);
-
-
 
         // Simula i parametri della richiesta
         when(request.getParameter("nome")).thenReturn("Mario");
@@ -34,6 +39,8 @@ public class InserisciUtenteTest {
         when(request.getParameter("telefono")).thenReturn("1234567890");
         when(request.getParameter("dataNascita")).thenReturn("2000-01-01");
         when(request.getParameter("luogoNascita")).thenReturn("Roma");
+
+        //Controllo validità input
 
         String nome = request.getParameter("nome") != null && !request.getParameter("nome").trim().isEmpty()
                 ? request.getParameter("nome")
@@ -69,16 +76,13 @@ public class InserisciUtenteTest {
                 ? request.getParameter("luogoNascita")
                 : null;
 
-
-
-        // Simula il comportamento del DAO
+        // Simula il comportamento di Facade e del DAO
         when(facade.getGestioneUtentiDAO()).thenReturn(gestioneUtentiDAO);
         when(gestioneUtentiDAO.aggiungiUtente(
                 nome,cognome,ruolo,username,password,email,telefono,dataNascita,luogoNascita))
                 .thenReturn("Utente aggiunto con successo");
 
-
-        // Verifica che il metodo aggiungiUtente sia stato chiamato
+        gestioneUtentiDAO = facade.getGestioneUtentiDAO();
         String result = gestioneUtentiDAO.aggiungiUtente(
                 nome,cognome,ruolo,username,password,email,telefono,dataNascita,luogoNascita);
 
@@ -86,6 +90,7 @@ public class InserisciUtenteTest {
         request.setAttribute("username", username);
         request.setAttribute("password", password);
 
+        // Verifica
         assertEquals("Utente aggiunto con successo", result);
 
         verify(request).setAttribute("message", result);

@@ -13,19 +13,24 @@ import jakarta.servlet.http.HttpServletRequest;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+/**
+ * Classe di test per verificare la porzione di codice eseguita dalla servlet
+ * per la corretta modifica delle informazioni di un utente registrato all'interno del sistema.
+ * @author Gigante Ruben
+ */
+
 public class ModificaUtenteTest {
 
     @Test
     public void Modifica_Utente(){
 
+        //Creo i mock
         HttpServletRequest request= Mockito.mock(HttpServletRequest.class);
         Facade facade = Mockito.mock(Facade.class);
         GestioneUtentiDAO gestioneUtentiDAO = Mockito.mock(GestioneUtentiDAO.class);
 
-
-
         // Simula i parametri della richiesta
-        when(request.getParameter("id")).thenReturn("1");
+        when(request.getParameter("IDutente")).thenReturn("1");
         when(request.getParameter("nome")).thenReturn("Mario");
         when(request.getParameter("cognome")).thenReturn("Rossi");
         when(request.getParameter("ruolo")).thenReturn("Admin");
@@ -36,7 +41,8 @@ public class ModificaUtenteTest {
         when(request.getParameter("dataNascita")).thenReturn("2000-01-01");
         when(request.getParameter("luogoNascita")).thenReturn("Roma");
 
-        int ID=  Integer.parseInt(request.getParameter("IDutente"))
+        //Controllo validità input
+        int ID = Integer.parseInt(request.getParameter("IDutente"));
 
         String nome = request.getParameter("nome") != null && !request.getParameter("nome").trim().isEmpty()
                 ? request.getParameter("nome")
@@ -74,28 +80,22 @@ public class ModificaUtenteTest {
                 ? request.getParameter("luogoNascita")
                 : null;
 
-
-
-        // Simula il comportamento del DAO
+        // Simula il comportamento di Facade e del DAO
         when(facade.getGestioneUtentiDAO()).thenReturn(gestioneUtentiDAO);
-        when(gestioneUtentiDAO.aggiungiUtente(
+        when(gestioneUtentiDAO.modificaUtente(ID,
                 nome,cognome,ruolo,username,password,email,telefono,dataNascita,luogoNascita))
                 .thenReturn("Utente aggiunto con successo");
 
-
-        // Verifica che il metodo aggiungiUtente sia stato chiamato
-        String result = gestioneUtentiDAO.aggiungiUtente(
+        gestioneUtentiDAO = facade.getGestioneUtentiDAO();
+        String result = gestioneUtentiDAO.modificaUtente(ID,
                 nome,cognome,ruolo,username,password,email,telefono,dataNascita,luogoNascita);
 
         request.setAttribute("message", result);
-        request.setAttribute("username", username);
-        request.setAttribute("password", password);
 
+        // Verifica
         assertEquals("Utente aggiunto con successo", result);
 
         verify(request).setAttribute("message", result);
-        verify(request).setAttribute("username", username);
-        verify(request).setAttribute("password", password);
 
     }
 
