@@ -13,11 +13,10 @@ import jakarta.servlet.http.HttpServletRequest;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-
-public class InserisciUtenteTest {
+public class ModificaUtenteTest {
 
     @Test
-    public void Aggiungi_Utente(){
+    public void Modifica_Utente(){
 
         HttpServletRequest request= Mockito.mock(HttpServletRequest.class);
         Facade facade = Mockito.mock(Facade.class);
@@ -26,14 +25,18 @@ public class InserisciUtenteTest {
 
 
         // Simula i parametri della richiesta
+        when(request.getParameter("id")).thenReturn("1");
         when(request.getParameter("nome")).thenReturn("Mario");
         when(request.getParameter("cognome")).thenReturn("Rossi");
         when(request.getParameter("ruolo")).thenReturn("Admin");
         when(request.getParameter("username")).thenReturn("mario.rossi");
+        when(request.getParameter("password")).thenReturn("prova");
         when(request.getParameter("email")).thenReturn("mario.rossi@example.com");
         when(request.getParameter("telefono")).thenReturn("1234567890");
         when(request.getParameter("dataNascita")).thenReturn("2000-01-01");
         when(request.getParameter("luogoNascita")).thenReturn("Roma");
+
+        int ID=  Integer.parseInt(request.getParameter("IDutente"))
 
         String nome = request.getParameter("nome") != null && !request.getParameter("nome").trim().isEmpty()
                 ? request.getParameter("nome")
@@ -51,11 +54,13 @@ public class InserisciUtenteTest {
                 ? request.getParameter("username")
                 : null;
 
+        String password = request.getParameter("password") != null && !request.getParameter("password").trim().isEmpty()
+                ? request.getParameter("password")
+                : null;
+
         String email = request.getParameter("email") != null && !request.getParameter("email").trim().isEmpty()
                 ? request.getParameter("email")
                 : null;
-
-        String password= Utils.generatePassword(10);
 
         String telefono = request.getParameter("telefono") != null && !request.getParameter("telefono").trim().isEmpty()
                 ? request.getParameter("telefono")
@@ -92,5 +97,6 @@ public class InserisciUtenteTest {
         verify(request).setAttribute("username", username);
         verify(request).setAttribute("password", password);
 
-       }
+    }
+
 }
