@@ -1,7 +1,3 @@
-/*
-Autore: Francesco Vaiano
- */
-
 package it.unisa.magazon_lab.model.DAO;
 
 import it.unisa.magazon_lab.model.Entity.Categoria;
@@ -14,41 +10,61 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GestioneCategorieDAO
-{
+/**
+ * Classe GestioneCategorieDAO.
+ * Gestisce le operazioni di accesso ai dati per l'entità Categoria.
+ * Implementa il pattern Singleton per garantire un'unica istanza della classe.
+ * Autore: Francesco Vaiano
+ */
+
+public class GestioneCategorieDAO {
+
+    /**
+     * Istanza Singleton della classe.
+     */
     private static GestioneCategorieDAO instance;
+
+    /**
+     * Connessione al database.
+     */
     private Connessione connessione;
 
-    // Costruttore privato per impedire creazioni multiple
+    /**
+     * Costruttore privato per impedire creazioni multiple.
+     */
     private GestioneCategorieDAO() {
         connessione = Connessione.getInstance();
     }
 
-    // Metodo per ottenere l'istanza Singleton
-    public static GestioneCategorieDAO getInstance()
-    {
-        if (instance == null)
-        {
+    /**
+     * Ottiene l'istanza Singleton della classe.
+     *
+     * @return Istanza di GestioneCategorieDAO
+     */
+    public static GestioneCategorieDAO getInstance() {
+        if (instance == null) {
             instance = new GestioneCategorieDAO();
         }
         return instance;
     }
 
-    public List<Categoria> visualizzaCategorie()
-    {
+    /**
+     * Recupera tutte le categorie presenti nel database.
+     *
+     * @return Lista di oggetti Categoria
+     */
+    public List<Categoria> visualizzaCategorie() {
         List<Categoria> categorie = new ArrayList<>();
-
         String query = "SELECT * FROM categoria";
 
-        try
-        {
+        try {
             PreparedStatement statement = connessione.getConnection().prepareStatement(query);
             ResultSet resultSet = statement.executeQuery();
 
             while (resultSet.next()) {
                 int ID = resultSet.getInt("ID");
-                String nome= resultSet.getString("nome");
-                String descrizione = resultSet.getString("descrizione");;
+                String nome = resultSet.getString("nome");
+                String descrizione = resultSet.getString("descrizione");
                 String note = resultSet.getString("note");
 
                 Categoria categoria = new Categoria(ID, nome, descrizione, note);
@@ -57,99 +73,90 @@ public class GestioneCategorieDAO
 
             resultSet.close();
             statement.close();
-        }
-        catch (SQLException e)
-        {
+        } catch (SQLException e) {
             throw new RuntimeException(e);
         }
 
         return categorie;
     }
 
-    public String aggiungiCategoria(
-            String nome,
-            String descrizione,
-            String note) {
-
+    /**
+     * Aggiunge una nuova categoria al database.
+     *
+     * @param nome Nome della categoria
+     * @param descrizione Descrizione della categoria
+     * @param note Note aggiuntive sulla categoria
+     * @return "1" se l'operazione ha avuto successo, "4" se il nome è già presente o c'è stato un errore
+     */
+    public String aggiungiCategoria(String nome, String descrizione, String note) {
         String result = null;
 
-        try { // Verifica se la categoria esiste già nella tabella Categoria
+        try {
             String queryCheckCodice = "SELECT COUNT(*) FROM Categoria WHERE nome = ?";
             PreparedStatement statementCheckCodice = connessione.getConnection().prepareStatement(queryCheckCodice);
             statementCheckCodice.setString(1, nome);
             ResultSet resultSet = statementCheckCodice.executeQuery();
             if (resultSet.next() && resultSet.getInt(1) > 0) {
-                // Se il nome esiste già, restituire un errore
                 return "4"; // Nome già presente
             }
 
             String queryCategoria = "INSERT INTO Categoria(nome, descrizione, note) VALUES(?,?,?)";
-
             PreparedStatement statementCategoria = connessione.getConnection().prepareStatement(queryCategoria, Statement.RETURN_GENERATED_KEYS);
             statementCategoria.setString(1, nome);
             statementCategoria.setString(2, descrizione);
             statementCategoria.setString(3, note);
 
             int rowsAffected = statementCategoria.executeUpdate();
-
-            if (rowsAffected > 0) {
-                result = "1";   //inserimento avvenuto con successo
-            } else {
-                result = "4";   //problemi nell'inserimento
-            }
-
-        }
-        catch (SQLException e)
-        {
+            result = rowsAffected > 0 ? "1" : "4";
+        } catch (SQLException e) {
             throw new RuntimeException(e);
         }
 
         return result;
     }
 
-    public String modificaCategoria(
-            int IDprodotto,
-            String nome,
-            String descrizione,
-            String note) {
-
+    /**
+     * Modifica una categoria esistente nel database.
+     *
+     * @param IDprodotto ID della categoria da modificare
+     * @param nome Nuovo nome della categoria
+     * @param descrizione Nuova descrizione della categoria
+     * @param note Nuove note della categoria
+     * @return "1" se l'operazione ha avuto successo, "2" in caso di errore
+     */
+    public String modificaCategoria(int IDprodotto, String nome, String descrizione, String note) {
         String result = "2";
 
         try {
             String queryCategoria = "UPDATE categoria SET nome = ?, descrizione = ?, note = ? WHERE ID = ?";
-
             PreparedStatement statementCategoria = connessione.getConnection().prepareStatement(queryCategoria);
             statementCategoria.setString(1, nome);
             statementCategoria.setString(2, descrizione);
             statementCategoria.setString(3, note);
-            statementCategoria.setInt(4,IDprodotto);
+            statementCategoria.setInt(4, IDprodotto);
 
             int rowsAffectedProdotto = statementCategoria.executeUpdate();
-
-            // 7) Verifica il risultato dell'aggiornamento del prodotto
-            if (rowsAffectedProdotto > 0) {
-                result = "1"; // Modifica avvenuta con successo
-            }
-
-        }
-        catch (SQLException e)
-        {
+            result = rowsAffectedProdotto > 0 ? "1" : "2";
+        } catch (SQLException e) {
             e.printStackTrace();
         }
 
         return result;
     }
 
-    public Categoria CercaCategoria(int ID)
-    {
+    /**
+     * Cerca una categoria specifica nel database tramite il suo ID.
+     *
+     * @param ID ID della categoria da cercare
+     * @return Oggetto Categoria se trovato, altrimenti null
+     */
+    public Categoria CercaCategoria(int ID) {
         Categoria categoria = null;
-
         String query = "SELECT * FROM categoria WHERE ID = ?";
 
         try {
             PreparedStatement statement = connessione.getConnection().prepareStatement(query);
             statement.setInt(1, ID);
-
             ResultSet resultSet = statement.executeQuery();
 
             if (resultSet.next()) {
@@ -162,65 +169,52 @@ public class GestioneCategorieDAO
             }
             resultSet.close();
             statement.close();
-        }
-        catch (SQLException e)
-        {
+        } catch (SQLException e) {
             throw new RuntimeException(e);
         }
 
         return categoria;
     }
 
+    /**
+     * Elimina una categoria dal database.
+     *
+     * @param ID ID della categoria da eliminare
+     * @return "1" se l'operazione ha avuto successo, "2" per errore di SQL, "3" se la categoria è associata a prodotti, "4" se la categoria non è trovata
+     */
     public String eliminaCategoria(int ID) {
         String result = null;
-
-        // Verifica che non ci siano prodotti con l'ID della categoria
         String checkProdottiQuery = "SELECT COUNT(*) FROM prodotto WHERE IDcategoria = ?";
 
         try {
-            // Verifica se esistono prodotti con quella categoria
             PreparedStatement checkStatement = connessione.getConnection().prepareStatement(checkProdottiQuery);
             checkStatement.setInt(1, ID);
-
             ResultSet checkResult = checkStatement.executeQuery();
 
             if (checkResult.next() && checkResult.getInt(1) > 0) {
-                // Se ci sono prodotti associati, non si può eliminare la categoria
                 result = "3"; // Categoria non eliminabile, ci sono prodotti associati
             } else {
-                // La categoria può essere eliminata
                 String query = "SELECT * FROM categoria WHERE ID = ?";
                 PreparedStatement statement = connessione.getConnection().prepareStatement(query);
                 statement.setInt(1, ID);
                 ResultSet resultSet = statement.executeQuery();
 
                 if (resultSet.next()) {
-                    try {
-                        String deleteQuery = "DELETE FROM categoria WHERE ID = ?";
-                        PreparedStatement deleteStatement = connessione.getConnection().prepareStatement(deleteQuery);
-                        deleteStatement.setInt(1, ID);
+                    String deleteQuery = "DELETE FROM categoria WHERE ID = ?";
+                    PreparedStatement deleteStatement = connessione.getConnection().prepareStatement(deleteQuery);
+                    deleteStatement.setInt(1, ID);
 
-                        int rowsAffected = deleteStatement.executeUpdate();
-
-                        if (rowsAffected > 0) {
-                            result = "1"; // Categoria eliminata con successo
-                        } else {
-                            result = "2"; // Errore durante l'eliminazione
-                        }
-                    } catch (SQLException e) {
-                        result = "2";  // Errore di SQL durante l'eliminazione
-                        throw new RuntimeException(e);
-                    }
+                    int rowsAffected = deleteStatement.executeUpdate();
+                    result = rowsAffected > 0 ? "1" : "2";
                 } else {
-                    result = "4";  // Categoria non trovata
+                    result = "4"; // Categoria non trovata
                 }
             }
         } catch (SQLException e) {
-            result = "4";  // Errore di SQL durante la ricerca dei prodotti
+            result = "2";
             throw new RuntimeException(e);
         }
 
         return result;
     }
-
 }
