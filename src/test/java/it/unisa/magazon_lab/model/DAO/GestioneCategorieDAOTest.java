@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * Classe di test per verificare i casi di validazione del metodo inserisciCategoria di GestioneCategorieDAO.
+ * Classe di test per verificare i casi di validazione del metodo aggiungiCategoria e modificaCategoria di GestioneCategorieDAO.
  *
  * @author Francesco Vaiano
  */

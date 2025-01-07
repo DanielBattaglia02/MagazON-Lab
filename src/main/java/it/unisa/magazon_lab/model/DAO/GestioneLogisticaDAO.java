@@ -170,6 +170,34 @@ public class GestioneLogisticaDAO {
     }
 
     /**
+     * Inserisce un nuovo arrivo nel database e aggiorna lo stato del prodotto associato.
+     *
+     * @param IDprodotto     ID del prodotto da spedire.
+     * @param noteArrivo Note aggiuntive sulla spedizione.
+     */
+    public void inserisciArrivo (int IDprodotto, String noteArrivo){
+        String queryArrivo = "INSERT INTO Arrivo (IDprodotto, note) VALUES (?, ?)";
+        String queryProdotto = "UPDATE Prodotto SET stato = 'in arrivo' WHERE ID = ?";
+
+        try{
+            PreparedStatement statementArrivo=connessione.getConnection().prepareStatement(queryArrivo);
+            statementArrivo.setInt(1,IDprodotto);
+            statementArrivo.setString(2,noteArrivo);
+            statementArrivo.executeUpdate();
+
+            PreparedStatement statementProdotto=connessione.getConnection().prepareStatement(queryProdotto);
+            statementProdotto.setInt(1,IDprodotto);
+            statementProdotto.executeUpdate();
+
+            statementArrivo.close();
+            statementProdotto.close();
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Errore durante l'inserimento dell' arrivo: " + e.getMessage(), e);
+        }
+    }
+
+    /**
      * Inserisce una nuova spedizione nel database e aggiorna lo stato del prodotto associato.
      *
      * @param IDprodotto     ID del prodotto da spedire.
