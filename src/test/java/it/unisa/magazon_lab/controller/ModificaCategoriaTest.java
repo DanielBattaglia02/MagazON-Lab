@@ -12,10 +12,10 @@ import java.io.IOException;
 
 import static org.mockito.Mockito.*;
 
-public class AggiungiCategoriaTest {
+public class ModificaCategoriaTest {
 
     @Test
-    public void testAggiungiCategoria() throws ServletException, IOException {
+    public void testModificaCategoria() throws ServletException, IOException {
 
         // Creo i mock
         HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
@@ -24,34 +24,36 @@ public class AggiungiCategoriaTest {
         GestioneCategorieDAO gestioneCategorieDAO = Mockito.mock(GestioneCategorieDAO.class);
 
         // Imposta i parametri della richiesta
-        when(request.getParameter("nome")).thenReturn("CategoriaTest");
-        when(request.getParameter("descrizione")).thenReturn("Descrizione di prova");
-        when(request.getParameter("note")).thenReturn("Note di prova");
+        when(request.getParameter("idCategoria")).thenReturn("1");
+        when(request.getParameter("nome")).thenReturn("CategoriaModificata");
+        when(request.getParameter("descrizione")).thenReturn("Descrizione modificata");
+        when(request.getParameter("note")).thenReturn("Note modificate");
 
         // Ottieni i parametri dalla richiesta
+        int idCategoria = Integer.parseInt(request.getParameter("idCategoria"));
         String nome = request.getParameter("nome");
         String descrizione = request.getParameter("descrizione");
         String note = request.getParameter("note");
 
         // Mock del DAO
-        doNothing().when(gestioneCategorieDAO).aggiungiCategoria(nome, descrizione, note);
+        doNothing().when(gestioneCategorieDAO).modificaCategoria(idCategoria, nome, descrizione, note);
 
-        // Simula l'aggiunta della categoria
+        // Simula la modifica della categoria
         try {
-            if (nome != null && !nome.isEmpty() && descrizione != null && !descrizione.isEmpty()) {
-                gestioneCategorieDAO.aggiungiCategoria(nome, descrizione, note);
-                request.setAttribute("message", "Categoria aggiunta con successo!");
+            if (idCategoria > 0 && nome != null && !nome.isEmpty() && descrizione != null && !descrizione.isEmpty()) {
+                gestioneCategorieDAO.modificaCategoria(idCategoria, nome, descrizione, note);
+                request.setAttribute("message", "Categoria modificata con successo!");
             } else {
                 request.setAttribute("message", "Errore: parametri mancanti o non validi.");
             }
         } catch (Exception e) {
-            request.setAttribute("message", "Errore durante l'aggiunta della categoria: " + e.getMessage());
+            request.setAttribute("message", "Errore durante la modifica della categoria: " + e.getMessage());
         }
 
         // Verifica che il DAO sia stato chiamato con i parametri corretti
-        verify(gestioneCategorieDAO).aggiungiCategoria(nome, descrizione, note);
+        verify(gestioneCategorieDAO).modificaCategoria(idCategoria, nome, descrizione, note);
 
         // Verifica che il messaggio di successo sia stato impostato
-        verify(request).setAttribute("message", "Categoria aggiunta con successo!");
+        verify(request).setAttribute("message", "Categoria modificata con successo!");
     }
 }
