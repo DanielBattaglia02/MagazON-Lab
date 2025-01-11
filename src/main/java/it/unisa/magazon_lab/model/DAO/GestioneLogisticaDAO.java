@@ -224,4 +224,118 @@ public class GestioneLogisticaDAO {
         }
     }
 
+    public Spedizione visualizzaSpedizione(int IDspedizione)
+    {
+        Spedizione spedizione = null;
+        String query = "SELECT s.ID, s.IDprodotto, p.codice, s.note " +
+                "FROM Spedizione s " +
+                "INNER JOIN Prodotto p ON s.IDprodotto = p.ID " +
+                "WHERE s.ID = ?";
+        try
+        {
+            PreparedStatement statement = connessione.getConnection().prepareStatement(query);
+            statement.setInt(1, IDspedizione);
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                int ID = resultSet.getInt("ID");
+                int IDprodotto = resultSet.getInt("IDprodotto");
+                String codice = resultSet.getString("codice");
+                String note = resultSet.getString("note");
+                spedizione = new Spedizione(ID, IDprodotto, codice, note);
+            }
+            resultSet.close();
+            statement.close();
+        }
+        catch (SQLException e)
+        {
+            throw new RuntimeException("Errore durante il recupero della spedizione: " + e.getMessage(), e);
+        }
+        return spedizione;
+    }
+    public Arrivo visualizzaArrivo(int IDarrivo) {
+        Arrivo arrivo = null;
+        String query = "SELECT a.ID, a.IDprodotto, p.codice, a.note " +
+                "FROM Arrivo a " +
+                "INNER JOIN Prodotto p ON a.IDprodotto = p.ID " +
+                "WHERE a.ID = ?";
+        try {
+            PreparedStatement statement = connessione.getConnection().prepareStatement(query);
+            statement.setInt(1, IDarrivo);
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next())
+            {
+                int ID = resultSet.getInt("ID");
+                int IDprodotto = resultSet.getInt("IDprodotto");
+                String codice = resultSet.getString("codice");
+                String note = resultSet.getString("note");
+                arrivo = new Arrivo(ID, IDprodotto, codice, note);
+            }
+            resultSet.close();
+            statement.close();
+        }
+        catch (SQLException e)
+        {
+            throw new RuntimeException("Errore durante il recupero dell'arrivo: " + e.getMessage(), e);
+        }
+        return arrivo;
+    }
+    public void modificaNoteSpedizione(int IDspedizione, String nuovaNota)
+    {
+        String querySpedizione = "UPDATE Spedizione SET note = ? WHERE ID = ?";
+        String queryProdotto = "UPDATE Prodotto SET noteSpedizione = ? WHERE ID = (SELECT IDprodotto FROM Spedizione WHERE ID = ?)";
+        try
+        {
+            // Modifica le note della spedizione
+            PreparedStatement statementSpedizione = connessione.getConnection().prepareStatement(querySpedizione);
+            statementSpedizione.setString(1, nuovaNota);
+            statementSpedizione.setInt(2, IDspedizione);
+            int rowsUpdated = statementSpedizione.executeUpdate();
+            if (rowsUpdated > 0) {
+                System.out.println("Le note della spedizione sono state modificate.");
+            } else {
+                System.out.println("Nessuna spedizione trovata con l'ID specificato.");
+            }
+            // Aggiorna le note di spedizione nel prodotto
+            PreparedStatement statementProdotto = connessione.getConnection().prepareStatement(queryProdotto);
+            statementProdotto.setString(1, nuovaNota);
+            statementProdotto.setInt(2, IDspedizione);
+            statementProdotto.executeUpdate();
+            statementSpedizione.close();
+            statementProdotto.close();
+        }
+        catch (SQLException e)
+        {
+            throw new RuntimeException("Errore durante la modifica delle note della spedizione: " + e.getMessage(), e);
+        }
+    }
+    public void modificaNoteArrivo(int IDarrivo, String nuovaNota)
+    {
+        String queryArrivo = "UPDATE Arrivo SET note = ? WHERE ID = ?";
+        String queryProdotto = "UPDATE Prodotto SET noteArrivo = ? WHERE ID = (SELECT IDprodotto FROM Arrivo WHERE ID = ?)";
+        try
+        {
+            // Modifica le note dell'arrivo
+            PreparedStatement statementArrivo = connessione.getConnection().prepareStatement(queryArrivo);
+            statementArrivo.setString(1, nuovaNota);
+            statementArrivo.setInt(2, IDarrivo);
+            int rowsUpdated = statementArrivo.executeUpdate();
+            if (rowsUpdated > 0) {
+                System.out.println("Le note dell'arrivo sono state modificate.");
+            } else {
+                System.out.println("Nessun arrivo trovato con l'ID specificato.");
+            }
+            // Aggiorna le note di arrivo nel prodotto
+            PreparedStatement statementProdotto = connessione.getConnection().prepareStatement(queryProdotto);
+            statementProdotto.setString(1, nuovaNota);
+            statementProdotto.setInt(2, IDarrivo);
+            statementProdotto.executeUpdate();
+            statementArrivo.close();
+            statementProdotto.close();
+        }
+        catch (SQLException e)
+        {
+            throw new RuntimeException("Errore durante la modifica delle note dell'arrivo: " + e.getMessage(), e);
+        }
+    }
+
 }
