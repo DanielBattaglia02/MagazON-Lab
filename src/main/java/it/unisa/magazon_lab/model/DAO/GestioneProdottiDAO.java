@@ -6,13 +6,15 @@ package it.unisa.magazon_lab.model.DAO;
 
 import it.unisa.magazon_lab.model.Entity.Connessione;
 import it.unisa.magazon_lab.model.Entity.Prodotto;
+import it.unisa.magazon_lab.model.utils.Patterns;
 
 import java.sql.*;
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GestioneProdottiDAO
-{
+public class GestioneProdottiDAO {
     private static GestioneProdottiDAO instance;
     private Connessione connessione;
 
@@ -22,25 +24,21 @@ public class GestioneProdottiDAO
     }
 
     // Metodo per ottenere l'istanza Singleton
-    public static GestioneProdottiDAO getInstance()
-    {
-        if (instance == null)
-        {
+    public static GestioneProdottiDAO getInstance() {
+        if (instance == null) {
             instance = new GestioneProdottiDAO();
         }
         return instance;
     }
 
-    public List<Prodotto> visualizzaProdotti()
-    {
+    public List<Prodotto> visualizzaProdotti() {
         List<Prodotto> prodotti = new ArrayList<>();
 
         String query = "SELECT c.nome, p.* FROM prodotto p " +
-                        "JOIN categoria c ON p.IDcategoria=c.ID " +
-                        "ORDER BY p.ID";
+                "JOIN categoria c ON p.IDcategoria=c.ID " +
+                "ORDER BY p.ID";
 
-        try
-        {
+        try {
             PreparedStatement statement = connessione.getConnection().prepareStatement(query);
             ResultSet resultSet = statement.executeQuery();
 
@@ -68,9 +66,7 @@ public class GestioneProdottiDAO
 
             resultSet.close();
             statement.close();
-        }
-        catch (SQLException e)
-        {
+        } catch (SQLException e) {
             throw new RuntimeException(e);
         }
 
@@ -113,9 +109,7 @@ public class GestioneProdottiDAO
 
             resultSet.close();
             statement.close();
-        }
-        catch (SQLException e)
-        {
+        } catch (SQLException e) {
             throw new RuntimeException("Errore durante il recupero dei prodotti: " + e.getMessage(), e);
         }
 
@@ -158,9 +152,7 @@ public class GestioneProdottiDAO
 
             resultSet.close();
             statement.close();
-        }
-        catch (SQLException e)
-        {
+        } catch (SQLException e) {
             throw new RuntimeException(e);
         }
 
@@ -258,9 +250,7 @@ public class GestioneProdottiDAO
 
             resultSet.close();
             statement.close();
-        }
-        catch (SQLException e)
-        {
+        } catch (SQLException e) {
             throw new RuntimeException(e);
         }
 
@@ -289,14 +279,10 @@ public class GestioneProdottiDAO
 
             if (resultSet1.next()) {
                 result = "1";  // ID is present in spedizione
-            }
-            else if (resultSet2.next()) {
+            } else if (resultSet2.next()) {
                 result = "2";  // ID is present in arrivo
-            }
-            else if (resultSet3.next())
-            {
-                try
-                {
+            } else if (resultSet3.next()) {
+                try {
                     String deleteQuery = "DELETE FROM prodotto WHERE ID=?";
                     PreparedStatement deleteStatement = connessione.getConnection().prepareStatement(deleteQuery);
                     deleteStatement.setInt(1, id);
@@ -307,20 +293,14 @@ public class GestioneProdottiDAO
                     } else {
                         result = "4";  // Technical issues during deletion
                     }
-                }
-                catch (SQLException e)
-                {
+                } catch (SQLException e) {
                     result = "4";
                     throw new RuntimeException(e);
                 }
-            }
-            else
-            {
+            } else {
                 result = "4";  // Product not found in any table (spedizione, arrivo, prodotto), return error
             }
-        }
-        catch (SQLException e)
-        {
+        } catch (SQLException e) {
             result = "4";  // Catch and handle any SQL errors
             throw new RuntimeException(e);
         }
@@ -345,25 +325,65 @@ public class GestioneProdottiDAO
         String result = null;
 
         try {
+            // Verifica formato del codice
+            if (codice == null || !Patterns.PATTERN1.matcher(codice).matches()) {
+                return "2"; // Formato codice non corretto
+            }
+
+            // Verifica formato del nome
+            if (nome == null || !Patterns.PATTERN1.matcher(nome).matches()) {
+                return "3"; // Formato nome non corretto
+            }
+
+            // Verifica formato della descrizione
+            if (descrizione == null || !Patterns.PATTERN2.matcher(descrizione).matches()) {
+                return "4"; // Formato descrizione non corretto
+            }
+
+            // Verifica formato dei campi partenza
+            if (partenza == null || !Patterns.PATTERN3.matcher(partenza).matches()) {
+                return "5"; // Formato partenza o destinazione non corretto
+            }
+
+            // Verifica formato destinazione
+            if (destinazione != null)
+            {
+                if(!Patterns.PATTERN3.matcher(destinazione).matches())
+                {
+                    return "6"; // Formato destinazione non corretto
+                }
+            }
+
+            // Conversione delle date da stringa a java.sql.Date
+            java.sql.Date dataArrivo = null;
+            if (dataArrivoStr == null) {
+                return "7";
+            } else {
+                try {
+                    LocalDate localDate = LocalDate.parse(dataArrivoStr, Patterns.DATE_TIME_FORMATTER);
+                    dataArrivo = java.sql.Date.valueOf(localDate);
+                } catch (DateTimeParseException e) {
+                    return "7"; // Formato dataArrivo non corretto
+                }
+            }
+
+            java.sql.Date dataSpedizione = null;
+            if (dataSpedizioneStr != null) {
+                try {
+                    LocalDate localDate = LocalDate.parse(dataSpedizioneStr, Patterns.DATE_TIME_FORMATTER);
+                    dataSpedizione = java.sql.Date.valueOf(localDate);
+                } catch (DateTimeParseException e) {
+                    return "8"; // Formato dataSpedizione non corretto
+                }
+            }
+
             // Verifica se il codice esiste già nella tabella Prodotto
             String queryCheckCodice = "SELECT COUNT(*) FROM Prodotto WHERE codice = ?";
             PreparedStatement statementCheckCodice = connessione.getConnection().prepareStatement(queryCheckCodice);
             statementCheckCodice.setString(1, codice);
             ResultSet resultSet = statementCheckCodice.executeQuery();
             if (resultSet.next() && resultSet.getInt(1) > 0) {
-                // Se il codice esiste già, restituire un errore
-                return "5"; // Codice già presente
-            }
-
-            // Conversione delle date da stringa a java.sql.Date
-            java.sql.Date dataArrivo = null;
-            if (dataArrivoStr != null && !dataArrivoStr.trim().isEmpty()) {
-                dataArrivo = java.sql.Date.valueOf(dataArrivoStr);
-            }
-
-            java.sql.Date dataSpedizione = null;
-            if (dataSpedizioneStr != null && !dataSpedizioneStr.trim().isEmpty()) {
-                dataSpedizione = java.sql.Date.valueOf(dataSpedizioneStr);
+                return "9"; // Codice già presente
             }
 
             String queryProdotto = "INSERT INTO Prodotto(IDcategoria, codice, stato, nome, descrizione, dataArrivo, noteArrivo, partenza, dataSpedizione, noteSpedizione, destinazione, noteGenerali) "
@@ -401,19 +421,17 @@ public class GestioneProdottiDAO
                         if (rowsAffectedArrivo > 0) {
                             result = "1"; // Inserimento avvenuto con successo
                         } else {
-                            result = "2"; // Problemi nell'inserimento in Arrivo
+                            result = "10"; // Problemi nell'inserimento in Arrivo
                         }
                     } else {
-                        result = "3"; // Inserimento avvenuto con successo solo nella tabella Prodotto
+                        result = "11"; // Inserimento avvenuto con successo solo nella tabella Prodotto
                     }
                 }
             } else {
-                result = "4"; // Problemi nell'inserimento nella tabella Prodotto
+                result = "12"; // Problemi nell'inserimento nella tabella Prodotto
             }
 
-        }
-        catch (SQLException e)
-        {
+        } catch (SQLException e) {
             e.printStackTrace();
             throw new RuntimeException("Errore durante l'inserimento del prodotto.", e);
         }
@@ -436,34 +454,69 @@ public class GestioneProdottiDAO
             String destinazione,
             String noteGenerali) {
 
-        String result = "3"; // Default, assume failure unless proven otherwise
-        Connection conn = null;
+        String result = null;
 
         try {
-            conn = connessione.getConnection(); // Ottieni la connessione attiva
+            // Verifica formato del codice
+            if (codice == null || !Patterns.PATTERN1.matcher(codice).matches()) {
+                return "2"; // Formato codice non corretto
+            }
 
-            // 1) Verifica se il codice è già presente nel database
+            // Verifica formato del nome
+            if (nome == null || !Patterns.PATTERN1.matcher(nome).matches()) {
+                return "3"; // Formato nome non corretto
+            }
+
+            // Verifica formato della descrizione
+            if (descrizione == null || !Patterns.PATTERN2.matcher(descrizione).matches()) {
+                return "4"; // Formato descrizione non corretto
+            }
+
+            // Verifica formato dei campi partenza e destinazione
+            if (partenza == null || !Patterns.PATTERN3.matcher(partenza).matches()) {
+                return "5"; // Formato partenza non corretto
+            }
+
+            if (destinazione != null && !Patterns.PATTERN3.matcher(destinazione).matches()) {
+                return "6"; // Formato destinazione non corretto
+            }
+
+            // Conversione delle date da stringa a java.sql.Date
+            java.sql.Date dataArrivo = null;
+            if (dataArrivoStr == null) {
+                return "7";
+            } else {
+                try {
+                    LocalDate localDate = LocalDate.parse(dataArrivoStr, Patterns.DATE_TIME_FORMATTER);
+                    dataArrivo = java.sql.Date.valueOf(localDate);
+                } catch (DateTimeParseException e) {
+                    return "7"; // Formato dataArrivo non corretto
+                }
+            }
+
+            java.sql.Date dataSpedizione = null;
+            if (dataSpedizioneStr != null) {
+                try {
+                    LocalDate localDate = LocalDate.parse(dataSpedizioneStr, Patterns.DATE_TIME_FORMATTER);
+                    dataSpedizione = java.sql.Date.valueOf(localDate);
+                } catch (DateTimeParseException e) {
+                    return "8"; // Formato dataSpedizione non corretto
+                }
+            }
+
+            Connection conn = connessione.getConnection(); // Ottieni la connessione attiva
+
+            // Verifica se il codice è già presente nel database
             String queryCheckCodice = "SELECT COUNT(*) FROM prodotto WHERE codice = ? AND ID != ?";
             PreparedStatement stmtCheckCodice = conn.prepareStatement(queryCheckCodice);
             stmtCheckCodice.setString(1, codice);
             stmtCheckCodice.setInt(2, idProdotto);
             ResultSet rsCheckCodice = stmtCheckCodice.executeQuery();
             if (rsCheckCodice.next() && rsCheckCodice.getInt(1) > 0) {
-                return "1"; // Codice già presente
+                return "9"; // Codice già presente
             }
 
-            // 2) Conversione delle date
-            java.sql.Date dataArrivo = null;
-            if (dataArrivoStr != null && !dataArrivoStr.trim().isEmpty()) {
-                dataArrivo = java.sql.Date.valueOf(dataArrivoStr);
-            }
-
-            java.sql.Date dataSpedizione = null;
-            if (dataSpedizioneStr != null && !dataSpedizioneStr.trim().isEmpty()) {
-                dataSpedizione = java.sql.Date.valueOf(dataSpedizioneStr);
-            }
-
-            // 3) Gestione stato prodotto
+            // Gestione stato prodotto
             if ("in magazzino".equalsIgnoreCase(stato) || "non disponibile".equalsIgnoreCase(stato)) {
                 // Rimuove il prodotto da "arrivo" e "spedizione"
                 String deleteArrivo = "DELETE FROM arrivo WHERE IDprodotto = ?";
@@ -483,7 +536,7 @@ public class GestioneProdottiDAO
                 stmtArrivo.setInt(1, idProdotto);
                 stmtArrivo.executeUpdate();
 
-                // Aggiungi il prodotto alla tabella spedizione solo se non è già presente
+                // Aggiorna o aggiunge il prodotto a spedizione
                 String checkSpedizione = "SELECT COUNT(*) FROM spedizione WHERE IDprodotto = ?";
                 PreparedStatement stmtCheckSpedizione = conn.prepareStatement(checkSpedizione);
                 stmtCheckSpedizione.setInt(1, idProdotto);
@@ -495,7 +548,6 @@ public class GestioneProdottiDAO
                     stmtInsertSpedizione.setString(2, noteSpedizione);
                     stmtInsertSpedizione.executeUpdate();
                 } else {
-                    // Se il prodotto è già in spedizione, aggiorna le note di spedizione
                     String updateNoteSpedizione = "UPDATE spedizione SET note = ? WHERE IDprodotto = ?";
                     PreparedStatement stmtUpdateSpedizione = conn.prepareStatement(updateNoteSpedizione);
                     stmtUpdateSpedizione.setString(1, noteSpedizione);
@@ -510,7 +562,6 @@ public class GestioneProdottiDAO
                 stmtSpedizione.setInt(1, idProdotto);
                 stmtSpedizione.executeUpdate();
 
-                // Aggiungi il prodotto alla tabella arrivo solo se non è già presente
                 String checkArrivo = "SELECT COUNT(*) FROM arrivo WHERE IDprodotto = ?";
                 PreparedStatement stmtCheckArrivo = conn.prepareStatement(checkArrivo);
                 stmtCheckArrivo.setInt(1, idProdotto);
@@ -522,7 +573,6 @@ public class GestioneProdottiDAO
                     stmtInsertArrivo.setString(2, noteArrivo);
                     stmtInsertArrivo.executeUpdate();
                 } else {
-                    // Se il prodotto è già in arrivo, aggiorna le note di arrivo
                     String updateNoteArrivo = "UPDATE arrivo SET note = ? WHERE IDprodotto = ?";
                     PreparedStatement stmtUpdateArrivo = conn.prepareStatement(updateNoteArrivo);
                     stmtUpdateArrivo.setString(1, noteArrivo);
@@ -531,7 +581,7 @@ public class GestioneProdottiDAO
                 }
             }
 
-            // 4) Aggiornamento dei dettagli del prodotto
+            // Aggiorna i dettagli del prodotto
             String queryUpdateProdotto = "UPDATE prodotto SET "
                     + "IDcategoria = ?, codice = ?, stato = ?, nome = ?, descrizione = ?, "
                     + "dataArrivo = ?, noteArrivo = ?, partenza = ?, dataSpedizione = ?, "
@@ -554,13 +604,12 @@ public class GestioneProdottiDAO
 
             int rowsAffected = stmtUpdateProdotto.executeUpdate();
             if (rowsAffected > 0) {
-                result = "2"; // Modifica avvenuta con successo
+                result = "1"; // Modifica avvenuta con successo
             }
 
-        }
-        catch (SQLException e)
-        {
+        } catch (SQLException e) {
             e.printStackTrace();
+            throw new RuntimeException("Errore durante la modifica del prodotto.", e);
         }
 
         return result;

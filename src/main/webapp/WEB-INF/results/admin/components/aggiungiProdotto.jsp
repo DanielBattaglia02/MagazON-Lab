@@ -10,23 +10,43 @@ Autore: Daniel Battaglia
     if (message != null) {
         if (message.equals("1")) {
 %>
-<script>alert("Prodotto aggiunto con successo in \"arrivi\"!")</script>
+<script>alert("Prodotto aggiunto con successo!");</script>
+<%
+} else if (message.equals("11")) {
+%>
+<script>alert("Errore: Inserimento avvenuto con successo solo nella tabella Prodotto!");</script>
+<%
+} else if (message.equals("10")) {
+%>
+<script>alert("Errore tecnico nell'inserimento in 'arrivi'!");</script>
+<%
+} else if (message.equals("12")) {
+%>
+<script>alert("Errore tecnico nell'inserimento nella tabella Prodotto!");</script>
+<%
+} else if (message.equals("9")) {
+%>
+<script>alert("Errore nell'inserimento! Codice già presente nel database.");</script>
 <%
 } else if (message.equals("2")) {
 %>
-<script>alert("Prodotto inserito con successo! Problemi nell'inserimento in \"arrivi\"")</script>
+<script>alert("Errore nel formato del codice!");</script>
 <%
 } else if (message.equals("3")) {
 %>
-<script>alert("Inserimento avvenuto con successo!")</script>
+<script>alert("Errore nel formato del nome!");</script>
 <%
 } else if (message.equals("4")) {
 %>
-<script>alert("Errore tecnico nell'inserimento!")</script>
+<script>alert("Errore nel formato della descrizione!");</script>
 <%
-} else if (message.equals("5")) {
+} else if (message.equals("7")) {
 %>
-<script>alert("Errore nell'inserimento! Codice già presente nel database.")</script>
+<script>alert("Errore: formato della data di arrivo non valido!");</script>
+<%
+} else if (message.equals("8")) {
+%>
+<script>alert("Errore: formato della data di spedizione non valido!");</script>
 <%
         }
     }

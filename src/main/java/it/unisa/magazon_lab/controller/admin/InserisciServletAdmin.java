@@ -51,6 +51,8 @@ public class InserisciServletAdmin extends HttpServlet
             String dataArrivo = request.getParameter("dataArrivo");
             dataArrivo = (dataArrivo == null || dataArrivo.trim().isEmpty()) ? null : dataArrivo;
 
+            System.out.println(dataArrivo.toString());
+
             String noteArrivo = request.getParameter("noteArrivo");
             noteArrivo = (noteArrivo == null || noteArrivo.trim().isEmpty()) ? null : noteArrivo;
 

@@ -7,24 +7,46 @@ autore: daniel battaglia
 <%
     String message = (String) request.getAttribute("message");
 
-    if (message != null)
-    {
-        if (message.equals("1"))
-        {
+    if (message != null) {
+        if (message.equals("1")) {
 %>
-<script>alert("Errore nella modifica! Codice già presente nel database.")</script>
+<script>alert("Modifica avvenuta con successo!");</script>
 <%
-}
-        else if (message.equals("2"))
-        {
+} else if (message.equals("2")) {
 %>
-<script>alert("Modifica avvenuta con successo!")</script>
+<script>alert("Errore nel formato del codice!");</script>
 <%
-}
-        else if (message.equals("3"))
-        {
+} else if (message.equals("3")) {
 %>
-<script>alert("Errore tecnico nella modifica!")</script>
+<script>alert("Errore nel formato del nome!");</script>
+<%
+} else if (message.equals("4")) {
+%>
+<script>alert("Errore nel formato della descrizione!");</script>
+<%
+} else if (message.equals("5")) {
+%>
+<script>alert("Errore nel formato della partenza!");</script>
+<%
+} else if (message.equals("6")) {
+%>
+<script>alert("Errore nel formato della destinazione!");</script>
+<%
+} else if (message.equals("7")) {
+%>
+<script>alert("Errore: formato della data di arrivo non valido!");</script>
+<%
+} else if (message.equals("8")) {
+%>
+<script>alert("Errore: formato della data di spedizione non valido!");</script>
+<%
+} else if (message.equals("9")) {
+%>
+<script>alert("Errore nella modifica! Codice già presente nel database.");</script>
+<%
+} else {
+%>
+<script>alert("Errore tecnico nella modifica!");</script>
 <%
         }
     }

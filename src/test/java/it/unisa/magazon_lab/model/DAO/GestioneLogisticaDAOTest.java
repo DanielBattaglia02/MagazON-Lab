@@ -90,13 +90,4 @@ public class GestioneLogisticaDAOTest {
             fail("Non dovrebbe generare eccezioni");
         }
     }
-
-
-
-
-
-
-
-
-
 }
