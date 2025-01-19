@@ -59,4 +59,36 @@ public class Patterns {
      * - Contenere solo lettere, numeri e spazi.
      */
     public static final Pattern PATTERN3 = Pattern.compile("^[a-zA-Z0-9\\s]{3,255}$");
+
+    /**
+     * Pattern per la validazione dei campi nome, cognome e luogo nascita di un utente.
+     */
+    public static final Pattern PATTERN4 = Pattern.compile("^[a-zA-ZàèéìòùÀÈÉÌÒÙ' ]{1,255}$");
+
+    /**
+     * Pattern per la validazione del campo username di un utente.
+     */
+    public static final Pattern PATTERN5 = Pattern.compile("^[a-zA-Z0-9_.]{1,255}$");
+
+    /**
+     * Pattern per la validazione del campo email di un utente.
+     */
+    public static final Pattern PATTERN6 = Pattern.compile("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$");
+
+    /**
+     * Pattern per la validazione del numero telefonico di un utente.
+     */
+    public static final Pattern PATTERN7 = Pattern.compile("^\\+?[0-9 ]{1,20}$");
+
+    /**
+     * Pattern per la validazione della password di un utente.
+     */
+    public static final Pattern PATTERN8 = Pattern.compile("^[A-Za-z0-9\\-_:.;,!?=\\[\\]{}@]{3,20}$");
+
+
+    /**
+     * Pattern per la validazione del nome di una lista.
+     */
+    public static final Pattern PATTERN9 = Pattern.compile("^[a-zA-Z0-9._-]{1,245}$");
+
 }

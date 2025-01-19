@@ -6,11 +6,14 @@ package it.unisa.magazon_lab.model.DAO;
 
 import it.unisa.magazon_lab.model.Entity.Connessione;
 import it.unisa.magazon_lab.model.Entity.Utente;
+import it.unisa.magazon_lab.model.utils.Patterns;
 
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -104,6 +107,10 @@ public class GestioneUtentiDAO
 
     public void aggiornaStatoUtente(int userID, String nuovoStato)
     {
+
+        if(!(nuovoStato.equals("online") || nuovoStato.equals("offline")))
+            throw new RuntimeException("Errore durante l'aggiornamento dello stato dell'utente");
+
         String query = "UPDATE utente SET stato = ? WHERE ID = ?";
 
         try {
@@ -141,16 +148,45 @@ public class GestioneUtentiDAO
                                  String username, String password, String email,
                                  String telefono, String dataNascitaStr, String luogoNascita)
     {
-        // Espressione regolare per verificare l'email
-        String regex = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
-        // Creazione del Pattern per verificare l'email
-        Pattern pattern = Pattern.compile(regex);
-        // Creazione del Matcher per verificare l'email
-        Matcher matcher = pattern.matcher(email);
-        if(!matcher.matches())
-            return "Errore email";
 
-        Date dataNascita = java.sql.Date.valueOf(dataNascitaStr);
+        if (nome == null || nome.trim().isEmpty() || !Patterns.PATTERN4.matcher(nome).matches())
+            return "3";
+
+        if(cognome == null || cognome.trim().isEmpty() || !Patterns.PATTERN4.matcher(cognome).matches())
+            return "3";
+
+        if (ruolo == null || ruolo.trim().isEmpty() || !(ruolo.equals("magazziniere") || ruolo.equals("admin")))
+            return "3";
+
+
+        if(username == null || username.trim().isEmpty() || !Patterns.PATTERN5.matcher(username).matches())
+            return "3";
+
+        if(password == null || password.trim().isEmpty())
+            return "3";
+
+        if (email == null || email.trim().isEmpty() || !Patterns.PATTERN6.matcher(email).matches())
+            return "3";
+
+        if(telefono == null || telefono.trim().isEmpty() || !Patterns.PATTERN7.matcher(telefono).matches())
+            return "3";
+
+        java.sql.Date dataNascita = null;
+        if (dataNascitaStr == null) {
+            return "3";
+        } else {
+            try {
+                LocalDate localDate = LocalDate.parse(dataNascitaStr, Patterns.DATE_TIME_FORMATTER);
+                dataNascita = java.sql.Date.valueOf(localDate);
+            } catch (DateTimeParseException e) {
+                return "3"; // Formato dataArrivo non corretto
+            }
+        }
+
+        if(luogoNascita == null || luogoNascita.trim().isEmpty() || !Patterns.PATTERN4.matcher(luogoNascita).matches())
+            return "3";
+
+
 
         String query = "INSERT INTO utente (nome, cognome, ruolo, username, password, email, telefono, dataDiNascita, luogoDiNascita) VALUES (?, ?, ?, ?, SHA1(?), ?, ?, ?, ?)";
         String result = null;
@@ -347,16 +383,42 @@ public class GestioneUtentiDAO
         String query="";
 
 
-        // Espressione regolare per verificare l'email
-        String regex = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
-        // Creazione del Pattern per verificare l'email
-        Pattern pattern = Pattern.compile(regex);
-        // Creazione del Matcher per verificare l'email
-        Matcher matcher = pattern.matcher(email);
-        if(!matcher.matches())
-            return "Errore email";
+        if (nome == null || nome.trim().isEmpty() || !Patterns.PATTERN4.matcher(nome).matches())
+            return "Nome non valido.";
 
-        Date dataDiNascita = java.sql.Date.valueOf(dataDiNascitaStr);
+        if (cognome == null || cognome.trim().isEmpty() || !Patterns.PATTERN4.matcher(cognome).matches())
+            return "Cognome non valido.";
+
+        if (ruolo == null || ruolo.trim().isEmpty() || !(ruolo.equals("magazziniere") || ruolo.equals("admin")))
+            return "Ruolo non valido: deve essere 'magazziniere' o 'admin'.";
+
+        if (username == null || username.trim().isEmpty() || !Patterns.PATTERN5.matcher(username).matches())
+            return "Username non valido.";
+
+        if (!(password == null || password.trim().isEmpty()) && !Patterns.PATTERN8.matcher(password).matches())
+            return "Password non valida.";
+
+        if (email == null || email.trim().isEmpty() || !Patterns.PATTERN6.matcher(email).matches())
+            return "Email non valida.";
+
+        if (telefono == null || telefono.trim().isEmpty() || !Patterns.PATTERN7.matcher(telefono).matches())
+            return "Numero Telefono non valido.";
+
+        java.sql.Date dataDiNascita = null;
+        if (dataDiNascitaStr == null) {
+            return "Data di nascita non valida.";
+        } else {
+            try {
+                LocalDate localDate = LocalDate.parse(dataDiNascitaStr, Patterns.DATE_TIME_FORMATTER);
+                dataDiNascita = java.sql.Date.valueOf(localDate);
+            } catch (DateTimeParseException e) {
+                return "Data di nascita non valida.";
+            }
+        }
+
+        if (luogoDiNascita == null || luogoDiNascita.trim().isEmpty() || !Patterns.PATTERN4.matcher(luogoDiNascita).matches())
+            return "Luogo di nascita non valido.";
+
 
         if(password.isEmpty()) {
             query = "UPDATE Utente SET nome = ?, cognome = ?, ruolo = ?, username = ?, email = ?, telefono = ?, dataDiNascita = ?, luogoDiNascita = ? WHERE ID = ?";

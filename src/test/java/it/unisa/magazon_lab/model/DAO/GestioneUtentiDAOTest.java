@@ -32,6 +32,9 @@ public class GestioneUtentiDAOTest {
     @BeforeEach
     public void setUp() {
         gestioneUtentiDAO = GestioneUtentiDAO.getInstance();
+
+        int id = gestioneUtentiDAO.cercaIDUtente("mario.rossi");
+        gestioneUtentiDAO.eliminaUtente(id);
     }
 
     /**
@@ -51,12 +54,9 @@ public class GestioneUtentiDAOTest {
         String dataNascitaStr = "1990-05-20";
         String luogoNascita = "Napoli";
 
-        try{
-            gestioneUtentiDAO.aggiungiUtente(nome, cognome, ruolo, username, password, email, telefono, dataNascitaStr, luogoNascita);
-            fail("Non dovrebbe arrivare qui");
-        }catch (Exception e){
-            assertTrue(true, "Ruolo non corretto");
-        }
+        String result = gestioneUtentiDAO.aggiungiUtente(nome, cognome, ruolo, username, password, email, telefono, dataNascitaStr, luogoNascita);
+
+        assertEquals( "3", result);
     }
 
     /**
@@ -107,7 +107,7 @@ public class GestioneUtentiDAOTest {
         String risultato = gestioneUtentiDAO.aggiungiUtente(nome, cognome, ruolo, username, password, email, telefono, dataNascitaStr, luogoNascita);
 
         // Verifica risultato
-        assertEquals("Errore email", risultato);
+        assertEquals("3", risultato);
     }
 
 
@@ -161,7 +161,7 @@ public class GestioneUtentiDAOTest {
         String new_ruolo="invalid_role";
 
         String result = gestioneUtentiDAO.modificaUtente(id,nome,cognome,new_ruolo,username,password,email,telefono,dataNascitaStr,luogoNascita);
-        assertEquals("Errore nella modifica dell'utente", result);
+        assertEquals("Ruolo non valido: deve essere 'magazziniere' o 'admin'.", result);
 
         gestioneUtentiDAO.eliminaUtente(id);
 
@@ -190,7 +190,7 @@ public class GestioneUtentiDAOTest {
         String new_email="mario.rossi@co";
 
         String result = gestioneUtentiDAO.modificaUtente(id,nome,cognome,ruolo,username,password,new_email,telefono,dataNascitaStr,luogoNascita);
-        assertEquals("Errore email", result);
+        assertEquals("Email non valida.", result);
 
         gestioneUtentiDAO.eliminaUtente(id);
     }

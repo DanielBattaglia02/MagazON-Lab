@@ -92,39 +92,23 @@ public class InserisciServletAdmin extends HttpServlet
             pageName = "aggiungiCategoria";
         }
         else if (pageName.equals("utenti")){
-            String nome = request.getParameter("nome") != null && !request.getParameter("nome").trim().isEmpty()
-                    ? request.getParameter("nome")
-                    : null;
+            String nome = request.getParameter("nome");
 
-            String cognome = request.getParameter("cognome") != null && !request.getParameter("cognome").trim().isEmpty()
-                    ? request.getParameter("cognome")
-                    : null;
+            String cognome = request.getParameter("cognome");
 
-            String ruolo = request.getParameter("ruolo") != null && !request.getParameter("ruolo").trim().isEmpty()
-                    ? request.getParameter("ruolo")
-                    : null;
+            String ruolo = request.getParameter("ruolo");
 
-            String username = request.getParameter("username") != null && !request.getParameter("username").trim().isEmpty()
-                    ? request.getParameter("username")
-                    : null;
+            String username = request.getParameter("username");
 
-            String email = request.getParameter("email") != null && !request.getParameter("email").trim().isEmpty()
-                    ? request.getParameter("email")
-                    : null;
+            String email = request.getParameter("email");
 
             String password= Utils.generatePassword(10);
 
-            String telefono = request.getParameter("telefono") != null && !request.getParameter("telefono").trim().isEmpty()
-                    ? request.getParameter("telefono")
-                    : null;
+            String telefono = request.getParameter("telefono");
 
-            String dataNascita = request.getParameter("dataNascita") != null && !request.getParameter("dataNascita").trim().isEmpty()
-                    ? request.getParameter("dataNascita")
-                    : null;
+            String dataNascita = request.getParameter("dataNascita");
 
-            String luogoNascita = request.getParameter("luogoNascita") != null && !request.getParameter("luogoNascita").trim().isEmpty()
-                    ? request.getParameter("luogoNascita")
-                    : null;
+            String luogoNascita = request.getParameter("luogoNascita");
 
 
             GestioneUtentiDAO gestioneUtentiDAO = facade.getGestioneUtentiDAO();

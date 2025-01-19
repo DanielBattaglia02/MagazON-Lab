@@ -2,6 +2,7 @@ package it.unisa.magazon_lab.model.DAO;
 
 import it.unisa.magazon_lab.model.Entity.Connessione;
 import it.unisa.magazon_lab.model.Entity.Lista;
+import it.unisa.magazon_lab.model.utils.Patterns;
 
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -128,6 +129,9 @@ public class GestioneListeDAO {
     public String inserisciLista(String nomeFile, String note)
     {
         String result="";
+
+        if(nomeFile != null || nomeFile.isEmpty() || !Patterns.PATTERN9.matcher(nomeFile).matches())
+            throw new IllegalArgumentException("nomeFile non corretto");
 
         if (!nomeFile.matches(".*\\.(doc|docx|pdf|jpg)$"))
             throw new IllegalArgumentException("nomeFile non rispetta il formato");

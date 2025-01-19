@@ -21,7 +21,7 @@ public class Utils {
      */
     public static String generatePassword(int length)
     {
-        final String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$%";
+        final String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@?!%";
         SecureRandom random = new SecureRandom();
         StringBuilder password = new StringBuilder();
 
