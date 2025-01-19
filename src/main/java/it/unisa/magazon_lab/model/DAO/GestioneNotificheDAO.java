@@ -132,7 +132,7 @@ public class GestioneNotificheDAO {
     /**
      * Invia una notifica a tutti gli utenti o a un utente specifico.
      *
-     * @param ID       L'ID dell'utente destinatario (0 per notifiche globali).
+     * @param ID       L'ID dell'utente mittente.
      * @param oggetto  L'oggetto della notifica.
      * @param messaggio Il contenuto della notifica.
      * @return "3" se l'operazione è completata con successo, "4" per problemi generali, o null per formato non valido.

@@ -1,7 +1,3 @@
-/*
-Autore: Daniel Battaglia
- */
-
 package it.unisa.magazon_lab.controller.admin;
 
 import it.unisa.magazon_lab.model.DAO.*;
@@ -12,10 +8,25 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-
 import java.io.File;
 import java.io.IOException;
 
+/**
+ * La servlet gestisce le richieste di eliminazione per vari elementi amministrativi all'interno dell'applicazione,
+ * come prodotti, categorie, utenti, liste, arrivi e spedizioni. A seconda del parametro "pageName" ricevuto nella
+ * richiesta, la servlet esegue l'eliminazione corrispondente, rimuovendo i dati dal sistema e successivamente inoltra
+ * l'utente alla pagina di visualizzazione appropriata per mostrare il risultato dell'operazione.
+ *
+ * La servlet gestisce anche la cancellazione dei file associati a una lista dal server. Se il file esiste, viene eliminato,
+ * altrimenti viene restituito un errore.
+ *
+ * Dopo l'esecuzione dell'operazione, la servlet invia un messaggio di ritorno per informare l'amministratore del risultato
+ * dell'eliminazione (successo o errore).
+ *
+ * @author Battaglia Daniel
+ * @author Gigante Ruben
+ * @author Vaiano Francesco
+ */
 @WebServlet(name="elimina-servlet-admin", value="/elimina-servlet-admin")
 public class EliminaServletAdmin extends HttpServlet
 {

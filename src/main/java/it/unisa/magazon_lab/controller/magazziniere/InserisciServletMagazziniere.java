@@ -1,7 +1,3 @@
-/*
-Autore: Daniel Battaglia
- */
-
 package it.unisa.magazon_lab.controller.magazziniere;
 
 import it.unisa.magazon_lab.model.DAO.GestioneCategorieDAO;
@@ -16,6 +12,18 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
+
+/**
+ * La servlet gestisce le richieste inviate dall'interfaccia utente relative alle operazioni di inserimento
+ * di nuovi elementi da parte del magazziniere, come la creazione di nuovi prodotti, categorie, arrivi e spedizioni.
+ * A seconda del parametro "pageName" ricevuto nella richiesta, la servlet esegue l'operazione di inserimento
+ * appropriata (ad esempio, aggiunta di un prodotto, creazione di una categoria, inserimento di un arrivo o una spedizione)
+ * e reindirizza l'utente alla pagina di visualizzazione pertinente.
+ *
+ * @author Battaglia Daniel
+ * @author Gigante Ruben
+ * @author Vaiano Francesco
+ */
 
 @WebServlet(name="inserisci-servlet-magazziniere", value="/inserisci-servlet-magazziniere")
 public class InserisciServletMagazziniere extends HttpServlet

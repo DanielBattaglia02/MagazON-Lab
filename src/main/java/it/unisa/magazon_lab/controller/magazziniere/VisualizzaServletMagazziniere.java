@@ -1,7 +1,3 @@
-/*
-Autore: Daniel Battaglia
- */
-
 package it.unisa.magazon_lab.controller.magazziniere;
 
 import it.unisa.magazon_lab.model.DAO.GestioneCategorieDAO;
@@ -16,10 +12,19 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-
 import java.io.IOException;
 import java.util.List;
 
+/**
+ * La servlet gestisce le richieste inviate dall'interfaccia utente relative alle operazioni di visualizzazione dei magazziniere.
+ * In particolare, gestisce la visualizzazione di informazioni sui prodotti, categorie, arrivi, spedizioni e liste.
+ * A seconda del parametro "pageName" ricevuto nella richiesta, la servlet recupera i dati appropriati
+ * dai vari DAO e li imposta come attributi della richiesta per essere visualizzati nelle pagine JSP.
+ *
+ * @author Battaglia Daniel
+ * @author Gigante Ruben
+ * @author Vaiano Francesco
+ */
 @WebServlet(name="visualizza-servlet-magazziniere", value="/visualizza-servlet-magazziniere")
 public class VisualizzaServletMagazziniere extends HttpServlet
 {

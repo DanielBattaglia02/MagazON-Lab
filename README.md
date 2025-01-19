@@ -1,2 +1,2 @@
 # MagazON-Lab
-Progetto Ingegneria del software
+Progetto del corso di Ingegneria del software

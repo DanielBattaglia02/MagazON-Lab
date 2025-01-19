@@ -1,7 +1,3 @@
-/*
-Autore: Daniel Battaglia
- */
-
 package it.unisa.magazon_lab.model.DAO;
 
 import it.unisa.magazon_lab.model.Entity.Connessione;
@@ -14,16 +10,31 @@ import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Classe DAO per la gestione dei prodotti.
+ * Implementa il pattern Singleton per garantire una singola istanza.
+ *
+ * @author Battaglia Daniel
+ */
 public class GestioneProdottiDAO {
     private static GestioneProdottiDAO instance;
     private Connessione connessione;
 
-    // Costruttore privato per impedire creazioni multiple
-    private GestioneProdottiDAO() {
+
+    /**
+     * Costruttore privato per impedire la creazione di istanze multiple.
+     * Recupera un'istanza della connessione al database.
+     */
+    private GestioneProdottiDAO()
+    {
         connessione = Connessione.getInstance();
     }
 
-    // Metodo per ottenere l'istanza Singleton
+    /**
+     * Metodo per ottenere l'istanza Singleton della classe.
+     *
+     * @return L'unica istanza di GestioneProdottiDAO.
+     */
     public static GestioneProdottiDAO getInstance() {
         if (instance == null) {
             instance = new GestioneProdottiDAO();
@@ -31,6 +42,13 @@ public class GestioneProdottiDAO {
         return instance;
     }
 
+    /**
+     * Recupera una lista di prodotti dal database, includendo le informazioni sulla categoria associata.
+     * Ogni prodotto viene creato come oggetto di tipo {@link Prodotto} e aggiunto a una lista.
+     *
+     * @return Una lista di oggetti {@link Prodotto} rappresentanti i prodotti presenti nel database.
+     * @throws RuntimeException se si verifica un errore durante l'esecuzione della query o l'accesso al database.
+     */
     public List<Prodotto> visualizzaProdotti() {
         List<Prodotto> prodotti = new ArrayList<>();
 
@@ -73,6 +91,15 @@ public class GestioneProdottiDAO {
         return prodotti;
     }
 
+    /**
+     * Recupera una lista di prodotti dal database che non sono in stato "in arrivo" o "in spedizione".
+     * Ogni prodotto viene creato come oggetto di tipo {@link Prodotto} e aggiunto a una lista.
+     *
+     * La query esclude i prodotti con stato "in arrivo" e "in spedizione" e ordina i risultati per ID.
+     *
+     * @return Una lista di oggetti {@link Prodotto} rappresentanti i prodotti con stato diverso da "in arrivo" e "in spedizione".
+     * @throws RuntimeException se si verifica un errore durante l'esecuzione della query o l'accesso al database.
+     */
     public List<Prodotto> visualizzaProdottiPerSpedizioneArrivo() {
         List<Prodotto> prodotti = new ArrayList<>();
 
@@ -116,7 +143,16 @@ public class GestioneProdottiDAO {
         return prodotti;
     }
 
-
+    /**
+     * Cerca un prodotto nel database utilizzando il suo ID univoco.
+     * Restituisce un oggetto {@link Prodotto} con tutte le informazioni recuperate,
+     * inclusa la categoria associata, oppure {@code null} se il prodotto non viene trovato.
+     *
+     * @param ID L'identificativo univoco del prodotto da cercare.
+     * @return Un oggetto {@link Prodotto} contenente i dettagli del prodotto trovato,
+     *         oppure {@code null} se non esiste un prodotto con l'ID specificato.
+     * @throws RuntimeException se si verifica un errore durante l'esecuzione della query o l'accesso al database.
+     */
     public Prodotto cercaProdotto(int ID) {
         Prodotto prodotto = null;
 
@@ -159,6 +195,22 @@ public class GestioneProdottiDAO {
         return prodotto;
     }
 
+
+    /**
+     * Cerca prodotti nel database applicando filtri dinamici sui campi forniti.
+     * I filtri includono codice, ID della categoria, nome, stato, data di arrivo e data di spedizione.
+     * Restituisce una lista di oggetti {@link Prodotto} che soddisfano i criteri di ricerca.
+     *
+     * @param codice Il codice del prodotto (opzionale, filtro con LIKE).
+     * @param categoriaID L'ID della categoria del prodotto (opzionale, filtro esatto).
+     * @param nome Il nome del prodotto (opzionale, filtro con LIKE).
+     * @param stato Lo stato del prodotto (opzionale, filtro con LIKE).
+     * @param dataArrivoStr La data di arrivo del prodotto in formato stringa (opzionale, filtro esatto).
+     * @param dataSpedizioneStr La data di spedizione del prodotto in formato stringa (opzionale, filtro esatto).
+     * @return Una lista di oggetti {@link Prodotto} che corrispondono ai filtri applicati.
+     *         Se nessun prodotto soddisfa i filtri, restituisce una lista vuota.
+     * @throws RuntimeException se si verifica un errore durante l'esecuzione della query o l'accesso al database.
+     */
     public List<Prodotto> cercaProdottiFiltrati(String codice, Integer categoriaID, String nome, String stato,
                                                 String dataArrivoStr, String dataSpedizioneStr) {
         List<Prodotto> prodotti = new ArrayList<>();
@@ -257,6 +309,20 @@ public class GestioneProdottiDAO {
         return prodotti;
     }
 
+    /**
+     * Elimina un prodotto dal database se non è associato alle tabelle "spedizione" o "arrivo".
+     * Se il prodotto è presente in una delle tabelle bloccanti, non viene eliminato e viene restituito un codice specifico.
+     *
+     * @param id L'ID del prodotto da eliminare.
+     * @return Una stringa che rappresenta il risultato dell'operazione:
+     *         <ul>
+     *           <li>"1": Il prodotto è presente nella tabella "spedizione" e non può essere eliminato.</li>
+     *           <li>"2": Il prodotto è presente nella tabella "arrivo" e non può essere eliminato.</li>
+     *           <li>"3": Il prodotto è stato eliminato con successo dalla tabella "prodotto".</li>
+     *           <li>"4": Si è verificato un errore durante l'eliminazione o il prodotto non è stato trovato.</li>
+     *         </ul>
+     * @throws RuntimeException se si verifica un errore SQL durante l'esecuzione delle query.
+     */
     public String eliminaProdotto(int id) {
         String result = null;
 
@@ -308,6 +374,40 @@ public class GestioneProdottiDAO {
         return result;
     }
 
+    /**
+     * Aggiunge un nuovo prodotto al database, con la possibilità di inserirlo anche nella tabella "Arrivo"
+     * se lo stato del prodotto è "in arrivo". Il metodo effettua verifiche sui formati dei dati e controlla
+     * la presenza di un codice univoco prima dell'inserimento.
+     *
+     * @param idCategoria L'ID della categoria associata al prodotto.
+     * @param codice Il codice univoco del prodotto (verifica formato con {@link Patterns#PATTERN1}).
+     * @param stato Lo stato del prodotto (ad esempio, "in arrivo").
+     * @param nome Il nome del prodotto (verifica formato con {@link Patterns#PATTERN1}).
+     * @param descrizione La descrizione del prodotto (verifica formato con {@link Patterns#PATTERN2}).
+     * @param dataArrivoStr La data di arrivo del prodotto in formato stringa (verifica con {@link Patterns#DATE_TIME_FORMATTER}).
+     * @param noteArrivo Note aggiuntive relative all'arrivo del prodotto.
+     * @param partenza La località di partenza del prodotto (verifica formato con {@link Patterns#PATTERN3}).
+     * @param dataSpedizioneStr La data di spedizione del prodotto in formato stringa (opzionale, verifica formato).
+     * @param noteSpedizione Note aggiuntive relative alla spedizione del prodotto.
+     * @param destinazione La località di destinazione del prodotto (opzionale, verifica formato con {@link Patterns#PATTERN3}).
+     * @param noteGenerali Note generali associate al prodotto.
+     * @return Una stringa che rappresenta il risultato dell'operazione:
+     *         <ul>
+     *           <li>"1": Prodotto inserito con successo in entrambe le tabelle "Prodotto" e "Arrivo".</li>
+     *           <li>"2": Formato del codice non corretto.</li>
+     *           <li>"3": Formato del nome non corretto.</li>
+     *           <li>"4": Formato della descrizione non corretto.</li>
+     *           <li>"5": Formato della località di partenza non corretto.</li>
+     *           <li>"6": Formato della destinazione non corretto.</li>
+     *           <li>"7": Formato della data di arrivo non corretto.</li>
+     *           <li>"8": Formato della data di spedizione non corretto.</li>
+     *           <li>"9": Codice prodotto già esistente.</li>
+     *           <li>"10": Problemi nell'inserimento del prodotto nella tabella "Arrivo".</li>
+     *           <li>"11": Prodotto inserito con successo solo nella tabella "Prodotto".</li>
+     *           <li>"12": Problemi nell'inserimento del prodotto nella tabella "Prodotto".</li>
+     *         </ul>
+     * @throws RuntimeException se si verifica un errore SQL durante l'esecuzione delle query.
+     */
     public String aggiungiProdotto(
             int idCategoria,
             String codice,
@@ -439,6 +539,37 @@ public class GestioneProdottiDAO {
         return result;
     }
 
+    /**
+     * Modifica i dettagli di un prodotto esistente nel database, con la possibilità di aggiornare
+     * le tabelle "Arrivo" e "Spedizione" in base allo stato del prodotto.
+     *
+     * @param idProdotto L'ID univoco del prodotto da modificare.
+     * @param idCategoria L'ID della categoria associata al prodotto.
+     * @param codice Il codice univoco del prodotto (verifica formato con {@link Patterns#PATTERN1}).
+     * @param stato Lo stato del prodotto (ad esempio, "in arrivo", "in spedizione", "in magazzino").
+     * @param nome Il nome del prodotto (verifica formato con {@link Patterns#PATTERN1}).
+     * @param descrizione La descrizione del prodotto (verifica formato con {@link Patterns#PATTERN2}).
+     * @param dataArrivoStr La data di arrivo del prodotto in formato stringa (verifica con {@link Patterns#DATE_TIME_FORMATTER}).
+     * @param noteArrivo Note aggiuntive relative all'arrivo del prodotto.
+     * @param partenza La località di partenza del prodotto (verifica formato con {@link Patterns#PATTERN3}).
+     * @param dataSpedizioneStr La data di spedizione del prodotto in formato stringa (opzionale, verifica formato).
+     * @param noteSpedizione Note aggiuntive relative alla spedizione del prodotto.
+     * @param destinazione La località di destinazione del prodotto (opzionale, verifica formato con {@link Patterns#PATTERN3}).
+     * @param noteGenerali Note generali associate al prodotto.
+     * @return Una stringa che rappresenta il risultato dell'operazione:
+     *         <ul>
+     *           <li>"1": Modifica avvenuta con successo.</li>
+     *           <li>"2": Formato del codice non corretto.</li>
+     *           <li>"3": Formato del nome non corretto.</li>
+     *           <li>"4": Formato della descrizione non corretto.</li>
+     *           <li>"5": Formato della località di partenza non corretto.</li>
+     *           <li>"6": Formato della destinazione non corretto.</li>
+     *           <li>"7": Formato della data di arrivo non corretto.</li>
+     *           <li>"8": Formato della data di spedizione non corretto.</li>
+     *           <li>"9": Codice prodotto già esistente (associato a un altro prodotto).</li>
+     *         </ul>
+     * @throws RuntimeException se si verifica un errore SQL durante l'esecuzione delle query.
+     */
     public String modificaProdotto(
             int idProdotto,
             int idCategoria,

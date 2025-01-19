@@ -1,7 +1,3 @@
-/*
-Autore: Daniel Battaglia
- */
-
 package it.unisa.magazon_lab.controller.magazziniere;
 
 import it.unisa.magazon_lab.model.DAO.GestioneCategorieDAO;
@@ -16,6 +12,18 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
+
+/**
+ * La servlet gestisce le richieste inviate dall'interfaccia utente relative alle operazioni di eliminazione
+ * da parte del magazziniere, come la rimozione di prodotti, categorie, arrivi e spedizioni. A seconda del parametro
+ * "pageName" ricevuto nella richiesta, la servlet esegue l'operazione di eliminazione appropriata (ad esempio,
+ * la rimozione di un prodotto, una categoria, un arrivo o una spedizione) e reindirizza l'utente alla pagina di
+ * visualizzazione pertinente.
+ *
+ * @author Battaglia Daniel
+ * @author Gigante Ruben
+ * @author Vaiano Francesco
+ */
 
 @WebServlet(name="elimina-servlet-magazziniere", value="/elimina-servlet-magazziniere")
 public class EliminaServletMagazziniere extends HttpServlet

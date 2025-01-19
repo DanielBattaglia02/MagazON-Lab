@@ -1,7 +1,3 @@
-/*
-Autore: Daniel Battaglia
- */
-
 package it.unisa.magazon_lab.controller.admin;
 
 import it.unisa.magazon_lab.model.DAO.*;
@@ -15,6 +11,20 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
+/**
+ * La servlet gestisce le richieste di modifica per gli elementi amministrativi all'interno dell'applicazione,
+ * come prodotti, categorie, utenti, liste, arrivi, spedizioni, e notifiche. A seconda del parametro "pageName"
+ * ricevuto nella richiesta, la servlet esegue l'aggiornamento dei dati specifici in base ai parametri inviati
+ * dal client e poi inoltra l'utente alla pagina corrispondente per visualizzare il risultato dell'operazione.
+ *
+ * Ad esempio, può modificare un prodotto, aggiornare le informazioni di una categoria, cambiare lo stato di una notifica,
+ * o aggiornare note specifiche per arrivi e spedizioni. La servlet comunica quindi il risultato dell'operazione tramite
+ * un messaggio che viene visualizzato nell'interfaccia utente.
+ *
+ * @author Battaglia Daniel
+ * @author Gigante Ruben
+ * @author Vaiano Francesco
+ */
 @WebServlet(name="modifica-servlet-admin", value="/modifica-servlet-admin")
 public class ModificaServletAdmin extends HttpServlet
 {

@@ -1,7 +1,3 @@
-/*
-Autore: Daniel Battaglia
- */
-
 package it.unisa.magazon_lab.controller.magazziniere;
 
 import it.unisa.magazon_lab.model.DAO.GestioneCategorieDAO;
@@ -18,6 +14,17 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
+/**
+ * La servlet gestisce le richieste inviate dall'interfaccia utente relative alle operazioni di modifica
+ * delle entità gestite dal magazziniere, tra cui i prodotti, le categorie, gli arrivi e le spedizioni.
+ * A seconda del parametro "pageName" ricevuto nella richiesta, la servlet esegue l'operazione di modifica
+ * appropriata (ad esempio, modifica delle informazioni di un prodotto, aggiornamento dello stato di una notifica
+ * o delle note di un arrivo/spedizione) e reindirizza l'utente alla pagina di visualizzazione pertinente.
+ *
+ * @author Battaglia Daniel
+ * @author Gigante Ruben
+ * @author Vaiano Francesco
+ */
 @WebServlet(name="modifica-servlet-magazziniere", value="/modifica-servlet-magazziniere")
 public class ModificaServletMagazziniere extends HttpServlet
 {

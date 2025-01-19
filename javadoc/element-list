@@ -1,0 +1,12 @@
+it.unisa.magazon_lab.controller
+it.unisa.magazon_lab.controller.admin
+it.unisa.magazon_lab.controller.chiamateAJAX
+it.unisa.magazon_lab.controller.filtri
+it.unisa.magazon_lab.controller.login
+it.unisa.magazon_lab.controller.magazziniere
+it.unisa.magazon_lab.controller.utils
+it.unisa.magazon_lab.model.DAO
+it.unisa.magazon_lab.model.entity
+it.unisa.magazon_lab.model.Entity
+it.unisa.magazon_lab.model.Facade
+it.unisa.magazon_lab.model.utils

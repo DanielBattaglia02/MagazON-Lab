@@ -1,7 +1,3 @@
-/*
-Autore: Daniel Battaglia
- */
-
 package it.unisa.magazon_lab.controller.admin;
 
 import it.unisa.magazon_lab.model.DAO.*;
@@ -17,6 +13,18 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
+/**
+ * La servlet gestisce le richieste inviate dall'interfaccia utente per la visualizzazione e la gestione
+ * degli elementi amministrativi all'interno dell'applicazione, come prodotti, categorie, utenti, arrivi,
+ * spedizioni, liste, e altro. A seconda del parametro "pageName" ricevuto nella richiesta, la servlet
+ * recupera e visualizza i dati appropriati, come la lista dei prodotti, la modifica di categorie o utenti,
+ * o la gestione di arrivi e spedizioni. Infine, la servlet reindirizza l'utente alla pagina JSP corretta
+ * per visualizzare i dati richiesti.
+ *
+ * @author Battaglia Daniel
+ * @author Gigante Ruben
+ * @author Vaiano Francesco
+ */
 @WebServlet(name="visualizza-servlet-admin", value="/visualizza-servlet-admin")
 public class VisualizzaServletAdmin extends HttpServlet
 {

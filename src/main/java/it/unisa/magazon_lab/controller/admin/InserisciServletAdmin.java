@@ -1,7 +1,3 @@
-/*
-Autore: Daniel Battaglia
- */
-
 package it.unisa.magazon_lab.controller.admin;
 
 import it.unisa.magazon_lab.model.DAO.*;
@@ -11,13 +7,27 @@ import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
-
 import java.io.File;
 import java.io.IOException;
 import jakarta.servlet.annotation.MultipartConfig;
-
 import java.nio.file.Paths;
 
+/**
+ * La servlet gestisce le richieste di inserimento e modifica per diversi elementi amministrativi all'interno dell'applicazione,
+ * come prodotti, categorie, utenti, liste, arrivi, spedizioni e notifiche. A seconda del parametro "pageName" ricevuto nella
+ * richiesta, la servlet esegue l'operazione corrispondente, aggiornando i dati nel sistema e successivamente inoltra l'utente alla
+ * pagina di visualizzazione appropriata per mostrare il risultato dell'operazione.
+ *
+ * La servlet supporta l'invio di file tramite il form, utilizzando la configurazione di caricamento multipart, che permette di gestire file
+ * di dimensioni fino a 50 MB. In caso di caricamento di file duplicati, il sistema assegna un nome unico al file.
+ *
+ * Ogni operazione restituirà un messaggio che sarà visualizzato nell'interfaccia utente per informare l'amministratore del risultato
+ * dell'operazione (successo o errore).
+ *
+ * @author Battaglia Daniel
+ * @author Gigante Ruben
+ * @author Vaiano Francesco
+ */
 
 @MultipartConfig( //Serve per supportare l'invio di file dal form
         fileSizeThreshold = 1024 * 1024 * 2, // 2MB

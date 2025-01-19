@@ -27,7 +27,7 @@ public class GestioneNotificheDAOTest {
      * Formato di oggetto e messaggio non rispettato.
      */
     @Test
-    public void testInviaNotifica_TC_6_1_1() {
+    public void TC_6_1_1() {
         int idUtente = 1; // Assumi un ID utente valido nel database di test
         String oggetto = ""; // Formato oggetto non valido (vuoto)
         String messaggio = ""; // Formato messaggio non valido (vuoto)
@@ -42,7 +42,7 @@ public class GestioneNotificheDAOTest {
      * Formato dell’oggetto non rispettato.
      */
     @Test
-    public void testInviaNotifica_TC_6_1_2() {
+    public void TC_6_1_2() {
         int idUtente = 1; // Assumi un ID utente valido nel database di test
         String oggetto = ""; // Formato oggetto non valido (vuoto)
         String messaggio = "Messaggio valido."; // Formato messaggio valido
@@ -57,7 +57,7 @@ public class GestioneNotificheDAOTest {
      * Formato del messaggio non rispettato.
      */
     @Test
-    public void testInviaNotifica_TC_6_1_3() {
+    public void TC_6_1_3() {
         int idUtente = 1; // Assumi un ID utente valido nel database di test
         String oggetto = "Oggetto valido."; // Formato oggetto valido
         String messaggio = ""; // Formato messaggio non valido (vuoto)
@@ -72,7 +72,7 @@ public class GestioneNotificheDAOTest {
      * Formato corretto per oggetto e messaggio.
      */
     @Test
-    public void testInviaNotifica_TC_6_1_4() {
+    public void TC_6_1_4() {
         int idUtente = 1; // Assumi un ID utente valido nel database di test
         String oggetto = "Oggetto valido."; // Formato oggetto valido
         String messaggio = "Messaggio valido."; // Formato messaggio valido
