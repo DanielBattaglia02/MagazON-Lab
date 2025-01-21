@@ -46,7 +46,7 @@ public class GestioneLogisticaDAOTest {
      */
     @Test
     public void TC_3_1_2() {
-        int IDprodotto = 1; //Valido
+        int IDprodotto = 2; //Valido
         String noteArrivo ="";
 
         try {
@@ -80,7 +80,7 @@ public class GestioneLogisticaDAOTest {
      */
     @Test
     public void TC_3_2_2() {
-        int IDprodotto = 1; //Valido
+        int IDprodotto = 2; //Valido
         String noteSpedizione ="";
 
         try {
