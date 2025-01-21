@@ -1,17 +1,21 @@
 package it.unisa.magazon_lab.controller;
 
 import it.unisa.magazon_lab.model.DAO.GestioneUtentiDAO;
+import it.unisa.magazon_lab.model.utils.Patterns;
 import it.unisa.magazon_lab.model.utils.Utils;
 
 import it.unisa.magazon_lab.model.Facade.Facade;
 
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 import jakarta.servlet.http.HttpServletRequest;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 
 
 /**
@@ -22,80 +26,92 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class InserisciUtenteTest {
 
-    @Test
-    public void Aggiungi_Utente(){
+    /**
+     * Test per verificare la funzionalità di invio notifiche.
+     * Simula una richiesta HTTP con parametri e controlla che il risultato sia corretto
+     * e che l'interazione tra i componenti sia valida.
+     */
 
-        //Creo i mock
-        HttpServletRequest request= Mockito.mock(HttpServletRequest.class);
+    @Test
+    public void testAggiungiUtente() {
+        // Creo i mock
+        HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
         Facade facade = Mockito.mock(Facade.class);
         GestioneUtentiDAO gestioneUtentiDAO = Mockito.mock(GestioneUtentiDAO.class);
 
         // Simula i parametri della richiesta
         when(request.getParameter("nome")).thenReturn("Mario");
         when(request.getParameter("cognome")).thenReturn("Rossi");
-        when(request.getParameter("ruolo")).thenReturn("Admin");
+        when(request.getParameter("ruolo")).thenReturn("admin");
         when(request.getParameter("username")).thenReturn("mario.rossi");
         when(request.getParameter("email")).thenReturn("mario.rossi@example.com");
         when(request.getParameter("telefono")).thenReturn("1234567890");
         when(request.getParameter("dataNascita")).thenReturn("2000-01-01");
         when(request.getParameter("luogoNascita")).thenReturn("Roma");
 
-        //Controllo validità input
+        // Recupero parametri
+        String nome = request.getParameter("nome");
+        String cognome = request.getParameter("cognome");
+        String ruolo = request.getParameter("ruolo");
+        String username = request.getParameter("username");
+        String email = request.getParameter("email");
+        String password = Utils.generatePassword(10);
+        String telefono = request.getParameter("telefono");
+        String dataNascita = request.getParameter("dataNascita");
+        String luogoNascita = request.getParameter("luogoNascita");
 
-        String nome = request.getParameter("nome") != null && !request.getParameter("nome").trim().isEmpty()
-                ? request.getParameter("nome")
-                : null;
+        // Controllo validità input
+        assertNotNull(nome);
+        assertFalse(nome.trim().isEmpty());
+        assertTrue(Patterns.PATTERN4.matcher(nome).matches());
 
-        String cognome = request.getParameter("cognome") != null && !request.getParameter("cognome").trim().isEmpty()
-                ? request.getParameter("cognome")
-                : null;
+        assertNotNull(cognome);
+        assertFalse(cognome.trim().isEmpty());
+        assertTrue(Patterns.PATTERN4.matcher(cognome).matches());
 
-        String ruolo = request.getParameter("ruolo") != null && !request.getParameter("ruolo").trim().isEmpty()
-                ? request.getParameter("ruolo")
-                : null;
+        assertNotNull(ruolo);
+        assertTrue(ruolo.equals("magazziniere") || ruolo.equals("admin"));
 
-        String username = request.getParameter("username") != null && !request.getParameter("username").trim().isEmpty()
-                ? request.getParameter("username")
-                : null;
+        assertNotNull(username);
+        assertFalse(username.trim().isEmpty());
+        assertTrue(Patterns.PATTERN5.matcher(username).matches());
 
-        String email = request.getParameter("email") != null && !request.getParameter("email").trim().isEmpty()
-                ? request.getParameter("email")
-                : null;
+        assertNotNull(email);
+        assertFalse(email.trim().isEmpty());
+        assertTrue(Patterns.PATTERN6.matcher(email).matches());
 
-        String password= Utils.generatePassword(10);
+        assertNotNull(telefono);
+        assertFalse(telefono.trim().isEmpty());
+        assertTrue(Patterns.PATTERN7.matcher(telefono).matches());
 
-        String telefono = request.getParameter("telefono") != null && !request.getParameter("telefono").trim().isEmpty()
-                ? request.getParameter("telefono")
-                : null;
+        assertNotNull(dataNascita);
+        assertFalse(dataNascita.trim().isEmpty());
+        assertDoesNotThrow(() -> LocalDate.parse(dataNascita, Patterns.DATE_TIME_FORMATTER));
 
-        String dataNascita = request.getParameter("dataNascita") != null && !request.getParameter("dataNascita").trim().isEmpty()
-                ? request.getParameter("dataNascita")
-                : null;
-
-        String luogoNascita = request.getParameter("luogoNascita") != null && !request.getParameter("luogoNascita").trim().isEmpty()
-                ? request.getParameter("luogoNascita")
-                : null;
+        assertNotNull(luogoNascita);
+        assertFalse(luogoNascita.trim().isEmpty());
+        assertTrue(Patterns.PATTERN4.matcher(luogoNascita).matches());
 
         // Simula il comportamento di Facade e del DAO
         when(facade.getGestioneUtentiDAO()).thenReturn(gestioneUtentiDAO);
         when(gestioneUtentiDAO.aggiungiUtente(
-                nome,cognome,ruolo,username,password,email,telefono,dataNascita,luogoNascita))
+                nome, cognome, ruolo, username, password, email, telefono, dataNascita, luogoNascita))
                 .thenReturn("Utente aggiunto con successo");
 
+        // Chiamata al metodo
         gestioneUtentiDAO = facade.getGestioneUtentiDAO();
         String result = gestioneUtentiDAO.aggiungiUtente(
-                nome,cognome,ruolo,username,password,email,telefono,dataNascita,luogoNascita);
+                nome, cognome, ruolo, username, password, email, telefono, dataNascita, luogoNascita);
 
+        // Imposta attributi nella request
         request.setAttribute("message", result);
         request.setAttribute("username", username);
         request.setAttribute("password", password);
 
-        // Verifica
+        // Verifiche
         assertEquals("Utente aggiunto con successo", result);
-
         verify(request).setAttribute("message", result);
         verify(request).setAttribute("username", username);
         verify(request).setAttribute("password", password);
-
-       }
+    }
 }

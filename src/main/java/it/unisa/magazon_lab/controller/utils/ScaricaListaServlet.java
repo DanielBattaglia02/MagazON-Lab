@@ -14,10 +14,24 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
+/**
+ * Questa servlet permette di scaricare un file associato a una lista specifica
+ * identificata tramite un parametro di richiesta. Se il file esiste, viene inviato
+ * come risposta HTTP, altrimenti viene restituito un errore.
+ *
+ * @author Ruben Gigante
+ */
+
 @WebServlet(name="scarica-lista-servlet", value="/scarica-lista-servlet")
 public class ScaricaListaServlet extends HttpServlet
 {
     private Facade facade;
+
+    /**
+     * Inizializza la servlet creando un'istanza della classe Facade.
+     *
+     * @throws ServletException se si verifica un errore durante l'inizializzazione.
+     */
 
     @Override
     public void init() throws ServletException
@@ -25,6 +39,17 @@ public class ScaricaListaServlet extends HttpServlet
         super.init();
         this.facade = new Facade();
     }
+
+    /**
+     * Recupera l'ID della lista dalla richiesta, ottiene il nome del file dal database
+     * tramite la Facade e invia il file come risposta.
+     *
+     * @param request La richiesta HTTP contenente le credenziali dell'utente.
+     * @param response La risposta HTTP che può essere utilizzata per reindirizzare l'utente o inviare un messaggio di errore.
+     * @throws ServletException Se si verifica un errore durante l'elaborazione della richiesta.
+     * @throws IOException Se si verifica un errore durante la scrittura della risposta.
+     */
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
     {
@@ -55,6 +80,15 @@ public class ScaricaListaServlet extends HttpServlet
             }
         }
     }
+
+    /**
+     * Gestisce le richieste POST inoltrandole al metodo doGet.
+     *
+     * @param request La richiesta HTTP contenente le credenziali dell'utente.
+     * @param response La risposta HTTP che può essere utilizzata per reindirizzare l'utente o inviare un messaggio di errore.
+     * @throws ServletException Se si verifica un errore durante l'elaborazione della richiesta.
+     * @throws IOException Se si verifica un errore durante la scrittura della risposta.
+     */
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException

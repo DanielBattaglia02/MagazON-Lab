@@ -91,4 +91,10 @@ public class Patterns {
      */
     public static final Pattern PATTERN9 = Pattern.compile("^[a-zA-Z0-9._-]{1,245}$");
 
+
+    /**
+     * Pattern per la validazione della data in formato Stringa.
+     */
+    public static final Pattern DATE_TIME_FORMATTER_STR = Pattern.compile("^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$");
+
 }

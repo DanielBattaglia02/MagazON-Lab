@@ -372,9 +372,7 @@ public class GestioneUtentiDAO
      * @param telefono          Numero di telefono dell'utente.
      * @param dataDiNascitaStr  Data di nascita dell'utente in formato stringa (es. "YYYY-MM-DD").
      * @param luogoDiNascita    Luogo di nascita dell'utente.
-     * @return Una stringa indicante il risultato dell'operazione:
-     *         "Utente modificato con successo!" in caso di successo,
-     *         "Errore nella modifica dell'utente" in caso di errore o se l'utente non è stato trovato.
+     * @return Una stringa indicante il risultato dell'operazione.
      */
 
     public String modificaUtente(int id, String nome, String cognome, String ruolo, String username, String password, String email, String telefono, String dataDiNascitaStr, String luogoDiNascita)
