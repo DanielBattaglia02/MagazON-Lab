@@ -28,8 +28,8 @@ public class GestioneCategorieDAOTest {
      */
     @Test
     public void TC_2_1_1() {
-        String nome = "FN02"; // Formato non valido
-        String descrizione = "FDE1"; // Formato valido
+        String nome = "Cellulari#"; // Formato non valido
+        String descrizione = "Telefoni cellulari e non di casa"; // Formato valido
         String note = "";
 
         try {
@@ -46,8 +46,8 @@ public class GestioneCategorieDAOTest {
      */
     @Test
     public void TC_2_1_2() {
-        String nome = "FN03"; // Nome già presente nel database
-        String descrizione = "FDE1"; // Formato valido
+        String nome = "Elettronica"; // Nome già presente nel database
+        String descrizione = "prodotti elettronici"; // Formato valido
         String note = "";
 
         try {
@@ -64,8 +64,8 @@ public class GestioneCategorieDAOTest {
      */
     @Test
     public void TC_2_1_3() {
-        String nome = "FNO1"; // Formato valido
-        String descrizione = "FDE2"; // Formato non valido
+        String nome = "Cellulari"; // Formato valido
+        String descrizione = "A"; // Formato non valido
         String note = "";
 
         try {
@@ -82,8 +82,8 @@ public class GestioneCategorieDAOTest {
      */
     @Test
     public void TC_2_1_4() {
-        String nome = "FNO1"; // Formato valido
-        String descrizione = "FDE1"; // Formato valido
+        String nome = "Cellulari"; // Formato valido
+        String descrizione = "Telefono cellulari e non di casa"; // Formato valido
         String note = "";
         try {
             gestioneCategorieDAO.aggiungiCategoria(nome, descrizione,note);
@@ -100,8 +100,8 @@ public class GestioneCategorieDAOTest {
     @Test
     public void TC_2_2_1() {
         int IDProdotto = 1; // Valido
-        String nome = "FN02"; // Formato errato
-        String descrizione = "FDE1"; // Formato corretto
+        String nome = "Cellulari#"; // Formato errato
+        String descrizione = "Telefoni cellulari e non di casa"; // Formato corretto
         String note = "";
 
         Exception exception = assertThrows(Exception.class, () -> {
@@ -118,8 +118,8 @@ public class GestioneCategorieDAOTest {
     @Test
     public void TC_2_2_2() {
         int IDProdotto = 1; // Valido
-        String nome = "FN03"; // Nome già presente
-        String descrizione = "FDE1"; // Formato corretto
+        String nome = "Elettronica"; // Nome già presente
+        String descrizione = "Prodotti elettronici"; // Formato corretto
         String note = "";
 
         Exception exception = assertThrows(Exception.class, () -> {
@@ -136,8 +136,8 @@ public class GestioneCategorieDAOTest {
     @Test
     public void TC_2_2_3() {
         int IDProdotto = 1; // Valido
-        String nome = "FNO1"; // Formato corretto
-        String descrizione = "FDE2"; // Formato errato
+        String nome = "Cellulari"; // Formato corretto
+        String descrizione = "B"; // Formato errato
         String note = "";
 
         Exception exception = assertThrows(Exception.class, () -> {
@@ -154,8 +154,8 @@ public class GestioneCategorieDAOTest {
     @Test
     public void TC_2_2_4() {
         int IDProdotto = 1; // Valido
-        String nome = "FNO1"; // Formato corretto
-        String descrizione = "FDE1"; // Formato corretto
+        String nome = "Cellulari"; // Formato corretto
+        String descrizione = "Telefoni cellulari e non di casa"; // Formato corretto
         String note = "";
 
         try {

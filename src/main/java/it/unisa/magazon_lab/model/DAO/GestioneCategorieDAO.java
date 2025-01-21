@@ -2,7 +2,9 @@ package it.unisa.magazon_lab.model.DAO;
 
 import it.unisa.magazon_lab.model.Entity.Categoria;
 import it.unisa.magazon_lab.model.Entity.Connessione;
+import it.unisa.magazon_lab.model.utils.Patterns;
 
+import java.beans.PropertyEditorSupport;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -86,16 +88,23 @@ public class GestioneCategorieDAO {
      * @param nome Nome della categoria
      * @param descrizione Descrizione della categoria
      * @param note Note aggiuntive sulla categoria
-     * @return "1" se l'operazione ha avuto successo, "4" se il nome è già presente o c'è stato un errore
+     * @return "1" se l'operazione ha avuto successo, "2" se il nome non è corretto, "3" se la descrizione non è corretta e "4" se il nome è già presente o c'è stato un errore
      */
     public String aggiungiCategoria(String nome, String descrizione, String note) {
+
         String result = null;
 
+        if (nome == null || nome.trim().isEmpty() || !Patterns.PATTERN1.matcher(nome).matches())
+            return "2";
+
+        if (descrizione == null || descrizione.trim().isEmpty() || !Patterns.PATTERN2.matcher(descrizione).matches())
+            return "3";
+
         try {
-            String queryCheckCodice = "SELECT COUNT(*) FROM Categoria WHERE nome = ?";
-            PreparedStatement statementCheckCodice = connessione.getConnection().prepareStatement(queryCheckCodice);
-            statementCheckCodice.setString(1, nome);
-            ResultSet resultSet = statementCheckCodice.executeQuery();
+            String queryCheckNome = "SELECT COUNT(*) FROM Categoria WHERE nome = ?";
+            PreparedStatement statementCheckNome = connessione.getConnection().prepareStatement(queryCheckNome);
+            statementCheckNome.setString(1, nome);
+            ResultSet resultSet = statementCheckNome.executeQuery();
             if (resultSet.next() && resultSet.getInt(1) > 0) {
                 return "4"; // Nome già presente
             }
@@ -122,12 +131,27 @@ public class GestioneCategorieDAO {
      * @param nome Nuovo nome della categoria
      * @param descrizione Nuova descrizione della categoria
      * @param note Nuove note della categoria
-     * @return "1" se l'operazione ha avuto successo, "2" in caso di errore
+     * @return "1" se l'operazione ha avuto successo, "2" se il nome non è corretto, "3" se la descrizione non è corretta e "4" se il nome è gia presente.
      */
     public String modificaCategoria(int IDprodotto, String nome, String descrizione, String note) {
-        String result = "2";
+
+        String result = null;
+
+        if (nome == null || nome.trim().isEmpty() || !Patterns.PATTERN1.matcher(nome).matches())
+            return "2";
+
+        if (descrizione == null || descrizione.trim().isEmpty() || !Patterns.PATTERN2.matcher(descrizione).matches())
+            return "3";
 
         try {
+            String queryCheckNome = "SELECT COUNT(*) FROM Categoria WHERE nome = ?";
+            PreparedStatement statementCheckNome = connessione.getConnection().prepareStatement(queryCheckNome);
+            statementCheckNome.setString(1, nome);
+            ResultSet resultSet = statementCheckNome.executeQuery();
+            if (resultSet.next() && resultSet.getInt(1) > 0) {
+                return "4"; // Nome già presente
+            }
+
             String queryCategoria = "UPDATE categoria SET nome = ?, descrizione = ?, note = ? WHERE ID = ?";
             PreparedStatement statementCategoria = connessione.getConnection().prepareStatement(queryCategoria);
             statementCategoria.setString(1, nome);

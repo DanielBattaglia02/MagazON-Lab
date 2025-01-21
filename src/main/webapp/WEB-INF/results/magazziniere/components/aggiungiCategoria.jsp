@@ -14,15 +14,15 @@ Autore: Francesco Vaiano
 <%
 } else if (message.equals("2")) {
 %>
-<script>alert("Inserimento avvenuto con successo!")</script>
+<script>alert("ERRORE: Il nome non rispetta il formato desiderato: deve essere lungo almeno 2 caratteri e contenere solo lettere, numeri e spazi")</script>
 <%
 } else if (message.equals("3")) {
 %>
-<script>alert("Errore tecnico nell'inserimento!")</script>
+<script>alert("ERRORE: La descrizione non rispetta il formato desiderato: deve essere lunga almeno 3 caratteri")</script>
 <%
 } else if (message.equals("4")) {
 %>
-<script>alert("Errore nell'inserimento! Categoria già presente nel database.")</script>
+<script>alert("Errore nell'inserimento! Categoria  con questo nome già presente nel database.")</script>
 <%
         }
     }
