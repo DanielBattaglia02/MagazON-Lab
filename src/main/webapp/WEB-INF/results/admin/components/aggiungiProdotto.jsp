@@ -14,7 +14,7 @@ Autore: Daniel Battaglia
 <%
 } else if (message.equals("11")) {
 %>
-<script>alert("Errore: Inserimento avvenuto con successo solo nella tabella Prodotto!");</script>
+<script>alert("Inserimento avvenuto con successo solo nella tabella Prodotto!");</script>
 <%
 } else if (message.equals("10")) {
 %>

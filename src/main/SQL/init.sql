@@ -27,10 +27,10 @@ VALUES
 (2, 'ARR001', 'non disponibile', 'Sedia Ergonomica', 'Sedia comoda per ufficio', '2024-11-15', 'Richiesto riordino', '2024-12-10', NULL, NULL, NULL, 'Prodotto in attesa di restock.'),
 (2, 'ARR002', 'in arrivo', 'Tavolo in legno', 'Tavolo da pranzo in legno massello', '2024-12-03', 'Arrivo programmato con trasportatore', '2024-12-15', NULL, NULL, 'Magazzino Torino', 'Imballaggio speciale richiesto.'),
 (2, 'ARR003', 'in magazzino', 'Libreria moderna', 'Libreria con design contemporaneo', '2024-11-20', 'Arrivo confermato', '2024-12-04', '2024-12-06', NULL, 'Cliente Napoli', 'Assemblaggio richiesto.'),
-(3, 'ABB001', 'in spedizione', 'Giacca Invernale', 'Giacca impermeabile per uomo', '2024-11-30', NULL, '2024-12-01', '2024-12-02', 'In transito', 'Cliente Torino', 'Assicurarsi di includere tutte le taglie richieste.'),
-(3, 'ABB002', 'in magazzino', 'Scarpe Running', 'Scarpe sportive leggere', '2024-11-25', 'Consegna diretta', '2024-12-03', NULL, NULL, 'Cliente Firenze', 'Confezionate singolarmente.'),
-(3, 'ABB003', 'in arrivo', 'Cappello Estivo', 'Cappello leggero per protezione dal sole', '2024-12-02', 'Trasporto via aerea', '2024-12-10', NULL, NULL, 'Magazzino Bologna', 'Materiale fragile.'),
-(3, 'ABB004', 'non disponibile', 'Zaino Casual', 'Zaino per uso quotidiano', '2024-11-15', 'Prodotto non più disponibile', '2024-12-01', NULL, NULL, NULL, 'Sostituzione in corso.');
+(3, 'ABB001', 'in spedizione', 'Giacca Invernale', 'Giacca impermeabile per uomo', '2024-11-30', NULL, 'napoli', '2024-12-02', 'In transito', 'Cliente Torino', 'Assicurarsi di includere tutte le taglie richieste.'),
+(3, 'ABB002', 'in magazzino', 'Scarpe Running', 'Scarpe sportive leggere', '2024-11-25', 'Consegna diretta', 'afragola', NULL, NULL, 'Cliente Firenze', 'Confezionate singolarmente.'),
+(3, 'ABB003', 'in arrivo', 'Cappello Estivo', 'Cappello leggero per protezione dal sole', '2024-12-02', 'Trasporto via aerea', 'Perugia', NULL, NULL, 'Magazzino Bologna', 'Materiale fragile.'),
+(3, 'ABB004', 'non disponibile', 'Zaino Casual', 'Zaino per uso quotidiano', '2024-11-15', 'Prodotto non più disponibile', 'Berlino', NULL, NULL, NULL, 'Sostituzione in corso.');
 
 
 -- Inserimento delle 10 notifiche
