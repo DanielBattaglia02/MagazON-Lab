@@ -130,7 +130,9 @@ public class GestioneListeDAO {
     {
         String result="";
 
-        if(nomeFile != null || nomeFile.isEmpty() || !Patterns.PATTERN9.matcher(nomeFile).matches())
+        System.out.println("Nome: " + nomeFile);
+
+        if(nomeFile == null || nomeFile.isEmpty() || !Patterns.PATTERN9.matcher(nomeFile).matches())
             throw new IllegalArgumentException("nomeFile non corretto");
 
         if (!nomeFile.matches(".*\\.(doc|docx|pdf|jpg)$"))
@@ -167,6 +169,9 @@ public class GestioneListeDAO {
     {
 
         String result="";
+
+        if(nomeFile == null || nomeFile.isEmpty() || !Patterns.PATTERN9.matcher(nomeFile).matches())
+            throw new IllegalArgumentException("nomeFile non corretto");
 
         if (!nomeFile.matches(".*\\.(doc|docx|pdf|jpg|txt)$"))
             throw new IllegalArgumentException("nomeFile non rispetta il formato");
