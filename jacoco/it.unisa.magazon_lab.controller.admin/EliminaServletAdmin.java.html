@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="it"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>EliminaServletAdmin.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ModificaCategoriaTest Coverage Results, InserisciServletAdminTest Coverage Results, ModificaServletAdminTest Coverage Results, AutenticazioneDAOTest Coverage Results, GestioneCategorieDAOTest Coverage Results, GestioneListeDAOTest Coverage Results, GestioneLogisticaDAOTest Coverage Results, GestioneNotificheDAOTest Coverage Results, GestioneProdottiDAOTest Coverage Results, GestioneUtentiDAOTest Coverage Results, ConnessioneTest Coverage Results</a> &gt; <a href="index.source.html" class="el_package">it.unisa.magazon_lab.controller.admin</a> &gt; <span class="el_source">EliminaServletAdmin.java</span></div><h1>EliminaServletAdmin.java</h1><pre class="source lang-java linenums">package it.unisa.magazon_lab.controller.admin;
+
+import it.unisa.magazon_lab.model.DAO.*;
+import it.unisa.magazon_lab.model.Facade.Facade;
+import jakarta.servlet.RequestDispatcher;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.io.IOException;
+
+/**
+ * La servlet gestisce le richieste di eliminazione per vari elementi amministrativi all'interno dell'applicazione,
+ * come prodotti, categorie, utenti, liste, arrivi e spedizioni. A seconda del parametro &quot;pageName&quot; ricevuto nella
+ * richiesta, la servlet esegue l'eliminazione corrispondente, rimuovendo i dati dal sistema e successivamente inoltra
+ * l'utente alla pagina di visualizzazione appropriata per mostrare il risultato dell'operazione.
+ *
+ * La servlet gestisce anche la cancellazione dei file associati a una lista dal server. Se il file esiste, viene eliminato,
+ * altrimenti viene restituito un errore.
+ *
+ * Dopo l'esecuzione dell'operazione, la servlet invia un messaggio di ritorno per informare l'amministratore del risultato
+ * dell'eliminazione (successo o errore).
+ *
+ * @author Battaglia Daniel
+ * @author Gigante Ruben
+ * @author Vaiano Francesco
+ */
+@WebServlet(name=&quot;elimina-servlet-admin&quot;, value=&quot;/elimina-servlet-admin&quot;)
+<span class="nc" id="L31">public class EliminaServletAdmin extends HttpServlet</span>
+{
+    private Facade facade;
+
+    @Override
+    public void init() throws ServletException
+    {
+<span class="nc" id="L38">        super.init();</span>
+<span class="nc" id="L39">        this.facade = new Facade();</span>
+<span class="nc" id="L40">    }</span>
+
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
+    {
+<span class="nc" id="L45">        String pageName = request.getParameter(&quot;pageName&quot;);</span>
+
+<span class="nc bnc" id="L47" title="All 2 branches missed.">        if(pageName.equals(&quot;prodotto&quot;))</span>
+        {
+<span class="nc" id="L49">            int id = Integer.parseInt(request.getParameter(&quot;IDprodotto&quot;));</span>
+
+<span class="nc" id="L51">            GestioneProdottiDAO gestioneProdottiDAO = facade.getGestioneProdottiDAO();</span>
+<span class="nc" id="L52">            String result = gestioneProdottiDAO.eliminaProdotto(id);</span>
+<span class="nc" id="L53">            request.setAttribute(&quot;message&quot;, result);</span>
+<span class="nc" id="L54">            pageName = &quot;eliminaProdotto&quot;;</span>
+<span class="nc" id="L55">        }</span>
+<span class="nc bnc" id="L56" title="All 2 branches missed.">        else if(pageName.equals(&quot;categoria&quot;))</span>
+        {
+<span class="nc" id="L58">            int id = Integer.parseInt(request.getParameter(&quot;IDcategoria&quot;));</span>
+
+<span class="nc" id="L60">            GestioneCategorieDAO gestioneCategorieDAO = facade.getGestioneCategorieDAO();</span>
+<span class="nc" id="L61">            String result = gestioneCategorieDAO.eliminaCategoria(id);</span>
+<span class="nc" id="L62">            request.setAttribute(&quot;message&quot;, result);</span>
+<span class="nc" id="L63">            pageName = &quot;categorie&quot;;</span>
+<span class="nc" id="L64">        }</span>
+<span class="nc bnc" id="L65" title="All 2 branches missed.">        else if(pageName.equals(&quot;utenti&quot;)){</span>
+<span class="nc" id="L66">            int id = Integer.parseInt(request.getParameter(&quot;IDutente&quot;));</span>
+
+<span class="nc" id="L68">            GestioneUtentiDAO gestioneUtentiDAO = facade.getGestioneUtentiDAO();</span>
+<span class="nc" id="L69">            String result = gestioneUtentiDAO.eliminaUtente(id);</span>
+<span class="nc" id="L70">            request.setAttribute(&quot;message&quot;, result);</span>
+<span class="nc" id="L71">        }</span>
+<span class="nc bnc" id="L72" title="All 2 branches missed.">        else if(pageName.equals(&quot;liste&quot;))</span>
+        {
+<span class="nc" id="L74">            int idLista = Integer.parseInt(request.getParameter(&quot;IDlista&quot;));</span>
+
+<span class="nc" id="L76">            GestioneListeDAO gestioneListeDAO = facade.getGestioneListeDAO();</span>
+<span class="nc" id="L77">            String nomeFile = gestioneListeDAO.getListaFileName(idLista);</span>
+
+<span class="nc bnc" id="L79" title="All 4 branches missed.">            if (nomeFile != null &amp;&amp; !nomeFile.isEmpty())</span>
+            {
+                // Definisci il percorso completo del file
+<span class="nc" id="L82">                String uploadPath = getServletContext().getRealPath(&quot;/&quot;) + &quot;liste&quot; + File.separator + nomeFile;</span>
+<span class="nc" id="L83">                File file = new File(uploadPath);</span>
+
+                // Controlla se il file esiste
+<span class="nc bnc" id="L86" title="All 2 branches missed.">                if (file.exists()) {</span>
+                    // Elimina il file dal server
+<span class="nc" id="L88">                    boolean deleted = file.delete();</span>
+<span class="nc bnc" id="L89" title="All 2 branches missed.">                    if (deleted) {</span>
+                        // Se il file è stato eliminato, elimina la voce dal database
+<span class="nc" id="L91">                        gestioneListeDAO.eliminaLista(idLista);</span>
+<span class="nc" id="L92">                        request.setAttribute(&quot;message&quot;, &quot;Lista eliminata con successo.&quot;);</span>
+                    } else {
+<span class="nc" id="L94">                        request.setAttribute(&quot;message&quot;, &quot;Errore durante l'eliminazione del file.&quot;);</span>
+                    }
+<span class="nc" id="L96">                } else {</span>
+<span class="nc" id="L97">                    request.setAttribute(&quot;message&quot;, &quot;File non trovato.&quot;);</span>
+                }
+<span class="nc" id="L99">            } else {</span>
+<span class="nc" id="L100">                request.setAttribute(&quot;message&quot;, &quot;ID Lista non valido o file non associato.&quot;);</span>
+            }
+<span class="nc" id="L102">        }</span>
+<span class="nc bnc" id="L103" title="All 2 branches missed.">        else if(pageName.equals(&quot;arrivo&quot;))</span>
+        {
+<span class="nc" id="L105">            int IDarrivo = Integer.parseInt(request.getParameter(&quot;IDarrivo&quot;));</span>
+<span class="nc" id="L106">            int IDprodotto = Integer.parseInt(request.getParameter(&quot;IDprodotto&quot;));</span>
+
+<span class="nc" id="L108">            GestioneLogisticaDAO gestioneLogisticaDAO = facade.getGestioneLogisticaDAO();</span>
+<span class="nc" id="L109">            gestioneLogisticaDAO.eliminaArrivo(IDarrivo, IDprodotto);</span>
+<span class="nc" id="L110">            pageName = &quot;arrivi&quot;;</span>
+<span class="nc" id="L111">        }</span>
+<span class="nc bnc" id="L112" title="All 2 branches missed.">        else if(pageName.equals(&quot;spedizione&quot;))</span>
+        {
+<span class="nc" id="L114">            int IDspedizione = Integer.parseInt(request.getParameter(&quot;IDspedizione&quot;));</span>
+<span class="nc" id="L115">            int IDprodotto = Integer.parseInt(request.getParameter(&quot;IDprodotto&quot;));</span>
+
+<span class="nc" id="L117">            GestioneLogisticaDAO gestioneLogisticaDAO = facade.getGestioneLogisticaDAO();</span>
+<span class="nc" id="L118">            gestioneLogisticaDAO.eliminaSpedizione(IDspedizione, IDprodotto);</span>
+<span class="nc" id="L119">            pageName = &quot;spedizioni&quot;;</span>
+        }
+
+
+<span class="nc" id="L123">        RequestDispatcher requestDispatcher = request.getRequestDispatcher(&quot;visualizza-servlet-admin?pageName=&quot; + pageName);</span>
+<span class="nc" id="L124">        requestDispatcher.forward(request, response);</span>
+<span class="nc" id="L125">    }</span>
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
+    {
+<span class="nc" id="L130">        doGet(request, response);</span>
+<span class="nc" id="L131">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

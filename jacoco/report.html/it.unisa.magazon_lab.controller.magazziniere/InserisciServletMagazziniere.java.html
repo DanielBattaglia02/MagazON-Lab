@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="it"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>InserisciServletMagazziniere.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ModificaCategoriaTest Coverage Results, InserisciServletAdminTest Coverage Results, ModificaServletAdminTest Coverage Results, AutenticazioneDAOTest Coverage Results, GestioneCategorieDAOTest Coverage Results, GestioneListeDAOTest Coverage Results, GestioneLogisticaDAOTest Coverage Results, GestioneNotificheDAOTest Coverage Results, GestioneProdottiDAOTest Coverage Results, GestioneUtentiDAOTest Coverage Results, ConnessioneTest Coverage Results</a> &gt; <a href="index.source.html" class="el_package">it.unisa.magazon_lab.controller.magazziniere</a> &gt; <span class="el_source">InserisciServletMagazziniere.java</span></div><h1>InserisciServletMagazziniere.java</h1><pre class="source lang-java linenums">package it.unisa.magazon_lab.controller.magazziniere;
+
+import it.unisa.magazon_lab.model.DAO.GestioneCategorieDAO;
+import it.unisa.magazon_lab.model.DAO.GestioneLogisticaDAO;
+import it.unisa.magazon_lab.model.DAO.GestioneProdottiDAO;
+import it.unisa.magazon_lab.model.Facade.Facade;
+import jakarta.servlet.RequestDispatcher;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
+import java.io.IOException;
+
+/**
+ * La servlet gestisce le richieste inviate dall'interfaccia utente relative alle operazioni di inserimento
+ * di nuovi elementi da parte del magazziniere, come la creazione di nuovi prodotti, categorie, arrivi e spedizioni.
+ * A seconda del parametro &quot;pageName&quot; ricevuto nella richiesta, la servlet esegue l'operazione di inserimento
+ * appropriata (ad esempio, aggiunta di un prodotto, creazione di una categoria, inserimento di un arrivo o una spedizione)
+ * e reindirizza l'utente alla pagina di visualizzazione pertinente.
+ *
+ * @author Battaglia Daniel
+ * @author Gigante Ruben
+ * @author Vaiano Francesco
+ */
+
+@WebServlet(name=&quot;inserisci-servlet-magazziniere&quot;, value=&quot;/inserisci-servlet-magazziniere&quot;)
+<span class="nc" id="L29">public class InserisciServletMagazziniere extends HttpServlet</span>
+{
+    private Facade facade;
+
+    @Override
+    public void init() throws ServletException
+    {
+<span class="nc" id="L36">        super.init();</span>
+<span class="nc" id="L37">        this.facade = new Facade();</span>
+<span class="nc" id="L38">    }</span>
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
+    {
+<span class="nc" id="L42">        String pageName = request.getParameter(&quot;pageName&quot;);</span>
+
+<span class="nc bnc" id="L44" title="All 2 branches missed.">        if(pageName.equals(&quot;prodotto&quot;))</span>
+        {
+<span class="nc" id="L46">            int idCategoria = Integer.parseInt(request.getParameter(&quot;categoria&quot;));</span>
+<span class="nc" id="L47">            String codice = request.getParameter(&quot;codice&quot;);</span>
+<span class="nc" id="L48">            String stato = request.getParameter(&quot;stato&quot;);</span>
+<span class="nc" id="L49">            String nome = request.getParameter(&quot;nome&quot;);</span>
+<span class="nc" id="L50">            String descrizione = request.getParameter(&quot;descrizione&quot;);</span>
+
+<span class="nc" id="L52">            String dataArrivo = request.getParameter(&quot;dataArrivo&quot;);</span>
+<span class="nc bnc" id="L53" title="All 4 branches missed.">            dataArrivo = (dataArrivo == null || dataArrivo.trim().isEmpty()) ? null : dataArrivo;</span>
+
+<span class="nc" id="L55">            String noteArrivo = request.getParameter(&quot;noteArrivo&quot;);</span>
+<span class="nc bnc" id="L56" title="All 4 branches missed.">            noteArrivo = (noteArrivo == null || noteArrivo.trim().isEmpty()) ? null : noteArrivo;</span>
+
+<span class="nc" id="L58">            String partenza = request.getParameter(&quot;partenza&quot;);</span>
+
+<span class="nc" id="L60">            String dataSpedizione = request.getParameter(&quot;dataSpedizione&quot;);</span>
+<span class="nc bnc" id="L61" title="All 4 branches missed.">            dataSpedizione = (dataSpedizione == null || dataSpedizione.trim().isEmpty()) ? null : dataSpedizione;</span>
+
+<span class="nc" id="L63">            String noteSpedizione = request.getParameter(&quot;noteSpedizione&quot;);</span>
+<span class="nc bnc" id="L64" title="All 4 branches missed.">            noteSpedizione = (noteSpedizione == null || noteSpedizione.trim().isEmpty()) ? null : noteSpedizione;</span>
+
+<span class="nc" id="L66">            String destinazione = request.getParameter(&quot;destinazione&quot;);</span>
+<span class="nc bnc" id="L67" title="All 4 branches missed.">            destinazione = (destinazione == null || destinazione.trim().isEmpty()) ? null : destinazione;</span>
+
+<span class="nc" id="L69">            String noteGenerali = request.getParameter(&quot;noteGenerali&quot;);</span>
+<span class="nc bnc" id="L70" title="All 4 branches missed.">            noteGenerali = (noteGenerali == null || noteGenerali.trim().isEmpty()) ? null : noteGenerali;</span>
+
+
+<span class="nc" id="L73">            GestioneProdottiDAO gestioneProdottiDAO = facade.getGestioneProdottiDAO();</span>
+<span class="nc" id="L74">            String result = gestioneProdottiDAO.aggiungiProdotto(</span>
+                    idCategoria, codice, stato, nome, descrizione,
+                    dataArrivo, noteArrivo, partenza,
+                    dataSpedizione, noteSpedizione, destinazione, noteGenerali
+            );
+<span class="nc" id="L79">            request.setAttribute(&quot;message&quot;, result);</span>
+<span class="nc" id="L80">            pageName = &quot;aggiungiProdotto&quot;;</span>
+<span class="nc" id="L81">        }</span>
+<span class="nc bnc" id="L82" title="All 2 branches missed.">        else if(pageName.equals(&quot;categoria&quot;))</span>
+        {
+<span class="nc" id="L84">            String nome = request.getParameter(&quot;nome&quot;);</span>
+<span class="nc" id="L85">            String descrizione = request.getParameter(&quot;descrizione&quot;);</span>
+<span class="nc" id="L86">            String note = request.getParameter(&quot;note&quot;);</span>
+
+<span class="nc" id="L88">            GestioneCategorieDAO gestioneCategorieDAO = facade.getGestioneCategorieDAO();</span>
+<span class="nc" id="L89">            String result = gestioneCategorieDAO.aggiungiCategoria(nome, descrizione, note);</span>
+<span class="nc" id="L90">            request.setAttribute(&quot;message&quot;, result);</span>
+<span class="nc" id="L91">            pageName = &quot;aggiungiCategoria&quot;;</span>
+<span class="nc" id="L92">        }</span>
+<span class="nc bnc" id="L93" title="All 2 branches missed.">        else if(pageName.equals(&quot;arrivo&quot;))</span>
+        {
+<span class="nc" id="L95">            int IDprodotto= Integer.parseInt(request.getParameter(&quot;prodotto&quot;));</span>
+<span class="nc" id="L96">            String note = request.getParameter(&quot;note&quot;);</span>
+
+<span class="nc" id="L98">            GestioneLogisticaDAO gestioneLogisticaDAO = facade.getGestioneLogisticaDAO();</span>
+<span class="nc" id="L99">            gestioneLogisticaDAO.inserisciArrivo(IDprodotto, note);</span>
+<span class="nc" id="L100">            pageName = &quot;arrivi&quot;;</span>
+<span class="nc" id="L101">        }</span>
+<span class="nc bnc" id="L102" title="All 2 branches missed.">        else if(pageName.equals(&quot;spedizione&quot;))</span>
+        {
+<span class="nc" id="L104">            int IDprodotto= Integer.parseInt(request.getParameter(&quot;prodotto&quot;));</span>
+<span class="nc" id="L105">            String note = request.getParameter(&quot;note&quot;);</span>
+
+<span class="nc" id="L107">            GestioneLogisticaDAO gestioneLogisticaDAO = facade.getGestioneLogisticaDAO();</span>
+<span class="nc" id="L108">            gestioneLogisticaDAO.inserisciSpedizione(IDprodotto, note);</span>
+<span class="nc" id="L109">            pageName = &quot;spedizioni&quot;;</span>
+        }
+
+<span class="nc" id="L112">        RequestDispatcher requestDispatcher = request.getRequestDispatcher(&quot;visualizza-servlet-magazziniere?pageName=&quot; + pageName);</span>
+<span class="nc" id="L113">        requestDispatcher.forward(request, response);</span>
+<span class="nc" id="L114">    }</span>
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
+    {
+<span class="nc" id="L119">        doGet(request, response);</span>
+<span class="nc" id="L120">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

@@ -1,0 +1,378 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=windows-1252"> 
+  <title>Coverage Report > GestioneListeDAO</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">it.unisa.magazon_lab.model.DAO</a>
+</div>
+
+<h1>Coverage Summary for Class: GestioneListeDAO (it.unisa.magazon_lab.model.DAO)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">GestioneListeDAO</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    33,3%
+  </span>
+  <span class="absValue">
+    (3/9)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    16,1%
+  </span>
+  <span class="absValue">
+    (15/93)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package it.unisa.magazon_lab.model.DAO;
+&nbsp;
+&nbsp;import it.unisa.magazon_lab.model.Entity.Connessione;
+&nbsp;import it.unisa.magazon_lab.model.Entity.Lista;
+&nbsp;import it.unisa.magazon_lab.model.utils.Patterns;
+&nbsp;
+&nbsp;import java.sql.Date;
+&nbsp;import java.sql.PreparedStatement;
+&nbsp;import java.sql.ResultSet;
+&nbsp;import java.sql.SQLException;
+&nbsp;import java.util.ArrayList;
+&nbsp;import java.util.List;
+&nbsp;
+&nbsp;/**
+&nbsp; * Classe DAO per la gestione delle operazioni relative alle liste nel database.
+&nbsp; * Implementa il pattern Singleton per garantire l&#39;unicità dell&#39;istanza.
+&nbsp; *
+&nbsp; * @author Gigante Ruben
+&nbsp; */
+&nbsp;
+&nbsp;public class GestioneListeDAO {
+&nbsp;
+&nbsp;    private static GestioneListeDAO instance;
+&nbsp;    private Connessione connessione;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Costruttore privato per impedire la creazione di istanze multiple.
+&nbsp;     * Recupera un&#39;istanza della connessione al database.
+&nbsp;     */
+<b class="fc">&nbsp;    private GestioneListeDAO() {</b>
+<b class="fc">&nbsp;        connessione = Connessione.getInstance();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Metodo per ottenere l&#39;istanza Singleton della classe.
+&nbsp;     *
+&nbsp;     * @return L&#39;unica istanza di GestioneListeDAO.
+&nbsp;     */
+&nbsp;    public static GestioneListeDAO getInstance()
+&nbsp;    {
+<b class="fc">&nbsp;        if (instance == null)</b>
+&nbsp;        {
+<b class="fc">&nbsp;            instance = new GestioneListeDAO();</b>
+&nbsp;        }
+<b class="fc">&nbsp;        return instance;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Recupera tutte le liste dal database, ordinate per data di invio.
+&nbsp;     *
+&nbsp;     * @return una lista di oggetti Lista.
+&nbsp;     */
+&nbsp;
+&nbsp;    public List&lt;Lista&gt; visualizzaListe(){
+<b class="nc">&nbsp;        List&lt;Lista&gt; lista = new ArrayList&lt;Lista&gt;();</b>
+&nbsp;
+<b class="nc">&nbsp;        String query= &quot;SELECT * FROM Lista ORDER BY dataInvio&quot;;</b>
+&nbsp;
+&nbsp;        try
+&nbsp;        {
+<b class="nc">&nbsp;            PreparedStatement statement = connessione.getConnection().prepareStatement(query);</b>
+<b class="nc">&nbsp;            ResultSet rs = statement.executeQuery();</b>
+&nbsp;
+<b class="nc">&nbsp;            while(rs.next())</b>
+&nbsp;            {
+<b class="nc">&nbsp;                int id = rs.getInt(&quot;ID&quot;);</b>
+<b class="nc">&nbsp;                String nomeFile = rs.getString(&quot;nomeFile&quot;);</b>
+<b class="nc">&nbsp;                String note = rs.getString(&quot;note&quot;);</b>
+<b class="nc">&nbsp;                Date dataInvio = rs.getDate(&quot;dataInvio&quot;);</b>
+&nbsp;
+<b class="nc">&nbsp;                Lista l=new Lista(id,nomeFile,note,dataInvio);</b>
+<b class="nc">&nbsp;                lista.add(l);</b>
+<b class="nc">&nbsp;            }</b>
+&nbsp;
+<b class="nc">&nbsp;            rs.close();</b>
+<b class="nc">&nbsp;            statement.close();</b>
+&nbsp;
+&nbsp;        }
+<b class="nc">&nbsp;        catch (SQLException e)</b>
+&nbsp;        {
+<b class="nc">&nbsp;            throw new RuntimeException(e);</b>
+<b class="nc">&nbsp;        }</b>
+&nbsp;
+<b class="nc">&nbsp;        return lista;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Recupera il nome del file associato a una lista dato il suo ID.
+&nbsp;     *
+&nbsp;     * @param id l&#39;ID della lista.
+&nbsp;     * @return il nome del file della lista, oppure una stringa vuota se non trovata.
+&nbsp;     */
+&nbsp;    public String getListaFileName(int id)
+&nbsp;    {
+<b class="nc">&nbsp;        String query = &quot;SELECT * FROM Lista WHERE ID=?&quot;;</b>
+&nbsp;
+&nbsp;        try
+&nbsp;        {
+<b class="nc">&nbsp;            PreparedStatement statement = connessione.getConnection().prepareStatement(query);</b>
+&nbsp;
+<b class="nc">&nbsp;            statement.setInt(1, id);</b>
+&nbsp;
+<b class="nc">&nbsp;            ResultSet rs = statement.executeQuery();</b>
+&nbsp;
+<b class="nc">&nbsp;            if(rs.next()){</b>
+<b class="nc">&nbsp;                return rs.getString(&quot;nomeFile&quot;);</b>
+&nbsp;            }
+&nbsp;        }
+<b class="nc">&nbsp;        catch (SQLException e)</b>
+&nbsp;        {
+<b class="nc">&nbsp;            throw new RuntimeException(e);</b>
+<b class="nc">&nbsp;        }</b>
+&nbsp;
+<b class="nc">&nbsp;        return &quot;&quot;;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Inserisce una nuova lista nel database.
+&nbsp;     *
+&nbsp;     * @param nomeFile il nome del file della lista.
+&nbsp;     * @param note     eventuali note associate alla lista.
+&nbsp;     *
+&nbsp;     * @throws IllegalArgumentException se il nomeFile non rispetta uno dei seguenti formati: .doc, .docx, .pdf, .jpg.
+&nbsp;     * @throws RuntimeException se si verifica un errore durante l&#39;esecuzione della query SQL.
+&nbsp;     */
+&nbsp;    public String inserisciLista(String nomeFile, String note)
+&nbsp;    {
+<b class="nc">&nbsp;        String result=&quot;&quot;;</b>
+&nbsp;
+<b class="nc">&nbsp;        if(nomeFile != null || nomeFile.isEmpty() || !Patterns.PATTERN9.matcher(nomeFile).matches())</b>
+<b class="nc">&nbsp;            throw new IllegalArgumentException(&quot;nomeFile non corretto&quot;);</b>
+&nbsp;
+<b class="nc">&nbsp;        if (!nomeFile.matches(&quot;.*\\.(doc|docx|pdf|jpg)$&quot;))</b>
+<b class="nc">&nbsp;            throw new IllegalArgumentException(&quot;nomeFile non rispetta il formato&quot;);</b>
+&nbsp;
+<b class="nc">&nbsp;        String query=&quot;INSERT INTO Lista(nomeFile,note) VALUES(?,?)&quot;;</b>
+&nbsp;
+&nbsp;        try
+&nbsp;        {
+<b class="nc">&nbsp;            PreparedStatement statement = connessione.getConnection().prepareStatement(query);</b>
+<b class="nc">&nbsp;            statement.setString(1, nomeFile);</b>
+<b class="nc">&nbsp;            statement.setString(2, note);</b>
+<b class="nc">&nbsp;            statement.executeUpdate();</b>
+<b class="nc">&nbsp;            result=&quot;Lista aggiunta&quot;;</b>
+&nbsp;        }
+<b class="nc">&nbsp;        catch (SQLException e)</b>
+&nbsp;        {
+<b class="nc">&nbsp;            result=&quot;Errore aggiunta lista&quot;;</b>
+<b class="nc">&nbsp;            throw new RuntimeException(e);</b>
+<b class="nc">&nbsp;        }</b>
+&nbsp;
+<b class="nc">&nbsp;        return result;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Inserisce una nuova lista nel database con solo il nome del file.
+&nbsp;     *
+&nbsp;     * @param nomeFile il nome del file della lista.
+&nbsp;     *
+&nbsp;     * @throws IllegalArgumentException se il nomeFile non rispetta uno dei seguenti formati: .doc, .docx, .pdf, .jpg.
+&nbsp;     * @throws RuntimeException se si verifica un errore durante l&#39;esecuzione della query SQL.
+&nbsp;     */
+&nbsp;    public String inserisciLista(String nomeFile)
+&nbsp;    {
+&nbsp;
+<b class="fc">&nbsp;        String result=&quot;&quot;;</b>
+&nbsp;
+<b class="fc">&nbsp;        if (!nomeFile.matches(&quot;.*\\.(doc|docx|pdf|jpg|txt)$&quot;))</b>
+<b class="fc">&nbsp;            throw new IllegalArgumentException(&quot;nomeFile non rispetta il formato&quot;);</b>
+&nbsp;
+<b class="fc">&nbsp;        String query=&quot;INSERT INTO Lista(nomeFile) VALUES(?)&quot;;</b>
+&nbsp;
+&nbsp;        try
+&nbsp;        {
+<b class="fc">&nbsp;            PreparedStatement statement = connessione.getConnection().prepareStatement(query);</b>
+<b class="fc">&nbsp;            statement.setString(1, nomeFile);</b>
+<b class="fc">&nbsp;            statement.executeUpdate();</b>
+<b class="fc">&nbsp;            result=&quot;Lista aggiunta&quot;;</b>
+&nbsp;        }
+<b class="nc">&nbsp;        catch (SQLException e)</b>
+&nbsp;        {
+<b class="nc">&nbsp;            result=&quot;Errore aggiunta lista&quot;;</b>
+<b class="nc">&nbsp;            throw new RuntimeException(e);</b>
+<b class="fc">&nbsp;        }</b>
+<b class="fc">&nbsp;        return result;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Elimina una lista dal database dato il suo ID.
+&nbsp;     *
+&nbsp;     * @param id l&#39;ID della lista da eliminare.
+&nbsp;     */
+&nbsp;    public void eliminaLista(int id)
+&nbsp;    {
+<b class="nc">&nbsp;        String query = &quot;DELETE FROM Lista WHERE ID=?&quot;;</b>
+&nbsp;
+&nbsp;        try {
+<b class="nc">&nbsp;            PreparedStatement statement = connessione.getConnection().prepareStatement(query);</b>
+<b class="nc">&nbsp;            statement.setInt(1, id);</b>
+<b class="nc">&nbsp;            statement.executeUpdate();</b>
+&nbsp;        }
+<b class="nc">&nbsp;        catch (SQLException e)</b>
+&nbsp;        {
+<b class="nc">&nbsp;            throw new RuntimeException(e);</b>
+<b class="nc">&nbsp;        }</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Aggiorna le note di una lista nel database dato il suo ID.
+&nbsp;     *
+&nbsp;     * @param id   l&#39;ID della lista.
+&nbsp;     * @param note le nuove note da associare alla lista.
+&nbsp;     * @return true se almeno una riga è stata aggiornata, altrimenti false.
+&nbsp;     */
+&nbsp;    public boolean aggiornaLista(int id, String note)
+&nbsp;    {
+<b class="nc">&nbsp;        String query = &quot;UPDATE lista SET note=? WHERE ID=?&quot;;</b>
+&nbsp;
+&nbsp;        try {
+<b class="nc">&nbsp;            PreparedStatement statement = connessione.getConnection().prepareStatement(query);</b>
+<b class="nc">&nbsp;            statement.setString(1, note);</b>
+<b class="nc">&nbsp;            statement.setInt(2, id);</b>
+<b class="nc">&nbsp;            int rowsUpdated = statement.executeUpdate();</b>
+&nbsp;
+&nbsp;            // Se almeno una riga è stata aggiornata, ritorna true
+<b class="nc">&nbsp;            return rowsUpdated &gt; 0;</b>
+&nbsp;        }
+<b class="nc">&nbsp;        catch (SQLException e)</b>
+&nbsp;        {
+<b class="nc">&nbsp;            throw new RuntimeException(e);</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Cerca una lista nel database dato il suo ID.
+&nbsp;     *
+&nbsp;     * @param id l&#39;ID della lista da cercare.
+&nbsp;     * @return un oggetto Lista se trovato, altrimenti null.
+&nbsp;     */
+&nbsp;    public Lista cercaLista(int id)
+&nbsp;    {
+<b class="nc">&nbsp;        String query=&quot;SELECT * FROM Lista WHERE ID=?&quot;;</b>
+<b class="nc">&nbsp;        Lista l=null;</b>
+&nbsp;
+&nbsp;        try{
+<b class="nc">&nbsp;            PreparedStatement statement = connessione.getConnection().prepareStatement(query);</b>
+<b class="nc">&nbsp;            statement.setInt(1, id);</b>
+<b class="nc">&nbsp;            ResultSet rs= statement.executeQuery();</b>
+&nbsp;
+<b class="nc">&nbsp;            if(rs.next()){</b>
+<b class="nc">&nbsp;                String nomeFile = rs.getString(&quot;nomeFile&quot;);</b>
+<b class="nc">&nbsp;                String note = rs.getString(&quot;note&quot;);</b>
+<b class="nc">&nbsp;                Date dataInvio = rs.getDate(&quot;dataInvio&quot;);</b>
+&nbsp;
+<b class="nc">&nbsp;                l=new Lista(id,nomeFile,note,dataInvio);</b>
+&nbsp;            }
+&nbsp;
+<b class="nc">&nbsp;            rs.close();</b>
+<b class="nc">&nbsp;            statement.close();</b>
+&nbsp;        }
+<b class="nc">&nbsp;        catch (SQLException e)</b>
+&nbsp;        {
+<b class="nc">&nbsp;            throw new RuntimeException(e);</b>
+<b class="nc">&nbsp;        }</b>
+&nbsp;
+<b class="nc">&nbsp;        return l;</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-01-23 01:20</div>
+</div>
+</body>
+</html>

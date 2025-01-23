@@ -39,6 +39,14 @@ public class InserisciServletAdmin extends HttpServlet
 {
     private Facade facade;
 
+    public Facade getFacade() {
+        return facade;
+    }
+
+    public void setFacade(Facade facade) {
+        this.facade = facade;
+    }
+
     @Override
     public void init() throws ServletException
     {
@@ -46,7 +54,7 @@ public class InserisciServletAdmin extends HttpServlet
         this.facade = new Facade();
     }
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
+    public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
     {
         String pageName = request.getParameter("pageName");
 

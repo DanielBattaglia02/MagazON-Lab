@@ -1,0 +1,347 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=windows-1252"> 
+  <title>Coverage Report > InserisciServletAdmin</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">it.unisa.magazon_lab.controller.admin</a>
+</div>
+
+<h1>Coverage Summary for Class: InserisciServletAdmin (it.unisa.magazon_lab.controller.admin)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">InserisciServletAdmin</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    50%
+  </span>
+  <span class="absValue">
+    (3/6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    29,8%
+  </span>
+  <span class="absValue">
+    (36/121)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package it.unisa.magazon_lab.controller.admin;
+&nbsp;
+&nbsp;import it.unisa.magazon_lab.model.DAO.*;
+&nbsp;import it.unisa.magazon_lab.model.utils.Utils;
+&nbsp;import it.unisa.magazon_lab.model.Facade.Facade;
+&nbsp;import jakarta.servlet.RequestDispatcher;
+&nbsp;import jakarta.servlet.ServletException;
+&nbsp;import jakarta.servlet.annotation.WebServlet;
+&nbsp;import jakarta.servlet.http.*;
+&nbsp;import java.io.File;
+&nbsp;import java.io.IOException;
+&nbsp;import jakarta.servlet.annotation.MultipartConfig;
+&nbsp;import java.nio.file.Paths;
+&nbsp;
+&nbsp;/**
+&nbsp; * La servlet gestisce le richieste di inserimento e modifica per diversi elementi amministrativi all&#39;interno dell&#39;applicazione,
+&nbsp; * come prodotti, categorie, utenti, liste, arrivi, spedizioni e notifiche. A seconda del parametro &quot;pageName&quot; ricevuto nella
+&nbsp; * richiesta, la servlet esegue l&#39;operazione corrispondente, aggiornando i dati nel sistema e successivamente inoltra l&#39;utente alla
+&nbsp; * pagina di visualizzazione appropriata per mostrare il risultato dell&#39;operazione.
+&nbsp; *
+&nbsp; * La servlet supporta l&#39;invio di file tramite il form, utilizzando la configurazione di caricamento multipart, che permette di gestire file
+&nbsp; * di dimensioni fino a 50 MB. In caso di caricamento di file duplicati, il sistema assegna un nome unico al file.
+&nbsp; *
+&nbsp; * Ogni operazione restituirà un messaggio che sarà visualizzato nell&#39;interfaccia utente per informare l&#39;amministratore del risultato
+&nbsp; * dell&#39;operazione (successo o errore).
+&nbsp; *
+&nbsp; * @author Battaglia Daniel
+&nbsp; * @author Gigante Ruben
+&nbsp; * @author Vaiano Francesco
+&nbsp; */
+&nbsp;
+&nbsp;@MultipartConfig( //Serve per supportare l&#39;invio di file dal form
+&nbsp;        fileSizeThreshold = 1024 * 1024 * 2, // 2MB
+&nbsp;        maxFileSize = 1024 * 1024 * 10, // 10MB
+&nbsp;        maxRequestSize = 1024 * 1024 * 50 // 50MB
+&nbsp;)
+&nbsp;@WebServlet(name=&quot;inserisci-servlet-admin&quot;, value=&quot;/inserisci-servlet-admin&quot;)
+<b class="fc">&nbsp;public class InserisciServletAdmin extends HttpServlet</b>
+&nbsp;{
+&nbsp;    private Facade facade;
+&nbsp;
+&nbsp;    public Facade getFacade() {
+<b class="nc">&nbsp;        return facade;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setFacade(Facade facade) {
+<b class="fc">&nbsp;        this.facade = facade;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public void init() throws ServletException
+&nbsp;    {
+<b class="nc">&nbsp;        super.init();</b>
+<b class="nc">&nbsp;        this.facade = new Facade();</b>
+&nbsp;    }
+&nbsp;    @Override
+&nbsp;    public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
+&nbsp;    {
+<b class="fc">&nbsp;        String pageName = request.getParameter(&quot;pageName&quot;);</b>
+&nbsp;
+<b class="fc">&nbsp;        if(pageName.equals(&quot;prodotto&quot;))</b>
+&nbsp;        {
+<b class="nc">&nbsp;            int idCategoria = Integer.parseInt(request.getParameter(&quot;categoria&quot;));</b>
+<b class="nc">&nbsp;            String codice = request.getParameter(&quot;codice&quot;);</b>
+<b class="nc">&nbsp;            String stato = request.getParameter(&quot;stato&quot;);</b>
+<b class="nc">&nbsp;            String nome = request.getParameter(&quot;nome&quot;);</b>
+<b class="nc">&nbsp;            String descrizione = request.getParameter(&quot;descrizione&quot;);</b>
+&nbsp;
+<b class="nc">&nbsp;            String dataArrivo = request.getParameter(&quot;dataArrivo&quot;);</b>
+<b class="nc">&nbsp;            dataArrivo = (dataArrivo == null || dataArrivo.trim().isEmpty()) ? null : dataArrivo;</b>
+&nbsp;
+<b class="nc">&nbsp;            System.out.println(dataArrivo.toString());</b>
+&nbsp;
+<b class="nc">&nbsp;            String noteArrivo = request.getParameter(&quot;noteArrivo&quot;);</b>
+<b class="nc">&nbsp;            noteArrivo = (noteArrivo == null || noteArrivo.trim().isEmpty()) ? null : noteArrivo;</b>
+&nbsp;
+<b class="nc">&nbsp;            String partenza = request.getParameter(&quot;partenza&quot;);</b>
+&nbsp;
+<b class="nc">&nbsp;            String dataSpedizione = request.getParameter(&quot;dataSpedizione&quot;);</b>
+<b class="nc">&nbsp;            dataSpedizione = (dataSpedizione == null || dataSpedizione.trim().isEmpty()) ? null : dataSpedizione;</b>
+&nbsp;
+<b class="nc">&nbsp;            String noteSpedizione = request.getParameter(&quot;noteSpedizione&quot;);</b>
+<b class="nc">&nbsp;            noteSpedizione = (noteSpedizione == null || noteSpedizione.trim().isEmpty()) ? null : noteSpedizione;</b>
+&nbsp;
+<b class="nc">&nbsp;            String destinazione = request.getParameter(&quot;destinazione&quot;);</b>
+<b class="nc">&nbsp;            destinazione = (destinazione == null || destinazione.trim().isEmpty()) ? null : destinazione;</b>
+&nbsp;
+<b class="nc">&nbsp;            String noteGenerali = request.getParameter(&quot;noteGenerali&quot;);</b>
+<b class="nc">&nbsp;            noteGenerali = (noteGenerali == null || noteGenerali.trim().isEmpty()) ? null : noteGenerali;</b>
+&nbsp;
+&nbsp;
+<b class="nc">&nbsp;            GestioneProdottiDAO gestioneProdottiDAO = facade.getGestioneProdottiDAO();</b>
+<b class="nc">&nbsp;            String result = gestioneProdottiDAO.aggiungiProdotto(</b>
+&nbsp;                    idCategoria, codice, stato, nome, descrizione,
+&nbsp;                    dataArrivo, noteArrivo, partenza,
+&nbsp;                    dataSpedizione, noteSpedizione, destinazione, noteGenerali
+&nbsp;            );
+<b class="nc">&nbsp;            request.setAttribute(&quot;message&quot;, result);</b>
+<b class="nc">&nbsp;            pageName = &quot;aggiungiProdotto&quot;;</b>
+<b class="nc">&nbsp;        }</b>
+<b class="fc">&nbsp;        else if(pageName.equals(&quot;categoria&quot;))</b>
+&nbsp;        {
+<b class="nc">&nbsp;            String nome = request.getParameter(&quot;nome&quot;);</b>
+<b class="nc">&nbsp;            String descrizione = request.getParameter(&quot;descrizione&quot;);</b>
+<b class="nc">&nbsp;            String note = request.getParameter(&quot;note&quot;);</b>
+&nbsp;
+<b class="nc">&nbsp;            GestioneCategorieDAO gestioneCategorieDAO = facade.getGestioneCategorieDAO();</b>
+<b class="nc">&nbsp;            String result = gestioneCategorieDAO.aggiungiCategoria(nome, descrizione, note);</b>
+<b class="nc">&nbsp;            request.setAttribute(&quot;message&quot;, result);</b>
+<b class="nc">&nbsp;            pageName = &quot;aggiungiCategoria&quot;;</b>
+<b class="nc">&nbsp;        }</b>
+<b class="fc">&nbsp;        else if (pageName.equals(&quot;utenti&quot;)){</b>
+<b class="fc">&nbsp;            String nome = request.getParameter(&quot;nome&quot;);</b>
+&nbsp;
+<b class="fc">&nbsp;            String cognome = request.getParameter(&quot;cognome&quot;);</b>
+&nbsp;
+<b class="fc">&nbsp;            String ruolo = request.getParameter(&quot;ruolo&quot;);</b>
+&nbsp;
+<b class="fc">&nbsp;            String username = request.getParameter(&quot;username&quot;);</b>
+&nbsp;
+<b class="fc">&nbsp;            String email = request.getParameter(&quot;email&quot;);</b>
+&nbsp;
+<b class="fc">&nbsp;            String password= Utils.generatePassword(10);</b>
+&nbsp;
+<b class="fc">&nbsp;            String telefono = request.getParameter(&quot;telefono&quot;);</b>
+&nbsp;
+<b class="fc">&nbsp;            String dataNascita = request.getParameter(&quot;dataNascita&quot;);</b>
+&nbsp;
+<b class="fc">&nbsp;            String luogoNascita = request.getParameter(&quot;luogoNascita&quot;);</b>
+&nbsp;
+&nbsp;
+<b class="fc">&nbsp;            GestioneUtentiDAO gestioneUtentiDAO = facade.getGestioneUtentiDAO();</b>
+<b class="fc">&nbsp;            String result= gestioneUtentiDAO.aggiungiUtente(nome,cognome,ruolo,username,password,email,telefono,dataNascita,luogoNascita);</b>
+<b class="fc">&nbsp;            request.setAttribute(&quot;message&quot;, result);</b>
+<b class="fc">&nbsp;            request.setAttribute(&quot;username&quot;, username);</b>
+<b class="fc">&nbsp;            request.setAttribute(&quot;password&quot;, password);</b>
+<b class="fc">&nbsp;            pageName = &quot;aggiungiUtente&quot;;</b>
+&nbsp;
+<b class="fc">&nbsp;        }</b>
+<b class="fc">&nbsp;        else if(pageName.equals(&quot;liste&quot;))</b>
+&nbsp;        {
+<b class="nc">&nbsp;            String UPLOAD_DIRECTORY = &quot;liste&quot;;</b>
+&nbsp;
+&nbsp;                // Ottieni la directory di caricamento
+<b class="nc">&nbsp;            String uploadPath = getServletContext().getRealPath(&quot;/&quot;) + UPLOAD_DIRECTORY;</b>
+<b class="nc">&nbsp;            File uploadDir = new File(uploadPath);</b>
+<b class="nc">&nbsp;            if (!uploadDir.exists()) {</b>
+<b class="nc">&nbsp;                uploadDir.mkdir(); // Crea la directory se non esiste</b>
+&nbsp;            }
+&nbsp;
+<b class="nc">&nbsp;            String fileName = null;</b>
+<b class="nc">&nbsp;            String note = null;</b>
+&nbsp;
+&nbsp;            try {
+&nbsp;                // Ottieni il file caricato
+<b class="nc">&nbsp;                Part filePart = request.getPart(&quot;file&quot;);</b>
+<b class="nc">&nbsp;                if (filePart != null) {</b>
+<b class="nc">&nbsp;                    fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString(); // Nome file</b>
+&nbsp;
+&nbsp;                    // Aggiungi controllo per nome duplicato
+<b class="nc">&nbsp;                    String filePath = uploadPath + File.separator + fileName;</b>
+<b class="nc">&nbsp;                    File file = new File(filePath);</b>
+<b class="nc">&nbsp;                    int count = 1;</b>
+&nbsp;
+&nbsp;                    // Finché il file esiste, genera un nuovo nome
+<b class="nc">&nbsp;                    while (file.exists()) {</b>
+<b class="nc">&nbsp;                        String nameWithoutExtension = fileName.substring(0, fileName.lastIndexOf(&#39;.&#39;));</b>
+<b class="nc">&nbsp;                        String extension = fileName.substring(fileName.lastIndexOf(&#39;.&#39;));</b>
+<b class="nc">&nbsp;                        fileName = nameWithoutExtension + &quot;_&quot; + count + extension;</b>
+<b class="nc">&nbsp;                        filePath = uploadPath + File.separator + fileName;</b>
+<b class="nc">&nbsp;                        file = new File(filePath);</b>
+<b class="nc">&nbsp;                        count++;</b>
+<b class="nc">&nbsp;                    }</b>
+&nbsp;
+&nbsp;                    // Salva il file con il nome aggiornato
+<b class="nc">&nbsp;                    filePart.write(filePath);</b>
+&nbsp;                }
+&nbsp;
+&nbsp;                // Ottieni la descrizione
+<b class="nc">&nbsp;                note = request.getParameter(&quot;note&quot;);</b>
+&nbsp;
+&nbsp;                // Salva i dettagli nel database
+<b class="nc">&nbsp;                if (fileName != null &amp;&amp; !fileName.isEmpty()) {</b>
+<b class="nc">&nbsp;                    GestioneListeDAO gestioneListeDAO = facade.getGestioneListeDAO();</b>
+<b class="nc">&nbsp;                    if(note.isEmpty()){</b>
+<b class="nc">&nbsp;                        gestioneListeDAO.inserisciLista(fileName);</b>
+&nbsp;                    }else{
+<b class="nc">&nbsp;                        gestioneListeDAO.inserisciLista(fileName, note);</b>
+&nbsp;                    }
+<b class="nc">&nbsp;                    request.setAttribute(&quot;message&quot;, &quot;File caricato con successo!&quot;);</b>
+<b class="nc">&nbsp;                } else {</b>
+<b class="nc">&nbsp;                    request.setAttribute(&quot;message&quot;, &quot;Errore durante il caricamento del file. Riprova.&quot;);</b>
+&nbsp;                }
+<b class="nc">&nbsp;            } catch (Exception e) {</b>
+<b class="nc">&nbsp;                e.printStackTrace();</b>
+<b class="nc">&nbsp;                request.setAttribute(&quot;message&quot;, &quot;Errore durante il caricamento del file. Riprova.&quot;);</b>
+<b class="nc">&nbsp;            }</b>
+&nbsp;
+<b class="nc">&nbsp;            pageName=&quot;aggiungiLista&quot;;</b>
+<b class="nc">&nbsp;        }</b>
+<b class="fc">&nbsp;        else if(pageName.equals(&quot;arrivo&quot;))</b>
+&nbsp;        {
+<b class="nc">&nbsp;            int IDprodotto= Integer.parseInt(request.getParameter(&quot;prodotto&quot;));</b>
+<b class="nc">&nbsp;            String note = request.getParameter(&quot;note&quot;);</b>
+&nbsp;
+<b class="nc">&nbsp;            GestioneLogisticaDAO gestioneLogisticaDAO = facade.getGestioneLogisticaDAO();</b>
+<b class="nc">&nbsp;            gestioneLogisticaDAO.inserisciArrivo(IDprodotto, note);</b>
+<b class="nc">&nbsp;            pageName = &quot;arrivi&quot;;</b>
+<b class="nc">&nbsp;        }</b>
+<b class="fc">&nbsp;        else if(pageName.equals(&quot;spedizione&quot;))</b>
+&nbsp;        {
+<b class="nc">&nbsp;            int IDprodotto= Integer.parseInt(request.getParameter(&quot;prodotto&quot;));</b>
+<b class="nc">&nbsp;            String note = request.getParameter(&quot;note&quot;);</b>
+&nbsp;
+<b class="nc">&nbsp;            GestioneLogisticaDAO gestioneLogisticaDAO = facade.getGestioneLogisticaDAO();</b>
+<b class="nc">&nbsp;            gestioneLogisticaDAO.inserisciSpedizione(IDprodotto, note);</b>
+<b class="nc">&nbsp;            pageName = &quot;spedizioni&quot;;</b>
+<b class="nc">&nbsp;        }</b>
+<b class="fc">&nbsp;        else if(pageName.equals(&quot;notifica&quot;))</b>
+&nbsp;        {
+<b class="fc">&nbsp;            HttpSession session = request.getSession();</b>
+<b class="fc">&nbsp;            Integer userID = (Integer) session.getAttribute(&quot;ID&quot;);</b>
+&nbsp;
+<b class="fc">&nbsp;            String oggetto = request.getParameter(&quot;oggetto&quot;);</b>
+<b class="fc">&nbsp;            String messaggio = request.getParameter(&quot;messaggio&quot;);</b>
+&nbsp;
+<b class="fc">&nbsp;            GestioneNotificheDAO gestioneNotificheDAO = facade.getGestioneNotificheDAO();</b>
+<b class="fc">&nbsp;            String message = gestioneNotificheDAO.inviaNotifica(userID, oggetto, messaggio);</b>
+&nbsp;
+<b class="fc">&nbsp;            request.setAttribute(&quot;message&quot;, message);</b>
+<b class="fc">&nbsp;            pageName = &quot;notifiche&quot;;</b>
+&nbsp;        }
+&nbsp;
+<b class="fc">&nbsp;        RequestDispatcher requestDispatcher = request.getRequestDispatcher(&quot;visualizza-servlet-admin?pageName=&quot; + pageName);</b>
+<b class="fc">&nbsp;        requestDispatcher.forward(request, response);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
+&nbsp;    {
+<b class="nc">&nbsp;        doGet(request, response);</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-01-23 01:20</div>
+</div>
+</body>
+</html>

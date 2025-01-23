@@ -1,0 +1,291 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=windows-1252"> 
+  <title>Coverage Report > VisualizzaServletMagazziniere</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">it.unisa.magazon_lab.controller.magazziniere</a>
+</div>
+
+<h1>Coverage Summary for Class: VisualizzaServletMagazziniere (it.unisa.magazon_lab.controller.magazziniere)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">VisualizzaServletMagazziniere</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/109)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package it.unisa.magazon_lab.controller.magazziniere;
+&nbsp;
+&nbsp;import it.unisa.magazon_lab.model.DAO.GestioneCategorieDAO;
+&nbsp;import it.unisa.magazon_lab.model.DAO.GestioneListeDAO;
+&nbsp;import it.unisa.magazon_lab.model.DAO.GestioneLogisticaDAO;
+&nbsp;import it.unisa.magazon_lab.model.DAO.GestioneProdottiDAO;
+&nbsp;import it.unisa.magazon_lab.model.Entity.*;
+&nbsp;import it.unisa.magazon_lab.model.Facade.Facade;
+&nbsp;import jakarta.servlet.RequestDispatcher;
+&nbsp;import jakarta.servlet.ServletException;
+&nbsp;import jakarta.servlet.annotation.WebServlet;
+&nbsp;import jakarta.servlet.http.HttpServlet;
+&nbsp;import jakarta.servlet.http.HttpServletRequest;
+&nbsp;import jakarta.servlet.http.HttpServletResponse;
+&nbsp;import java.io.IOException;
+&nbsp;import java.util.List;
+&nbsp;
+&nbsp;/**
+&nbsp; * La servlet gestisce le richieste inviate dall&#39;interfaccia utente relative alle operazioni di visualizzazione dei magazziniere.
+&nbsp; * In particolare, gestisce la visualizzazione di informazioni sui prodotti, categorie, arrivi, spedizioni e liste.
+&nbsp; * A seconda del parametro &quot;pageName&quot; ricevuto nella richiesta, la servlet recupera i dati appropriati
+&nbsp; * dai vari DAO e li imposta come attributi della richiesta per essere visualizzati nelle pagine JSP.
+&nbsp; *
+&nbsp; * @author Battaglia Daniel
+&nbsp; * @author Gigante Ruben
+&nbsp; * @author Vaiano Francesco
+&nbsp; */
+&nbsp;@WebServlet(name=&quot;visualizza-servlet-magazziniere&quot;, value=&quot;/visualizza-servlet-magazziniere&quot;)
+<b class="nc">&nbsp;public class VisualizzaServletMagazziniere extends HttpServlet</b>
+&nbsp;{
+&nbsp;    private Facade facade;
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public void init() throws ServletException
+&nbsp;    {
+<b class="nc">&nbsp;        super.init();</b>
+<b class="nc">&nbsp;        this.facade = new Facade();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
+&nbsp;    {
+<b class="nc">&nbsp;        String pageName = request.getParameter(&quot;pageName&quot;);</b>
+&nbsp;
+<b class="nc">&nbsp;        if(pageName.equals(&quot;dashboard&quot;))</b>
+&nbsp;        {
+<b class="nc">&nbsp;            GestioneProdottiDAO gestioneProdottiDAO = facade.getGestioneProdottiDAO();</b>
+<b class="nc">&nbsp;            List&lt;Prodotto&gt; listaProdotti = gestioneProdottiDAO.visualizzaProdotti();</b>
+<b class="nc">&nbsp;            request.setAttribute(&quot;listaProdotti&quot;, listaProdotti);</b>
+&nbsp;
+<b class="nc">&nbsp;            GestioneCategorieDAO gestioneCategorieDAO = facade.getGestioneCategorieDAO();</b>
+<b class="nc">&nbsp;            List&lt;Categoria&gt; listaCategorie = gestioneCategorieDAO.visualizzaCategorie();</b>
+<b class="nc">&nbsp;            request.setAttribute(&quot;listaCategorie&quot;, listaCategorie);</b>
+<b class="nc">&nbsp;        }</b>
+<b class="nc">&nbsp;        else if (pageName.equals(&quot;prodottiFiltrati&quot;))</b>
+&nbsp;        {
+<b class="nc">&nbsp;            String codice = request.getParameter(&quot;codice&quot;) != null &amp;&amp; !request.getParameter(&quot;codice&quot;).isEmpty()</b>
+<b class="nc">&nbsp;                    ? request.getParameter(&quot;codice&quot;)</b>
+<b class="nc">&nbsp;                    : null;</b>
+&nbsp;
+<b class="nc">&nbsp;            Integer categoria = (request.getParameter(&quot;categoria&quot;) != null &amp;&amp; !request.getParameter(&quot;categoria&quot;).isEmpty())</b>
+<b class="nc">&nbsp;                    ? Integer.parseInt(request.getParameter(&quot;categoria&quot;))</b>
+<b class="nc">&nbsp;                    : null;</b>
+&nbsp;
+<b class="nc">&nbsp;            String nome = request.getParameter(&quot;nome&quot;) != null &amp;&amp; !request.getParameter(&quot;nome&quot;).isEmpty()</b>
+<b class="nc">&nbsp;                    ? request.getParameter(&quot;nome&quot;)</b>
+<b class="nc">&nbsp;                    : null;</b>
+&nbsp;
+<b class="nc">&nbsp;            String stato = request.getParameter(&quot;stato&quot;) != null &amp;&amp; !request.getParameter(&quot;stato&quot;).isEmpty()</b>
+<b class="nc">&nbsp;                    ? request.getParameter(&quot;stato&quot;)</b>
+<b class="nc">&nbsp;                    : null;</b>
+&nbsp;
+<b class="nc">&nbsp;            String dataArrivo = request.getParameter(&quot;data-arrivo&quot;) != null &amp;&amp; !request.getParameter(&quot;data-arrivo&quot;).isEmpty()</b>
+<b class="nc">&nbsp;                    ? request.getParameter(&quot;data-arrivo&quot;)</b>
+<b class="nc">&nbsp;                    : null;</b>
+&nbsp;
+<b class="nc">&nbsp;            String dataSpedizione = request.getParameter(&quot;data-spedizione&quot;) != null &amp;&amp; !request.getParameter(&quot;data-spedizione&quot;).isEmpty()</b>
+<b class="nc">&nbsp;                    ? request.getParameter(&quot;data-spedizione&quot;)</b>
+<b class="nc">&nbsp;                    : null;</b>
+&nbsp;
+<b class="nc">&nbsp;            GestioneProdottiDAO gestioneProdottiDAO = facade.getGestioneProdottiDAO();</b>
+<b class="nc">&nbsp;            List&lt;Prodotto&gt; listaProdotti = gestioneProdottiDAO.cercaProdottiFiltrati(codice, categoria, nome, stato, dataArrivo, dataSpedizione);</b>
+<b class="nc">&nbsp;            request.setAttribute(&quot;listaProdotti&quot;, listaProdotti);</b>
+&nbsp;
+<b class="nc">&nbsp;            GestioneCategorieDAO gestioneCategorieDAO = facade.getGestioneCategorieDAO();</b>
+<b class="nc">&nbsp;            List&lt;Categoria&gt; listaCategorie = gestioneCategorieDAO.visualizzaCategorie();</b>
+<b class="nc">&nbsp;            request.setAttribute(&quot;listaCategorie&quot;, listaCategorie);</b>
+&nbsp;
+<b class="nc">&nbsp;            pageName = &quot;dashboard&quot;;</b>
+<b class="nc">&nbsp;        }</b>
+<b class="nc">&nbsp;        else if (pageName.equals(&quot;aggiungiProdotto&quot;))</b>
+&nbsp;        {
+<b class="nc">&nbsp;            GestioneCategorieDAO gestioneCategorieDAO = facade.getGestioneCategorieDAO();</b>
+<b class="nc">&nbsp;            List&lt;Categoria&gt; listaCategorie = gestioneCategorieDAO.visualizzaCategorie();</b>
+<b class="nc">&nbsp;            request.setAttribute(&quot;listaCategorie&quot;, listaCategorie);</b>
+<b class="nc">&nbsp;        }</b>
+<b class="nc">&nbsp;        else if (pageName.equals(&quot;dettagliProdotto&quot;))</b>
+&nbsp;        {
+<b class="nc">&nbsp;            int ID = Integer.parseInt(request.getParameter(&quot;IDprodotto&quot;));</b>
+&nbsp;
+<b class="nc">&nbsp;            GestioneProdottiDAO gestioneProdottiDAO = facade.getGestioneProdottiDAO();</b>
+<b class="nc">&nbsp;            Prodotto prodotto = gestioneProdottiDAO.cercaProdotto(ID);</b>
+<b class="nc">&nbsp;            request.setAttribute(&quot;prodotto&quot;, prodotto);</b>
+<b class="nc">&nbsp;        }</b>
+<b class="nc">&nbsp;        else if (pageName.equals(&quot;modificaProdotto&quot;))</b>
+&nbsp;        {
+<b class="nc">&nbsp;            int ID = Integer.parseInt(request.getParameter(&quot;IDprodotto&quot;));</b>
+&nbsp;
+<b class="nc">&nbsp;            GestioneCategorieDAO gestioneCategorieDAO = facade.getGestioneCategorieDAO();</b>
+<b class="nc">&nbsp;            List&lt;Categoria&gt; listaCategorie = gestioneCategorieDAO.visualizzaCategorie();</b>
+<b class="nc">&nbsp;            request.setAttribute(&quot;listaCategorie&quot;, listaCategorie);</b>
+&nbsp;
+<b class="nc">&nbsp;            GestioneProdottiDAO gestioneProdottiDAO = facade.getGestioneProdottiDAO();</b>
+<b class="nc">&nbsp;            Prodotto prodotto = gestioneProdottiDAO.cercaProdotto(ID);</b>
+<b class="nc">&nbsp;            request.setAttribute(&quot;prodotto&quot;, prodotto);</b>
+<b class="nc">&nbsp;        }</b>
+<b class="nc">&nbsp;        else if (pageName.equals(&quot;categorie&quot;))</b>
+&nbsp;        {
+<b class="nc">&nbsp;            GestioneCategorieDAO gestioneCategorieDAO = facade.getGestioneCategorieDAO();</b>
+<b class="nc">&nbsp;            List&lt;Categoria&gt; listaCategorie = gestioneCategorieDAO.visualizzaCategorie();</b>
+<b class="nc">&nbsp;            request.setAttribute(&quot;listaCategorie&quot;, listaCategorie);</b>
+<b class="nc">&nbsp;        }</b>
+<b class="nc">&nbsp;        else if (pageName.equals(&quot;modificaCategoria&quot;))</b>
+&nbsp;        {
+<b class="nc">&nbsp;            int ID = Integer.parseInt(request.getParameter(&quot;IDcategoria&quot;));</b>
+&nbsp;
+<b class="nc">&nbsp;            GestioneCategorieDAO gestioneCategorieDAO = facade.getGestioneCategorieDAO();</b>
+<b class="nc">&nbsp;            Categoria categoria = gestioneCategorieDAO.CercaCategoria(ID);</b>
+<b class="nc">&nbsp;            request.setAttribute(&quot;categoria&quot;, categoria);</b>
+<b class="nc">&nbsp;        }</b>
+<b class="nc">&nbsp;        else if (pageName.equals(&quot;liste&quot;))</b>
+&nbsp;        {
+<b class="nc">&nbsp;            GestioneListeDAO gestioneListeDAO = facade.getGestioneListeDAO();</b>
+<b class="nc">&nbsp;            List&lt;Lista&gt; listaListe = gestioneListeDAO.visualizzaListe();</b>
+<b class="nc">&nbsp;            request.setAttribute(&quot;listaListe&quot;, listaListe);</b>
+<b class="nc">&nbsp;        }</b>
+<b class="nc">&nbsp;        else if (pageName.equals(&quot;arrivi&quot;))</b>
+&nbsp;        {
+<b class="nc">&nbsp;            GestioneLogisticaDAO gestioneLogisticaDAO = facade.getGestioneLogisticaDAO();</b>
+<b class="nc">&nbsp;            List&lt;Arrivo&gt; listaArrivi = gestioneLogisticaDAO.visualizzaArrivi();</b>
+<b class="nc">&nbsp;            request.setAttribute(&quot;listaArrivi&quot;, listaArrivi);</b>
+<b class="nc">&nbsp;        }</b>
+<b class="nc">&nbsp;        else if (pageName.equals(&quot;spedizioni&quot;))</b>
+&nbsp;        {
+<b class="nc">&nbsp;            GestioneLogisticaDAO gestioneLogisticaDAO = facade.getGestioneLogisticaDAO();</b>
+<b class="nc">&nbsp;            List&lt;Spedizione&gt; listaSpedizioni = gestioneLogisticaDAO.visualizzaSpedizioni();</b>
+<b class="nc">&nbsp;            request.setAttribute(&quot;listaSpedizioni&quot;, listaSpedizioni);</b>
+<b class="nc">&nbsp;        }</b>
+<b class="nc">&nbsp;        else if (pageName.equals(&quot;modificaArrivo&quot;))</b>
+&nbsp;        {
+<b class="nc">&nbsp;            int ID = Integer.parseInt(request.getParameter(&quot;IDarrivo&quot;));</b>
+&nbsp;
+<b class="nc">&nbsp;            GestioneLogisticaDAO gestioneLogisticaDAO = facade.getGestioneLogisticaDAO();</b>
+<b class="nc">&nbsp;            Arrivo arrivo = gestioneLogisticaDAO.visualizzaArrivo(ID);</b>
+<b class="nc">&nbsp;            request.setAttribute(&quot;arrivo&quot;, arrivo);</b>
+<b class="nc">&nbsp;        }</b>
+<b class="nc">&nbsp;        else if (pageName.equals(&quot;modificaSpedizione&quot;))</b>
+&nbsp;        {
+<b class="nc">&nbsp;            int ID = Integer.parseInt(request.getParameter(&quot;IDspedizione&quot;));</b>
+&nbsp;
+<b class="nc">&nbsp;            GestioneLogisticaDAO gestioneLogisticaDAO = facade.getGestioneLogisticaDAO();</b>
+<b class="nc">&nbsp;            Spedizione spedizione = gestioneLogisticaDAO.visualizzaSpedizione(ID);</b>
+<b class="nc">&nbsp;            request.setAttribute(&quot;spedizione&quot;, spedizione);</b>
+<b class="nc">&nbsp;        }</b>
+<b class="nc">&nbsp;        else if (pageName.equals(&quot;aggiungiArrivo&quot;))</b>
+&nbsp;        {
+<b class="nc">&nbsp;            GestioneProdottiDAO gestioneProdottiDAO = facade.getGestioneProdottiDAO();</b>
+<b class="nc">&nbsp;            List&lt;Prodotto&gt; listaProdotti = gestioneProdottiDAO.visualizzaProdottiPerSpedizioneArrivo();</b>
+<b class="nc">&nbsp;            request.setAttribute(&quot;listaProdotti&quot;, listaProdotti);</b>
+<b class="nc">&nbsp;        }</b>
+<b class="nc">&nbsp;        else if (pageName.equals(&quot;aggiungiSpedizione&quot;))</b>
+&nbsp;        {
+<b class="nc">&nbsp;            GestioneProdottiDAO gestioneProdottiDAO = facade.getGestioneProdottiDAO();</b>
+<b class="nc">&nbsp;            List&lt;Prodotto&gt; listaProdotti = gestioneProdottiDAO.visualizzaProdottiPerSpedizioneArrivo();</b>
+<b class="nc">&nbsp;            request.setAttribute(&quot;listaProdotti&quot;, listaProdotti);</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        RequestDispatcher requestDispatcher = request.getRequestDispatcher(&quot;WEB-INF/results/magazziniere/homepageMagazziniere.jsp?pageName=&quot; + pageName);</b>
+<b class="nc">&nbsp;        requestDispatcher.forward(request, response);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
+&nbsp;    {
+<b class="nc">&nbsp;        doGet(request, response);</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-01-23 01:20</div>
+</div>
+</body>
+</html>

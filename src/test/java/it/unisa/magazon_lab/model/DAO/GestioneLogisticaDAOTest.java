@@ -32,12 +32,8 @@ public class GestioneLogisticaDAOTest {
         int IDprodotto = -1; //Non valido
         String noteArrivo ="";
 
-        try {
-            gestioneLogisticaDAO.inserisciArrivo(IDprodotto,noteArrivo);
-            fail("Doveva essere lanciata un'eccezione per ID non valido.");
-        } catch (Exception e) {
-            assertEquals("Errore: ID non valido.", e.getMessage());
-        }
+        String result = gestioneLogisticaDAO.inserisciArrivo(IDprodotto,noteArrivo);
+        assertEquals("2", result, "Doveva essere restituito un errore per formato codice non corretto.");
     }
 
     /**
@@ -49,12 +45,8 @@ public class GestioneLogisticaDAOTest {
         int IDprodotto = 2; //Valido
         String noteArrivo ="";
 
-        try {
-            gestioneLogisticaDAO.inserisciArrivo(IDprodotto,noteArrivo);
-            assertTrue(true); // Il metodo dovrebbe eseguire senza errori
-        } catch (Exception e) {
-            fail("Non dovrebbe generare eccezioni");
-        }
+        String result = gestioneLogisticaDAO.inserisciArrivo(IDprodotto,noteArrivo);
+        assertEquals("1", result, "Doveva essere restituito inserimento avvenuto con successo.");
     }
 
     /**
@@ -66,12 +58,8 @@ public class GestioneLogisticaDAOTest {
         int IDprodotto = -1; //Non valido
         String noteSpedizione ="";
 
-        try {
-            gestioneLogisticaDAO.inserisciSpedizione(IDprodotto,noteSpedizione);
-            fail("Doveva essere lanciata un'eccezione per ID non valido.");
-        } catch (Exception e) {
-            assertEquals("Errore: ID non valido.", e.getMessage());
-        }
+        String result = gestioneLogisticaDAO.inserisciSpedizione(IDprodotto,noteSpedizione);
+        assertEquals("2", result, "Doveva essere restituito errore id nn valido.");
     }
 
     /**
@@ -83,11 +71,7 @@ public class GestioneLogisticaDAOTest {
         int IDprodotto = 2; //Valido
         String noteSpedizione ="";
 
-        try {
-            gestioneLogisticaDAO.inserisciSpedizione(IDprodotto,noteSpedizione);
-            assertTrue(true); // Il metodo dovrebbe eseguire senza errori
-        } catch (Exception e) {
-            fail("Non dovrebbe generare eccezioni");
-        }
+        String result = gestioneLogisticaDAO.inserisciSpedizione(IDprodotto,noteSpedizione);
+        assertEquals("1", result, "Doveva essere restituito inserimento avvenuto con successo.");
     }
 }

@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="it"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>VisualizzaServletAdmin.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ModificaCategoriaTest Coverage Results, InserisciServletAdminTest Coverage Results, ModificaServletAdminTest Coverage Results, AutenticazioneDAOTest Coverage Results, GestioneCategorieDAOTest Coverage Results, GestioneListeDAOTest Coverage Results, GestioneLogisticaDAOTest Coverage Results, GestioneNotificheDAOTest Coverage Results, GestioneProdottiDAOTest Coverage Results, GestioneUtentiDAOTest Coverage Results, ConnessioneTest Coverage Results</a> &gt; <a href="index.source.html" class="el_package">it.unisa.magazon_lab.controller.admin</a> &gt; <span class="el_source">VisualizzaServletAdmin.java</span></div><h1>VisualizzaServletAdmin.java</h1><pre class="source lang-java linenums">package it.unisa.magazon_lab.controller.admin;
+
+import it.unisa.magazon_lab.model.DAO.*;
+import it.unisa.magazon_lab.model.Entity.*;
+import it.unisa.magazon_lab.model.Facade.Facade;
+import jakarta.servlet.RequestDispatcher;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
+import java.io.IOException;
+import java.util.List;
+
+/**
+ * La servlet gestisce le richieste inviate dall'interfaccia utente per la visualizzazione e la gestione
+ * degli elementi amministrativi all'interno dell'applicazione, come prodotti, categorie, utenti, arrivi,
+ * spedizioni, liste, e altro. A seconda del parametro &quot;pageName&quot; ricevuto nella richiesta, la servlet
+ * recupera e visualizza i dati appropriati, come la lista dei prodotti, la modifica di categorie o utenti,
+ * o la gestione di arrivi e spedizioni. Infine, la servlet reindirizza l'utente alla pagina JSP corretta
+ * per visualizzare i dati richiesti.
+ *
+ * @author Battaglia Daniel
+ * @author Gigante Ruben
+ * @author Vaiano Francesco
+ */
+@WebServlet(name=&quot;visualizza-servlet-admin&quot;, value=&quot;/visualizza-servlet-admin&quot;)
+<span class="nc" id="L29">public class VisualizzaServletAdmin extends HttpServlet</span>
+{
+    private Facade facade;
+
+    @Override
+    public void init() throws ServletException
+    {
+<span class="nc" id="L36">        super.init();</span>
+<span class="nc" id="L37">        this.facade = new Facade();</span>
+<span class="nc" id="L38">    }</span>
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
+    {
+<span class="nc" id="L42">        String pageName = request.getParameter(&quot;pageName&quot;);</span>
+
+<span class="nc bnc" id="L44" title="All 2 branches missed.">        if(pageName.equals(&quot;dashboard&quot;))</span>
+        {
+<span class="nc" id="L46">            GestioneProdottiDAO gestioneProdottiDAO = facade.getGestioneProdottiDAO();</span>
+<span class="nc" id="L47">            List&lt;Prodotto&gt; listaProdotti = gestioneProdottiDAO.visualizzaProdotti();</span>
+<span class="nc" id="L48">            request.setAttribute(&quot;listaProdotti&quot;, listaProdotti);</span>
+
+<span class="nc" id="L50">            GestioneCategorieDAO gestioneCategorieDAO = facade.getGestioneCategorieDAO();</span>
+<span class="nc" id="L51">            List&lt;Categoria&gt; listaCategorie = gestioneCategorieDAO.visualizzaCategorie();</span>
+<span class="nc" id="L52">            request.setAttribute(&quot;listaCategorie&quot;, listaCategorie);</span>
+<span class="nc" id="L53">        }</span>
+<span class="nc bnc" id="L54" title="All 2 branches missed.">        else if (pageName.equals(&quot;prodottiFiltrati&quot;))</span>
+        {
+<span class="nc bnc" id="L56" title="All 4 branches missed.">            String codice = request.getParameter(&quot;codice&quot;) != null &amp;&amp; !request.getParameter(&quot;codice&quot;).isEmpty()</span>
+<span class="nc" id="L57">                    ? request.getParameter(&quot;codice&quot;)</span>
+<span class="nc" id="L58">                    : null;</span>
+
+<span class="nc bnc" id="L60" title="All 4 branches missed.">            Integer categoria = (request.getParameter(&quot;categoria&quot;) != null &amp;&amp; !request.getParameter(&quot;categoria&quot;).isEmpty())</span>
+<span class="nc" id="L61">                    ? Integer.parseInt(request.getParameter(&quot;categoria&quot;))</span>
+<span class="nc" id="L62">                    : null;</span>
+
+<span class="nc bnc" id="L64" title="All 4 branches missed.">            String nome = request.getParameter(&quot;nome&quot;) != null &amp;&amp; !request.getParameter(&quot;nome&quot;).isEmpty()</span>
+<span class="nc" id="L65">                    ? request.getParameter(&quot;nome&quot;)</span>
+<span class="nc" id="L66">                    : null;</span>
+
+<span class="nc bnc" id="L68" title="All 4 branches missed.">            String stato = request.getParameter(&quot;stato&quot;) != null &amp;&amp; !request.getParameter(&quot;stato&quot;).isEmpty()</span>
+<span class="nc" id="L69">                    ? request.getParameter(&quot;stato&quot;)</span>
+<span class="nc" id="L70">                    : null;</span>
+
+<span class="nc bnc" id="L72" title="All 4 branches missed.">            String dataArrivo = request.getParameter(&quot;data-arrivo&quot;) != null &amp;&amp; !request.getParameter(&quot;data-arrivo&quot;).isEmpty()</span>
+<span class="nc" id="L73">                    ? request.getParameter(&quot;data-arrivo&quot;)</span>
+<span class="nc" id="L74">                    : null;</span>
+
+<span class="nc bnc" id="L76" title="All 4 branches missed.">            String dataSpedizione = request.getParameter(&quot;data-spedizione&quot;) != null &amp;&amp; !request.getParameter(&quot;data-spedizione&quot;).isEmpty()</span>
+<span class="nc" id="L77">                    ? request.getParameter(&quot;data-spedizione&quot;)</span>
+<span class="nc" id="L78">                    : null;</span>
+
+<span class="nc" id="L80">            GestioneProdottiDAO gestioneProdottiDAO = facade.getGestioneProdottiDAO();</span>
+<span class="nc" id="L81">            List&lt;Prodotto&gt; listaProdotti = gestioneProdottiDAO.cercaProdottiFiltrati(codice, categoria, nome, stato, dataArrivo, dataSpedizione);</span>
+<span class="nc" id="L82">            request.setAttribute(&quot;listaProdotti&quot;, listaProdotti);</span>
+
+<span class="nc" id="L84">            GestioneCategorieDAO gestioneCategorieDAO = facade.getGestioneCategorieDAO();</span>
+<span class="nc" id="L85">            List&lt;Categoria&gt; listaCategorie = gestioneCategorieDAO.visualizzaCategorie();</span>
+<span class="nc" id="L86">            request.setAttribute(&quot;listaCategorie&quot;, listaCategorie);</span>
+
+<span class="nc" id="L88">            pageName = &quot;dashboard&quot;;</span>
+<span class="nc" id="L89">        }</span>
+<span class="nc bnc" id="L90" title="All 2 branches missed.">        else if (pageName.equals(&quot;aggiungiProdotto&quot;))</span>
+        {
+<span class="nc" id="L92">            GestioneCategorieDAO gestioneCategorieDAO = facade.getGestioneCategorieDAO();</span>
+<span class="nc" id="L93">            List&lt;Categoria&gt; listaCategorie = gestioneCategorieDAO.visualizzaCategorie();</span>
+<span class="nc" id="L94">            request.setAttribute(&quot;listaCategorie&quot;, listaCategorie);</span>
+<span class="nc" id="L95">        }</span>
+<span class="nc bnc" id="L96" title="All 2 branches missed.">        else if (pageName.equals(&quot;dettagliProdotto&quot;))</span>
+        {
+<span class="nc" id="L98">            int ID = Integer.parseInt(request.getParameter(&quot;IDprodotto&quot;));</span>
+
+<span class="nc" id="L100">            GestioneProdottiDAO gestioneProdottiDAO = facade.getGestioneProdottiDAO();</span>
+<span class="nc" id="L101">            Prodotto prodotto = gestioneProdottiDAO.cercaProdotto(ID);</span>
+<span class="nc" id="L102">            request.setAttribute(&quot;prodotto&quot;, prodotto);</span>
+<span class="nc" id="L103">        }</span>
+<span class="nc bnc" id="L104" title="All 2 branches missed.">        else if (pageName.equals(&quot;modificaProdotto&quot;))</span>
+        {
+<span class="nc" id="L106">            int ID = Integer.parseInt(request.getParameter(&quot;IDprodotto&quot;));</span>
+
+<span class="nc" id="L108">            GestioneCategorieDAO gestioneCategorieDAO = facade.getGestioneCategorieDAO();</span>
+<span class="nc" id="L109">            List&lt;Categoria&gt; listaCategorie = gestioneCategorieDAO.visualizzaCategorie();</span>
+<span class="nc" id="L110">            request.setAttribute(&quot;listaCategorie&quot;, listaCategorie);</span>
+
+<span class="nc" id="L112">            GestioneProdottiDAO gestioneProdottiDAO = facade.getGestioneProdottiDAO();</span>
+<span class="nc" id="L113">            Prodotto prodotto = gestioneProdottiDAO.cercaProdotto(ID);</span>
+<span class="nc" id="L114">            request.setAttribute(&quot;prodotto&quot;, prodotto);</span>
+<span class="nc" id="L115">        }</span>
+<span class="nc bnc" id="L116" title="All 2 branches missed.">        else if (pageName.equals(&quot;categorie&quot;))</span>
+        {
+<span class="nc" id="L118">            GestioneCategorieDAO gestioneCategorieDAO = facade.getGestioneCategorieDAO();</span>
+<span class="nc" id="L119">            List&lt;Categoria&gt; listaCategorie = gestioneCategorieDAO.visualizzaCategorie();</span>
+<span class="nc" id="L120">            request.setAttribute(&quot;listaCategorie&quot;, listaCategorie);</span>
+<span class="nc" id="L121">        }</span>
+<span class="nc bnc" id="L122" title="All 2 branches missed.">        else if (pageName.equals(&quot;modificaCategoria&quot;))</span>
+        {
+<span class="nc" id="L124">            int ID = Integer.parseInt(request.getParameter(&quot;IDcategoria&quot;));</span>
+
+<span class="nc" id="L126">            GestioneCategorieDAO gestioneCategorieDAO = facade.getGestioneCategorieDAO();</span>
+<span class="nc" id="L127">            Categoria categoria = gestioneCategorieDAO.CercaCategoria(ID);</span>
+<span class="nc" id="L128">            request.setAttribute(&quot;categoria&quot;, categoria);</span>
+<span class="nc" id="L129">        }</span>
+<span class="nc bnc" id="L130" title="All 2 branches missed.">        else if(pageName.equals(&quot;utenti&quot;)){</span>
+<span class="nc" id="L131">            GestioneUtentiDAO gestioneUtentiDAO = facade.getGestioneUtentiDAO();</span>
+<span class="nc" id="L132">            List&lt;Utente&gt; listaUtenti = gestioneUtentiDAO.visualizzaUtenti();</span>
+<span class="nc" id="L133">            request.setAttribute(&quot;listaUtenti&quot;, listaUtenti);</span>
+<span class="nc" id="L134">        }</span>
+<span class="nc bnc" id="L135" title="All 2 branches missed.">        else if (pageName.equals(&quot;aggiungiUtente&quot;))</span>
+        {
+<span class="nc" id="L137">            GestioneUtentiDAO gestioneUtentiDAO = facade.getGestioneUtentiDAO();</span>
+<span class="nc" id="L138">            List&lt;Utente&gt; listaUtenti = gestioneUtentiDAO.visualizzaUtenti();</span>
+<span class="nc" id="L139">            request.setAttribute(&quot;listaUtenti&quot;, listaUtenti);</span>
+<span class="nc" id="L140">        }</span>
+<span class="nc bnc" id="L141" title="All 2 branches missed.">        else if (pageName.equals(&quot;modificaUtente&quot;)){</span>
+<span class="nc" id="L142">            int ID = Integer.parseInt(request.getParameter(&quot;IDutente&quot;));</span>
+
+<span class="nc" id="L144">            GestioneUtentiDAO gestioneUtentiDAO = facade.getGestioneUtentiDAO();</span>
+<span class="nc" id="L145">            Utente u = gestioneUtentiDAO.cercaUtente(ID);</span>
+
+<span class="nc" id="L147">            request.setAttribute(&quot;utente&quot;, u);</span>
+<span class="nc bnc" id="L148" title="All 2 branches missed.">        }else if (pageName.equals(&quot;liste&quot;)){</span>
+<span class="nc" id="L149">            GestioneListeDAO gestioneListeDAO = facade.getGestioneListeDAO();</span>
+<span class="nc" id="L150">            List&lt;Lista&gt; listaListe = gestioneListeDAO.visualizzaListe();</span>
+<span class="nc" id="L151">            request.setAttribute(&quot;listaListe&quot;, listaListe);</span>
+<span class="nc bnc" id="L152" title="All 2 branches missed.">        }else if (pageName.equals(&quot;modificaLista&quot;)) {</span>
+<span class="nc" id="L153">            int ID = Integer.parseInt(request.getParameter(&quot;IDlista&quot;));</span>
+
+<span class="nc" id="L155">            GestioneListeDAO gestioneListeDAO = facade.getGestioneListeDAO();</span>
+<span class="nc" id="L156">            Lista l = gestioneListeDAO.cercaLista(ID);</span>
+
+<span class="nc" id="L158">            request.setAttribute(&quot;lista&quot;, l);</span>
+<span class="nc" id="L159">        }</span>
+<span class="nc bnc" id="L160" title="All 2 branches missed.">        else if (pageName.equals(&quot;arrivi&quot;))</span>
+        {
+<span class="nc" id="L162">            GestioneLogisticaDAO gestioneLogisticaDAO = facade.getGestioneLogisticaDAO();</span>
+<span class="nc" id="L163">            List&lt;Arrivo&gt; listaArrivi = gestioneLogisticaDAO.visualizzaArrivi();</span>
+<span class="nc" id="L164">            request.setAttribute(&quot;listaArrivi&quot;, listaArrivi);</span>
+<span class="nc" id="L165">        }</span>
+<span class="nc bnc" id="L166" title="All 2 branches missed.">        else if (pageName.equals(&quot;spedizioni&quot;))</span>
+        {
+<span class="nc" id="L168">            GestioneLogisticaDAO gestioneLogisticaDAO = facade.getGestioneLogisticaDAO();</span>
+<span class="nc" id="L169">            List&lt;Spedizione&gt; listaSpedizioni = gestioneLogisticaDAO.visualizzaSpedizioni();</span>
+<span class="nc" id="L170">            request.setAttribute(&quot;listaSpedizioni&quot;, listaSpedizioni);</span>
+<span class="nc" id="L171">        }</span>
+<span class="nc bnc" id="L172" title="All 2 branches missed.">        else if (pageName.equals(&quot;modificaArrivo&quot;))</span>
+        {
+<span class="nc" id="L174">            int ID = Integer.parseInt(request.getParameter(&quot;IDarrivo&quot;));</span>
+
+<span class="nc" id="L176">            GestioneLogisticaDAO gestioneLogisticaDAO = facade.getGestioneLogisticaDAO();</span>
+<span class="nc" id="L177">            Arrivo arrivo = gestioneLogisticaDAO.visualizzaArrivo(ID);</span>
+<span class="nc" id="L178">            request.setAttribute(&quot;arrivo&quot;, arrivo);</span>
+<span class="nc" id="L179">        }</span>
+<span class="nc bnc" id="L180" title="All 2 branches missed.">        else if (pageName.equals(&quot;modificaSpedizione&quot;))</span>
+        {
+<span class="nc" id="L182">            int ID = Integer.parseInt(request.getParameter(&quot;IDspedizione&quot;));</span>
+
+<span class="nc" id="L184">            GestioneLogisticaDAO gestioneLogisticaDAO = facade.getGestioneLogisticaDAO();</span>
+<span class="nc" id="L185">            Spedizione spedizione = gestioneLogisticaDAO.visualizzaSpedizione(ID);</span>
+<span class="nc" id="L186">            request.setAttribute(&quot;spedizione&quot;, spedizione);</span>
+<span class="nc" id="L187">        }</span>
+<span class="nc bnc" id="L188" title="All 2 branches missed.">        else if (pageName.equals(&quot;aggiungiArrivo&quot;))</span>
+        {
+<span class="nc" id="L190">            GestioneProdottiDAO gestioneProdottiDAO = facade.getGestioneProdottiDAO();</span>
+<span class="nc" id="L191">            List&lt;Prodotto&gt; listaProdotti = gestioneProdottiDAO.visualizzaProdottiPerSpedizioneArrivo();</span>
+<span class="nc" id="L192">            request.setAttribute(&quot;listaProdotti&quot;, listaProdotti);</span>
+<span class="nc" id="L193">        }</span>
+<span class="nc bnc" id="L194" title="All 2 branches missed.">        else if (pageName.equals(&quot;aggiungiSpedizione&quot;))</span>
+        {
+<span class="nc" id="L196">            GestioneProdottiDAO gestioneProdottiDAO = facade.getGestioneProdottiDAO();</span>
+<span class="nc" id="L197">            List&lt;Prodotto&gt; listaProdotti = gestioneProdottiDAO.visualizzaProdottiPerSpedizioneArrivo();</span>
+<span class="nc" id="L198">            request.setAttribute(&quot;listaProdotti&quot;, listaProdotti);</span>
+        }
+
+<span class="nc" id="L201">        RequestDispatcher requestDispatcher = request.getRequestDispatcher(&quot;WEB-INF/results/admin/homepageAdmin.jsp?pageName=&quot; + pageName);</span>
+<span class="nc" id="L202">        requestDispatcher.forward(request, response);</span>
+<span class="nc" id="L203">    }</span>
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
+    {
+<span class="nc" id="L208">        doGet(request, response);</span>
+<span class="nc" id="L209">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

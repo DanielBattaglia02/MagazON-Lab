@@ -1,0 +1,283 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=windows-1252"> 
+  <title>Coverage Report > ModificaServletAdmin</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">it.unisa.magazon_lab.controller.admin</a>
+</div>
+
+<h1>Coverage Summary for Class: ModificaServletAdmin (it.unisa.magazon_lab.controller.admin)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">ModificaServletAdmin</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    50%
+  </span>
+  <span class="absValue">
+    (3/6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    19,8%
+  </span>
+  <span class="absValue">
+    (18/91)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package it.unisa.magazon_lab.controller.admin;
+&nbsp;
+&nbsp;import it.unisa.magazon_lab.model.DAO.*;
+&nbsp;import it.unisa.magazon_lab.model.Facade.Facade;
+&nbsp;import jakarta.servlet.RequestDispatcher;
+&nbsp;import jakarta.servlet.ServletException;
+&nbsp;import jakarta.servlet.annotation.WebServlet;
+&nbsp;import jakarta.servlet.http.HttpServlet;
+&nbsp;import jakarta.servlet.http.HttpServletRequest;
+&nbsp;import jakarta.servlet.http.HttpServletResponse;
+&nbsp;
+&nbsp;import java.io.IOException;
+&nbsp;
+&nbsp;/**
+&nbsp; * La servlet gestisce le richieste di modifica per gli elementi amministrativi all&#39;interno dell&#39;applicazione,
+&nbsp; * come prodotti, categorie, utenti, liste, arrivi, spedizioni, e notifiche. A seconda del parametro &quot;pageName&quot;
+&nbsp; * ricevuto nella richiesta, la servlet esegue l&#39;aggiornamento dei dati specifici in base ai parametri inviati
+&nbsp; * dal client e poi inoltra l&#39;utente alla pagina corrispondente per visualizzare il risultato dell&#39;operazione.
+&nbsp; *
+&nbsp; * Ad esempio, può modificare un prodotto, aggiornare le informazioni di una categoria, cambiare lo stato di una notifica,
+&nbsp; * o aggiornare note specifiche per arrivi e spedizioni. La servlet comunica quindi il risultato dell&#39;operazione tramite
+&nbsp; * un messaggio che viene visualizzato nell&#39;interfaccia utente.
+&nbsp; *
+&nbsp; * @author Battaglia Daniel
+&nbsp; * @author Gigante Ruben
+&nbsp; * @author Vaiano Francesco
+&nbsp; */
+&nbsp;@WebServlet(name=&quot;modifica-servlet-admin&quot;, value=&quot;/modifica-servlet-admin&quot;)
+<b class="fc">&nbsp;public class ModificaServletAdmin extends HttpServlet</b>
+&nbsp;{
+&nbsp;    private Facade facade;
+&nbsp;
+&nbsp;    public Facade getFacade() {
+<b class="nc">&nbsp;        return facade;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setFacade(Facade facade) {
+<b class="fc">&nbsp;        this.facade = facade;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public void init() throws ServletException
+&nbsp;    {
+<b class="nc">&nbsp;        super.init();</b>
+<b class="nc">&nbsp;        this.facade = new Facade();</b>
+&nbsp;    }
+&nbsp;    @Override
+&nbsp;    public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
+&nbsp;    {
+<b class="fc">&nbsp;        String pageName = request.getParameter(&quot;pageName&quot;);</b>
+&nbsp;
+<b class="fc">&nbsp;        if(pageName.equals(&quot;prodotto&quot;))</b>
+&nbsp;        {
+<b class="nc">&nbsp;            int id = Integer.parseInt(request.getParameter(&quot;IDprodotto&quot;));</b>
+<b class="nc">&nbsp;            int idCategoria = Integer.parseInt(request.getParameter(&quot;categoria&quot;));</b>
+<b class="nc">&nbsp;            String codice = request.getParameter(&quot;codice&quot;);</b>
+<b class="nc">&nbsp;            String stato = request.getParameter(&quot;stato&quot;);</b>
+<b class="nc">&nbsp;            String nome = request.getParameter(&quot;nome&quot;);</b>
+<b class="nc">&nbsp;            String descrizione = request.getParameter(&quot;descrizione&quot;);</b>
+&nbsp;
+<b class="nc">&nbsp;            String dataArrivo = request.getParameter(&quot;dataArrivo&quot;);</b>
+<b class="nc">&nbsp;            dataArrivo = (dataArrivo == null || dataArrivo.trim().isEmpty()) ? null : dataArrivo;</b>
+&nbsp;
+<b class="nc">&nbsp;            String noteArrivo = request.getParameter(&quot;noteArrivo&quot;);</b>
+<b class="nc">&nbsp;            noteArrivo = (noteArrivo == null || noteArrivo.trim().isEmpty()) ? null : noteArrivo;</b>
+&nbsp;
+<b class="nc">&nbsp;            String partenza = request.getParameter(&quot;partenza&quot;);</b>
+&nbsp;
+<b class="nc">&nbsp;            String dataSpedizione = request.getParameter(&quot;dataSpedizione&quot;);</b>
+<b class="nc">&nbsp;            dataSpedizione = (dataSpedizione == null || dataSpedizione.trim().isEmpty()) ? null : dataSpedizione;</b>
+&nbsp;
+<b class="nc">&nbsp;            String noteSpedizione = request.getParameter(&quot;noteSpedizione&quot;);</b>
+<b class="nc">&nbsp;            noteSpedizione = (noteSpedizione == null || noteSpedizione.trim().isEmpty()) ? null : noteSpedizione;</b>
+&nbsp;
+<b class="nc">&nbsp;            String destinazione = request.getParameter(&quot;destinazione&quot;);</b>
+<b class="nc">&nbsp;            destinazione = (destinazione == null || destinazione.trim().isEmpty()) ? null : destinazione;</b>
+&nbsp;
+<b class="nc">&nbsp;            String noteGenerali = request.getParameter(&quot;noteGenerali&quot;);</b>
+<b class="nc">&nbsp;            noteGenerali = (noteGenerali == null || noteGenerali.trim().isEmpty()) ? null : noteGenerali;</b>
+&nbsp;
+&nbsp;
+<b class="nc">&nbsp;            GestioneProdottiDAO gestioneProdottiDAO = facade.getGestioneProdottiDAO();</b>
+<b class="nc">&nbsp;            String result = gestioneProdottiDAO.modificaProdotto(id,</b>
+&nbsp;                    idCategoria, codice, stato, nome, descrizione,
+&nbsp;                    dataArrivo, noteArrivo, partenza,
+&nbsp;                    dataSpedizione, noteSpedizione, destinazione, noteGenerali
+&nbsp;            );
+&nbsp;
+<b class="nc">&nbsp;            request.setAttribute(&quot;IDprodotto&quot;, id);</b>
+<b class="nc">&nbsp;            request.setAttribute(&quot;message&quot;, result);</b>
+<b class="nc">&nbsp;            pageName = &quot;modificaProdotto&quot;;</b>
+<b class="nc">&nbsp;        }</b>
+<b class="fc">&nbsp;        else if(pageName.equals(&quot;notifica&quot;))</b>
+&nbsp;        {
+<b class="nc">&nbsp;            String stato = &quot;letto&quot;;</b>
+<b class="nc">&nbsp;            Integer userID = (Integer) request.getSession().getAttribute(&quot;ID&quot;);</b>
+<b class="nc">&nbsp;            int notificaID = Integer.parseInt(request.getParameter(&quot;notificaID&quot;));</b>
+&nbsp;
+<b class="nc">&nbsp;            GestioneNotificheDAO gestioneNotificheDAO = facade.getGestioneNotificheDAO();</b>
+<b class="nc">&nbsp;            String result = gestioneNotificheDAO.modificaStatoNotifica(notificaID, userID, stato);</b>
+<b class="nc">&nbsp;            request.setAttribute(&quot;message&quot;, result);</b>
+<b class="nc">&nbsp;            pageName = &quot;notifiche&quot;;</b>
+<b class="nc">&nbsp;        }</b>
+<b class="fc">&nbsp;        else if(pageName.equals(&quot;categoria&quot;))</b>
+&nbsp;        {
+<b class="fc">&nbsp;            int id = Integer.parseInt(request.getParameter(&quot;IDcategoria&quot;));</b>
+<b class="fc">&nbsp;            String nome = request.getParameter(&quot;nome&quot;);</b>
+<b class="fc">&nbsp;            String descrizione = request.getParameter(&quot;descrizione&quot;);</b>
+<b class="fc">&nbsp;            String note = request.getParameter(&quot;note&quot;);</b>
+&nbsp;
+<b class="fc">&nbsp;            GestioneCategorieDAO gestioneCategorieDAO = facade.getGestioneCategorieDAO();</b>
+<b class="fc">&nbsp;            String result =  gestioneCategorieDAO.modificaCategoria(id,nome, descrizione, note);</b>
+&nbsp;
+<b class="fc">&nbsp;            request.setAttribute(&quot;IDcategoria&quot;, id);</b>
+<b class="fc">&nbsp;            request.setAttribute(&quot;message&quot;, result);</b>
+<b class="fc">&nbsp;            pageName = &quot;modificaCategoria&quot;;</b>
+<b class="fc">&nbsp;        }</b>
+<b class="nc">&nbsp;        else if(pageName.equals(&quot;utenti&quot;)){</b>
+&nbsp;
+<b class="nc">&nbsp;            int id = Integer.parseInt(request.getParameter(&quot;IDutente&quot;));</b>
+&nbsp;
+<b class="nc">&nbsp;            String nome = request.getParameter(&quot;nome&quot;);</b>
+<b class="nc">&nbsp;            String cognome= request.getParameter(&quot;cognome&quot;);</b>
+<b class="nc">&nbsp;            String ruolo= request.getParameter(&quot;ruolo&quot;);</b>
+&nbsp;
+<b class="nc">&nbsp;            String username = request.getParameter(&quot;username&quot;);</b>
+<b class="nc">&nbsp;            String password = request.getParameter(&quot;password&quot;);</b>
+<b class="nc">&nbsp;            String email = request.getParameter(&quot;email&quot;);</b>
+<b class="nc">&nbsp;            String telefono = request.getParameter(&quot;telefono&quot;);</b>
+&nbsp;
+<b class="nc">&nbsp;            String dataNascita = request.getParameter(&quot;dataNascita&quot;);</b>
+<b class="nc">&nbsp;            String luogoNascita = request.getParameter(&quot;luogoNascita&quot;);</b>
+&nbsp;
+&nbsp;
+<b class="nc">&nbsp;            GestioneUtentiDAO gestioneUtentiDAO = facade.getGestioneUtentiDAO();</b>
+<b class="nc">&nbsp;            String result= gestioneUtentiDAO.modificaUtente(id,nome,cognome,ruolo,username,password,email,telefono,dataNascita,luogoNascita);</b>
+<b class="nc">&nbsp;            request.setAttribute(&quot;message&quot;, result);</b>
+<b class="nc">&nbsp;        }else if(pageName.equals(&quot;liste&quot;)){</b>
+<b class="nc">&nbsp;            int id = Integer.parseInt(request.getParameter(&quot;IDlista&quot;));</b>
+<b class="nc">&nbsp;            String note = request.getParameter(&quot;note&quot;);</b>
+&nbsp;
+<b class="nc">&nbsp;            GestioneListeDAO gestioneListeDAO = facade.getGestioneListeDAO();</b>
+<b class="nc">&nbsp;            boolean listaAggiornata = gestioneListeDAO.aggiornaLista(id, note);</b>
+&nbsp;
+<b class="nc">&nbsp;            if (listaAggiornata) {</b>
+<b class="nc">&nbsp;                request.setAttribute(&quot;message&quot;, &quot;Lista &quot; + id + &quot; aggiornata&quot;);</b>
+&nbsp;            } else {
+<b class="nc">&nbsp;                request.setAttribute(&quot;message&quot;, &quot;Errore modifica lista&quot;);</b>
+&nbsp;            }
+<b class="nc">&nbsp;        }</b>
+<b class="nc">&nbsp;        else if(pageName.equals(&quot;arrivo&quot;))</b>
+&nbsp;        {
+<b class="nc">&nbsp;            String note = request.getParameter(&quot;note&quot;);</b>
+<b class="nc">&nbsp;            int ID = Integer.parseInt(request.getParameter(&quot;IDarrivo&quot;));</b>
+&nbsp;
+<b class="nc">&nbsp;            GestioneLogisticaDAO gestioneLogisticaDAO = facade.getGestioneLogisticaDAO();</b>
+<b class="nc">&nbsp;            gestioneLogisticaDAO.modificaNoteArrivo(ID, note);</b>
+<b class="nc">&nbsp;            pageName = &quot;arrivi&quot;;</b>
+<b class="nc">&nbsp;        }</b>
+<b class="nc">&nbsp;        else if(pageName.equals(&quot;spedizione&quot;))</b>
+&nbsp;        {
+<b class="nc">&nbsp;            String note = request.getParameter(&quot;note&quot;);</b>
+<b class="nc">&nbsp;            int ID = Integer.parseInt(request.getParameter(&quot;IDspedizione&quot;));</b>
+&nbsp;
+<b class="nc">&nbsp;            GestioneLogisticaDAO gestioneLogisticaDAO = facade.getGestioneLogisticaDAO();</b>
+<b class="nc">&nbsp;            gestioneLogisticaDAO.modificaNoteSpedizione(ID, note);</b>
+<b class="nc">&nbsp;            pageName = &quot;spedizioni&quot;;</b>
+&nbsp;        }
+&nbsp;
+<b class="fc">&nbsp;        RequestDispatcher requestDispatcher = request.getRequestDispatcher(&quot;visualizza-servlet-admin?pageName=&quot; + pageName);</b>
+<b class="fc">&nbsp;        requestDispatcher.forward(request, response);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
+&nbsp;    {
+<b class="nc">&nbsp;        doGet(request, response);</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-01-23 01:20</div>
+</div>
+</body>
+</html>

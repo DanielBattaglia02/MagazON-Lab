@@ -1,6 +1,5 @@
 package it.unisa.magazon_lab.model.DAO;
 
-import it.unisa.magazon_lab.model.DAO.AutenticazioneDAO;
 import it.unisa.magazon_lab.model.Entity.Utente;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

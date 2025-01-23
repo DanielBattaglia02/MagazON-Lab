@@ -1,0 +1,346 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=windows-1252"> 
+  <title>Coverage Report > GestioneNotificheDAO</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">it.unisa.magazon_lab.model.DAO</a>
+</div>
+
+<h1>Coverage Summary for Class: GestioneNotificheDAO (it.unisa.magazon_lab.model.DAO)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">GestioneNotificheDAO</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    66,7%
+  </span>
+  <span class="absValue">
+    (6/9)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    40,4%
+  </span>
+  <span class="absValue">
+    (40/99)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package it.unisa.magazon_lab.model.DAO;
+&nbsp;import it.unisa.magazon_lab.model.Entity.Connessione;
+&nbsp;import it.unisa.magazon_lab.model.Entity.Notifica;
+&nbsp;import it.unisa.magazon_lab.model.utils.Patterns;
+&nbsp;
+&nbsp;import java.sql.*;
+&nbsp;import java.text.SimpleDateFormat;
+&nbsp;import java.util.ArrayList;
+&nbsp;import java.util.List;
+&nbsp;
+&nbsp;/**
+&nbsp; * Classe DAO per la gestione delle notifiche nel sistema.
+&nbsp; * Implementa il pattern Singleton per garantire una singola istanza.
+&nbsp; *
+&nbsp; * @author Battaglia Daniel
+&nbsp; */
+&nbsp;public class GestioneNotificheDAO {
+&nbsp;    private static GestioneNotificheDAO instance;
+&nbsp;    private Connessione connessione;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Costruttore privato per impedire la creazione di istanze multiple.
+&nbsp;     * Recupera un&#39;istanza della connessione al database.
+&nbsp;     */
+<b class="fc">&nbsp;    private GestioneNotificheDAO() {</b>
+<b class="fc">&nbsp;        connessione = Connessione.getInstance();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Metodo per ottenere l&#39;istanza Singleton della classe.
+&nbsp;     *
+&nbsp;     * @return L&#39;unica istanza di GestioneNotificheDAO.
+&nbsp;     */
+&nbsp;    public static GestioneNotificheDAO getInstance() {
+<b class="fc">&nbsp;        if (instance == null) {</b>
+<b class="fc">&nbsp;            instance = new GestioneNotificheDAO();</b>
+&nbsp;        }
+<b class="fc">&nbsp;        return instance;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Recupera tutte le notifiche relative a un determinato utente.
+&nbsp;     *
+&nbsp;     * @param userID L&#39;ID dell&#39;utente di cui recuperare le notifiche.
+&nbsp;     * @return Una lista di oggetti Notifica che rappresentano le notifiche dell&#39;utente.
+&nbsp;     */
+&nbsp;    public List&lt;Notifica&gt; visualizzaNotifiche(int userID) {
+<b class="nc">&nbsp;        List&lt;Notifica&gt; notifiche = new ArrayList&lt;&gt;();</b>
+&nbsp;
+<b class="nc">&nbsp;        String query = &quot;SELECT n.ID, n.oggetto, n.messaggio, n.dataDiInvio, s.stato &quot; +</b>
+&nbsp;                &quot;FROM Notifica n &quot; +
+&nbsp;                &quot;JOIN StatoNotifica s ON n.ID = s.IDnotifica &quot; +
+&nbsp;                &quot;WHERE s.IDutente = ? &quot; +
+&nbsp;                &quot;ORDER BY n.dataDiInvio DESC&quot;;
+&nbsp;
+<b class="nc">&nbsp;        try (PreparedStatement statement = connessione.getConnection().prepareStatement(query)) {</b>
+<b class="nc">&nbsp;            statement.setInt(1, userID);</b>
+&nbsp;
+<b class="nc">&nbsp;            try (ResultSet resultSet = statement.executeQuery()) {</b>
+<b class="nc">&nbsp;                while (resultSet.next()) {</b>
+<b class="nc">&nbsp;                    int ID = resultSet.getInt(&quot;n.ID&quot;);</b>
+<b class="nc">&nbsp;                    String oggetto = resultSet.getString(&quot;n.oggetto&quot;);</b>
+<b class="nc">&nbsp;                    String messaggio = resultSet.getString(&quot;n.messaggio&quot;);</b>
+<b class="nc">&nbsp;                    java.sql.Timestamp dataDiInvio = resultSet.getTimestamp(&quot;n.dataDiInvio&quot;);</b>
+<b class="nc">&nbsp;                    String stato = resultSet.getString(&quot;s.stato&quot;);</b>
+&nbsp;
+<b class="nc">&nbsp;                    SimpleDateFormat sdf = new SimpleDateFormat(&quot;yyyy-MM-dd HH:mm:ss&quot;);</b>
+<b class="nc">&nbsp;                    String formattedDate = sdf.format(dataDiInvio);</b>
+&nbsp;
+<b class="nc">&nbsp;                    Notifica notifica = new Notifica(ID, userID, oggetto, messaggio, stato, formattedDate);</b>
+<b class="nc">&nbsp;                    notifiche.add(notifica);</b>
+<b class="nc">&nbsp;                }</b>
+<b class="nc">&nbsp;            }</b>
+<b class="nc">&nbsp;        } catch (SQLException e) {</b>
+<b class="nc">&nbsp;            throw new RuntimeException(e);</b>
+<b class="nc">&nbsp;        }</b>
+&nbsp;
+<b class="nc">&nbsp;        return notifiche;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Conta il numero di notifiche non lette per un determinato utente.
+&nbsp;     *
+&nbsp;     * @param userID L&#39;ID dell&#39;utente per cui contare le notifiche non lette.
+&nbsp;     * @return Il numero di notifiche non lette.
+&nbsp;     */
+&nbsp;    public int controlloNotifiche(int userID) {
+<b class="nc">&nbsp;        int notificationCount = 0;</b>
+&nbsp;
+<b class="nc">&nbsp;        String sql = &quot;SELECT COUNT(*) AS unreadCount FROM StatoNotifica WHERE IDutente = ? AND stato = &#39;non letto&#39;&quot;;</b>
+&nbsp;
+<b class="nc">&nbsp;        try (PreparedStatement stmt = connessione.getConnection().prepareStatement(sql)) {</b>
+<b class="nc">&nbsp;            stmt.setInt(1, userID);</b>
+&nbsp;
+<b class="nc">&nbsp;            try (ResultSet rs = stmt.executeQuery()) {</b>
+<b class="nc">&nbsp;                if (rs.next()) {</b>
+<b class="nc">&nbsp;                    notificationCount = rs.getInt(&quot;unreadCount&quot;);</b>
+&nbsp;                }
+<b class="nc">&nbsp;            }</b>
+<b class="nc">&nbsp;        } catch (SQLException e) {</b>
+<b class="nc">&nbsp;            e.printStackTrace();</b>
+<b class="nc">&nbsp;            notificationCount = 0;</b>
+<b class="nc">&nbsp;        }</b>
+&nbsp;
+<b class="nc">&nbsp;        return notificationCount;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Modifica lo stato di una notifica specifica per un determinato utente.
+&nbsp;     *
+&nbsp;     * @param notificaID L&#39;ID della notifica da aggiornare.
+&nbsp;     * @param utenteID   L&#39;ID dell&#39;utente destinatario.
+&nbsp;     * @param nuovoStato Il nuovo stato della notifica (&quot;letto&quot;, &quot;non letto&quot;).
+&nbsp;     * @return &quot;1&quot; se l&#39;operazione è completata con successo, &quot;2&quot; altrimenti.
+&nbsp;     */
+&nbsp;    public String modificaStatoNotifica(int notificaID, int utenteID, String nuovoStato) {
+<b class="nc">&nbsp;        String query = &quot;UPDATE StatoNotifica SET stato = ? WHERE IDnotifica = ? AND IDutente = ?&quot;;</b>
+&nbsp;
+<b class="nc">&nbsp;        try (PreparedStatement statement = connessione.getConnection().prepareStatement(query)) {</b>
+<b class="nc">&nbsp;            statement.setString(1, nuovoStato);</b>
+<b class="nc">&nbsp;            statement.setInt(2, notificaID);</b>
+<b class="nc">&nbsp;            statement.setInt(3, utenteID);</b>
+&nbsp;
+<b class="nc">&nbsp;            int rowsAffected = statement.executeUpdate();</b>
+<b class="nc">&nbsp;            return rowsAffected &gt; 0 ? &quot;1&quot; : &quot;2&quot;;</b>
+<b class="nc">&nbsp;        } catch (SQLException e) {</b>
+<b class="nc">&nbsp;            e.printStackTrace();</b>
+<b class="nc">&nbsp;            return &quot;2&quot;;</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Invia una notifica a tutti gli utenti o a un utente specifico.
+&nbsp;     *
+&nbsp;     * @param ID       L&#39;ID dell&#39;utente mittente.
+&nbsp;     * @param oggetto  L&#39;oggetto della notifica.
+&nbsp;     * @param messaggio Il contenuto della notifica.
+&nbsp;     * @return &quot;3&quot; se l&#39;operazione è completata con successo, &quot;4&quot; per problemi generali, o null per formato non valido.
+&nbsp;     */
+&nbsp;    public String inviaNotifica(int ID, String oggetto, String messaggio) {
+<b class="fc">&nbsp;        if (!isValidNotify(oggetto, messaggio)) {</b>
+<b class="fc">&nbsp;            return &quot;5&quot;;</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        try {
+<b class="fc">&nbsp;            connessione.getConnection().setAutoCommit(false);</b>
+&nbsp;
+<b class="fc">&nbsp;            String queryNotifica = &quot;INSERT INTO Notifica (IDutente, oggetto, messaggio) VALUES (?, ?, ?)&quot;;</b>
+<b class="fc">&nbsp;            PreparedStatement statementNotifica = connessione.getConnection().prepareStatement(queryNotifica, Statement.RETURN_GENERATED_KEYS);</b>
+&nbsp;
+<b class="fc">&nbsp;            statementNotifica.setInt(1, ID);</b>
+<b class="fc">&nbsp;            statementNotifica.setString(2, oggetto);</b>
+<b class="fc">&nbsp;            statementNotifica.setString(3, messaggio);</b>
+&nbsp;
+<b class="fc">&nbsp;            int rowsAffectedNotifica = statementNotifica.executeUpdate();</b>
+<b class="fc">&nbsp;            if (rowsAffectedNotifica &gt; 0) {</b>
+<b class="fc">&nbsp;                ResultSet generatedKeys = statementNotifica.getGeneratedKeys();</b>
+<b class="fc">&nbsp;                if (generatedKeys.next()) {</b>
+<b class="fc">&nbsp;                    int idNotifica = generatedKeys.getInt(1);</b>
+&nbsp;
+<b class="fc">&nbsp;                    String queryUtenti = &quot;SELECT ID FROM Utente&quot;;</b>
+<b class="fc">&nbsp;                    PreparedStatement statementUtenti = connessione.getConnection().prepareStatement(queryUtenti);</b>
+<b class="fc">&nbsp;                    ResultSet resultSetUtenti = statementUtenti.executeQuery();</b>
+&nbsp;
+<b class="fc">&nbsp;                    String queryStatoNotifica = &quot;INSERT INTO StatoNotifica (IDnotifica, IDutente, stato) VALUES (?, ?, ?)&quot;;</b>
+<b class="fc">&nbsp;                    PreparedStatement statementStatoNotifica = connessione.getConnection().prepareStatement(queryStatoNotifica);</b>
+&nbsp;
+<b class="fc">&nbsp;                    while (resultSetUtenti.next()) {</b>
+<b class="fc">&nbsp;                        int idUtente = resultSetUtenti.getInt(&quot;ID&quot;);</b>
+<b class="fc">&nbsp;                        statementStatoNotifica.setInt(1, idNotifica);</b>
+<b class="fc">&nbsp;                        statementStatoNotifica.setInt(2, idUtente);</b>
+<b class="fc">&nbsp;                        statementStatoNotifica.setString(3, &quot;non letto&quot;);</b>
+&nbsp;
+<b class="fc">&nbsp;                        statementStatoNotifica.addBatch();</b>
+<b class="fc">&nbsp;                    }</b>
+&nbsp;
+<b class="fc">&nbsp;                    int[] batchResults = statementStatoNotifica.executeBatch();</b>
+<b class="fc">&nbsp;                    boolean success = true;</b>
+<b class="fc">&nbsp;                    for (int resultCode : batchResults) {</b>
+<b class="fc">&nbsp;                        if (resultCode == Statement.EXECUTE_FAILED) {</b>
+<b class="nc">&nbsp;                            success = false;</b>
+<b class="nc">&nbsp;                            break;</b>
+&nbsp;                        }
+&nbsp;                    }
+&nbsp;
+<b class="fc">&nbsp;                    if (success) {</b>
+<b class="fc">&nbsp;                        connessione.getConnection().commit();</b>
+<b class="fc">&nbsp;                        return &quot;3&quot;;</b>
+&nbsp;                    } else {
+<b class="nc">&nbsp;                        connessione.getConnection().rollback();</b>
+<b class="nc">&nbsp;                        return &quot;4&quot;;</b>
+&nbsp;                    }
+&nbsp;                } else {
+<b class="nc">&nbsp;                    connessione.getConnection().rollback();</b>
+<b class="nc">&nbsp;                    return &quot;4&quot;;</b>
+&nbsp;                }
+&nbsp;            } else {
+<b class="nc">&nbsp;                connessione.getConnection().rollback();</b>
+<b class="nc">&nbsp;                return &quot;4&quot;;</b>
+&nbsp;            }
+<b class="nc">&nbsp;        } catch (SQLException e) {</b>
+<b class="nc">&nbsp;            e.printStackTrace();</b>
+&nbsp;            try {
+<b class="nc">&nbsp;                connessione.getConnection().rollback();</b>
+<b class="nc">&nbsp;            } catch (SQLException rollbackEx) {</b>
+<b class="nc">&nbsp;                rollbackEx.printStackTrace();</b>
+<b class="nc">&nbsp;            }</b>
+<b class="nc">&nbsp;            throw new RuntimeException(&quot;Errore durante l&#39;invio della notifica.&quot;, e);</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Verifica se l&#39;oggetto e il messaggio rispettano i pattern definiti.
+&nbsp;     *
+&nbsp;     * @param oggetto  L&#39;oggetto della notifica.
+&nbsp;     * @param messaggio Il messaggio della notifica.
+&nbsp;     * @return true se entrambi sono validi, false altrimenti.
+&nbsp;     */
+&nbsp;    private boolean isValidNotify(String oggetto, String messaggio) {
+<b class="fc">&nbsp;        return isValidOggetto(oggetto) &amp;&amp; isValidMessaggio(messaggio);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Verifica se il formato dell&#39;oggetto è valido.
+&nbsp;     *
+&nbsp;     * @param oggetto L&#39;oggetto da verificare.
+&nbsp;     * @return true se valido, false altrimenti.
+&nbsp;     */
+&nbsp;    private boolean isValidOggetto(String oggetto) {
+<b class="fc">&nbsp;        return oggetto != null &amp;&amp; Patterns.NOTIFY.matcher(oggetto).matches();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Verifica se il formato del messaggio è valido.
+&nbsp;     *
+&nbsp;     * @param messaggio Il messaggio da verificare.
+&nbsp;     * @return true se valido, false altrimenti.
+&nbsp;     */
+&nbsp;    private boolean isValidMessaggio(String messaggio) {
+<b class="fc">&nbsp;        return messaggio != null &amp;&amp; Patterns.NOTIFY.matcher(messaggio).matches();</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-01-23 01:20</div>
+</div>
+</body>
+</html>

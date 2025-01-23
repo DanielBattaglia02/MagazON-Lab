@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="it"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>InserisciServletAdminTest.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ModificaCategoriaTest Coverage Results, InserisciServletAdminTest Coverage Results, ModificaServletAdminTest Coverage Results, AutenticazioneDAOTest Coverage Results, GestioneCategorieDAOTest Coverage Results, GestioneListeDAOTest Coverage Results, GestioneLogisticaDAOTest Coverage Results, GestioneNotificheDAOTest Coverage Results, GestioneProdottiDAOTest Coverage Results, GestioneUtentiDAOTest Coverage Results, ConnessioneTest Coverage Results</a> &gt; <a href="index.source.html" class="el_package">it.unisa.magazon_lab.controller</a> &gt; <span class="el_source">InserisciServletAdminTest.java</span></div><h1>InserisciServletAdminTest.java</h1><pre class="source lang-java linenums">package it.unisa.magazon_lab.controller;
+
+import it.unisa.magazon_lab.controller.admin.InserisciServletAdmin;
+import it.unisa.magazon_lab.model.DAO.GestioneNotificheDAO;
+import it.unisa.magazon_lab.model.DAO.GestioneUtentiDAO;
+import it.unisa.magazon_lab.model.Facade.Facade;
+import jakarta.servlet.RequestDispatcher;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+import org.junit.jupiter.api.Test;
+import static org.mockito.Mockito.*;
+import jakarta.servlet.ServletException;
+import java.io.IOException;
+
+/**
+ * Test delle funzionalità delle servlet di inserimento per notifiche e utenti.
+ * Questo test verifica che la gestione dell'invio di notifiche e l'aggiunta di utenti
+ * avvenga correttamente attraverso la chiamata alla servlet corrispondente.
+ */
+<span class="nc" id="L21">public class InserisciServletAdminTest {</span>
+
+    /**
+     * Test per verificare che l'invio di una notifica funzioni correttamente.
+     * Il test simula una richiesta di invio di una notifica, invoca il metodo della servlet
+     * e verifica che il messaggio venga impostato nella request e che la pagina venga inoltrata
+     * correttamente.
+     *
+     * @throws ServletException se si verifica un errore nella servlet
+     * @throws IOException se si verifica un errore durante l'invio della risposta
+     *
+     * @author Battaglia Daniel
+     */
+    @Test
+    public void inviaNotificaTest() throws ServletException, IOException
+    {
+        // Crea i mock necessari
+<span class="nc" id="L38">        Facade facade = mock(Facade.class);</span>
+<span class="nc" id="L39">        GestioneNotificheDAO gestioneNotificheDAO = mock(GestioneNotificheDAO.class);</span>
+<span class="nc" id="L40">        HttpServletRequest request = mock(HttpServletRequest.class);</span>
+<span class="nc" id="L41">        HttpServletResponse response = mock(HttpServletResponse.class);</span>
+<span class="nc" id="L42">        RequestDispatcher requestDispatcher = mock(RequestDispatcher.class);</span>
+<span class="nc" id="L43">        HttpSession session = mock(HttpSession.class);</span>
+
+        // Mock del comportamento della request
+<span class="nc" id="L46">        when(request.getParameter(&quot;pageName&quot;)).thenReturn(&quot;notifica&quot;);</span>
+<span class="nc" id="L47">        when(request.getParameter(&quot;oggetto&quot;)).thenReturn(&quot;Oggetto di test&quot;);</span>
+<span class="nc" id="L48">        when(request.getParameter(&quot;messaggio&quot;)).thenReturn(&quot;Messaggio di test&quot;);</span>
+<span class="nc" id="L49">        when(request.getSession()).thenReturn(session);</span>
+<span class="nc" id="L50">        when(session.getAttribute(&quot;ID&quot;)).thenReturn(1);</span>
+
+        // Mock del comportamento di Facade e GestioneNotificheDAO
+<span class="nc" id="L53">        when(facade.getGestioneNotificheDAO()).thenReturn(gestioneNotificheDAO);</span>
+<span class="nc" id="L54">        when(gestioneNotificheDAO.inviaNotifica(1, &quot;Oggetto di test&quot;, &quot;Messaggio di test&quot;))</span>
+<span class="nc" id="L55">                .thenReturn(&quot;Notifica inviata con successo!&quot;);</span>
+<span class="nc" id="L56">        when(request.getRequestDispatcher(anyString())).thenReturn(requestDispatcher);</span>
+
+        // Instanzia la servlet con i mock
+<span class="nc" id="L59">        InserisciServletAdmin servlet = new InserisciServletAdmin();</span>
+<span class="nc" id="L60">        servlet.setFacade(facade); // Iniezione manuale del mock della Facade</span>
+
+        // Esegui la servlet
+<span class="nc" id="L63">        servlet.doGet(request, response);</span>
+
+        // Verifica che il metodo inviaNotifica sia stato chiamato
+<span class="nc" id="L66">        verify(gestioneNotificheDAO).inviaNotifica(1, &quot;Oggetto di test&quot;, &quot;Messaggio di test&quot;);</span>
+
+        // Verifica che il messaggio sia stato impostato correttamente nella request
+<span class="nc" id="L69">        verify(request).setAttribute(&quot;message&quot;, &quot;Notifica inviata con successo!&quot;);</span>
+
+        // Verifica che il requestDispatcher forwardi alla pagina corretta
+<span class="nc" id="L72">        verify(requestDispatcher).forward(request, response);</span>
+<span class="nc" id="L73">    }</span>
+
+    /**
+     * Test per verificare che l'inserimento di un utente funzioni correttamente.
+     * Il test simula una richiesta di aggiunta di un utente, invoca il metodo della servlet
+     * e verifica che l'utente venga aggiunto e la pagina venga inoltrata correttamente.
+     *
+     * @throws ServletException se si verifica un errore nella servlet
+     * @throws IOException se si verifica un errore durante l'invio della risposta
+     *
+     * @author Gigante Ruben
+     */
+    @Test
+    public void inserisciUtenteTest() throws ServletException, IOException {
+        // Crea i mock necessari
+<span class="nc" id="L88">        Facade facade = mock(Facade.class);</span>
+<span class="nc" id="L89">        GestioneUtentiDAO gestioneUtentiDAO = mock(GestioneUtentiDAO.class);</span>
+<span class="nc" id="L90">        HttpServletRequest request = mock(HttpServletRequest.class);</span>
+<span class="nc" id="L91">        HttpServletResponse response = mock(HttpServletResponse.class);</span>
+<span class="nc" id="L92">        RequestDispatcher requestDispatcher = mock(RequestDispatcher.class);</span>
+
+        // Simula i parametri della richiesta
+<span class="nc" id="L95">        when(request.getParameter(&quot;pageName&quot;)).thenReturn(&quot;utenti&quot;);</span>
+<span class="nc" id="L96">        when(request.getParameter(&quot;nome&quot;)).thenReturn(&quot;Mario&quot;);</span>
+<span class="nc" id="L97">        when(request.getParameter(&quot;cognome&quot;)).thenReturn(&quot;Rossi&quot;);</span>
+<span class="nc" id="L98">        when(request.getParameter(&quot;ruolo&quot;)).thenReturn(&quot;admin&quot;);</span>
+<span class="nc" id="L99">        when(request.getParameter(&quot;username&quot;)).thenReturn(&quot;mario.rossi&quot;);</span>
+<span class="nc" id="L100">        when(request.getParameter(&quot;email&quot;)).thenReturn(&quot;mario.rossi@example.com&quot;);</span>
+<span class="nc" id="L101">        when(request.getParameter(&quot;telefono&quot;)).thenReturn(&quot;1234567890&quot;);</span>
+<span class="nc" id="L102">        when(request.getParameter(&quot;dataNascita&quot;)).thenReturn(&quot;2000-01-01&quot;);</span>
+<span class="nc" id="L103">        when(request.getParameter(&quot;luogoNascita&quot;)).thenReturn(&quot;Roma&quot;);</span>
+
+        // Mock del comportamento di Facade e GestioneUtentiDAO
+<span class="nc" id="L106">        when(facade.getGestioneUtentiDAO()).thenReturn(gestioneUtentiDAO);</span>
+
+        // Simula che il metodo aggiungiUtente venga chiamato senza eseguire logica reale
+<span class="nc" id="L109">        when(gestioneUtentiDAO.aggiungiUtente(</span>
+<span class="nc" id="L110">                eq(&quot;Mario&quot;), eq(&quot;Rossi&quot;), eq(&quot;admin&quot;), eq(&quot;mario.rossi&quot;), anyString(), eq(&quot;mario.rossi@example.com&quot;), eq(&quot;1234567890&quot;), eq(&quot;2000-01-01&quot;), eq(&quot;Roma&quot;)))</span>
+<span class="nc" id="L111">                .thenReturn(&quot;1&quot;);</span>
+
+        // Mock del RequestDispatcher
+<span class="nc" id="L114">        when(request.getRequestDispatcher(anyString())).thenReturn(requestDispatcher);</span>
+
+        // Instanzia la servlet con i mock
+<span class="nc" id="L117">        InserisciServletAdmin servlet = new InserisciServletAdmin();</span>
+<span class="nc" id="L118">        servlet.setFacade(facade); // Iniezione manuale del mock della Facade</span>
+
+        // Esegui la servlet
+<span class="nc" id="L121">        servlet.doGet(request, response);</span>
+
+        // Verifica che il metodo aggiungiUtente sia stato chiamato con i parametri giusti
+<span class="nc" id="L124">        verify(gestioneUtentiDAO).aggiungiUtente(</span>
+<span class="nc" id="L125">                eq(&quot;Mario&quot;), eq(&quot;Rossi&quot;), eq(&quot;admin&quot;), eq(&quot;mario.rossi&quot;), anyString(), eq(&quot;mario.rossi@example.com&quot;), eq(&quot;1234567890&quot;), eq(&quot;2000-01-01&quot;), eq(&quot;Roma&quot;));</span>
+
+        // Verifica che il requestDispatcher forwardi alla pagina corretta
+<span class="nc" id="L128">        verify(requestDispatcher).forward(request, response);</span>
+<span class="nc" id="L129">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

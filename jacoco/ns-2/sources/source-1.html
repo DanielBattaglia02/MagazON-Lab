@@ -1,0 +1,174 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=windows-1252"> 
+  <title>Coverage Report > ControlloNotificheAJAX</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">it.unisa.magazon_lab.controller.chiamateAJAX</a>
+</div>
+
+<h1>Coverage Summary for Class: ControlloNotificheAJAX (it.unisa.magazon_lab.controller.chiamateAJAX)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">ControlloNotificheAJAX</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/3)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/11)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package it.unisa.magazon_lab.controller.chiamateAJAX;
+&nbsp;
+&nbsp;import it.unisa.magazon_lab.model.Facade.Facade;
+&nbsp;import jakarta.servlet.ServletException;
+&nbsp;import jakarta.servlet.annotation.WebServlet;
+&nbsp;import jakarta.servlet.http.HttpServlet;
+&nbsp;import jakarta.servlet.http.HttpServletRequest;
+&nbsp;import jakarta.servlet.http.HttpServletResponse;
+&nbsp;import it.unisa.magazon_lab.model.DAO.GestioneNotificheDAO;
+&nbsp;import java.io.IOException;
+&nbsp;
+&nbsp;/**
+&nbsp; * Servlet per gestire le richieste AJAX relative al controllo delle notifiche dell&#39;utente.
+&nbsp; * Questa servlet fornisce un&#39;API che restituisce il numero di notifiche non lette per un utente specifico,
+&nbsp; * in formato JSON, sulla base dell&#39;ID utente salvato nella sessione.
+&nbsp; *
+&nbsp; * @author Battaglia Daniel
+&nbsp; */
+&nbsp;@WebServlet(name=&quot;controllo-notifiche-ajax&quot;, value=&quot;/controllo-notifiche-ajax&quot;)
+<b class="nc">&nbsp;public class ControlloNotificheAJAX extends HttpServlet</b>
+&nbsp;{
+&nbsp;    private Facade facade;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Inizializza la servlet e crea un&#39;istanza del Facade per l&#39;accesso ai metodi di business.
+&nbsp;     *
+&nbsp;     * @throws ServletException se si verifica un errore durante l&#39;inizializzazione.
+&nbsp;     */
+&nbsp;    @Override
+&nbsp;    public void init() throws ServletException
+&nbsp;    {
+<b class="nc">&nbsp;        super.init();</b>
+<b class="nc">&nbsp;        this.facade = new Facade(); // Inizializzazione della facciata</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Gestisce la richiesta HTTP GET per ottenere il numero di notifiche non lette per l&#39;utente.
+&nbsp;     * Restituisce il risultato in formato JSON contenente il conteggio delle notifiche.
+&nbsp;     *
+&nbsp;     * @param request L&#39;oggetto HttpServletRequest che contiene la richiesta dell&#39;utente.
+&nbsp;     * @param response L&#39;oggetto HttpServletResponse che permette di inviare la risposta all&#39;utente.
+&nbsp;     * @throws IOException se si verifica un errore durante l&#39;invio della risposta.
+&nbsp;     */
+&nbsp;    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException
+&nbsp;    {
+&nbsp;        // Imposta il tipo di contenuto della risposta come JSON con codifica UTF-8
+<b class="nc">&nbsp;        response.setContentType(&quot;application/json;charset=UTF-8&quot;);</b>
+&nbsp;
+&nbsp;        // Recupera l&#39;ID utente dalla sessione
+<b class="nc">&nbsp;        Integer userID = (Integer) request.getSession().getAttribute(&quot;ID&quot;);</b>
+&nbsp;
+&nbsp;        // Se l&#39;ID utente non è presente, restituisce un conteggio notifiche pari a zero
+<b class="nc">&nbsp;        if (userID == null) {</b>
+<b class="nc">&nbsp;            response.getWriter().write(&quot;{\&quot;notificationCount\&quot;: 0}&quot;);</b>
+&nbsp;            return;
+&nbsp;        }
+&nbsp;
+&nbsp;        // Ottiene l&#39;istanza del DAO per la gestione delle notifiche
+<b class="nc">&nbsp;        GestioneNotificheDAO gestioneNotificheDAO = facade.getGestioneNotificheDAO();</b>
+&nbsp;
+&nbsp;        // Controlla il numero di notifiche non lette per l&#39;utente
+<b class="nc">&nbsp;        int notificationCount = gestioneNotificheDAO.controlloNotifiche(userID);</b>
+&nbsp;
+&nbsp;        // Prepara la risposta JSON
+<b class="nc">&nbsp;        String jsonResponse = &quot;{\&quot;notificationCount\&quot;: &quot; + notificationCount + &quot;}&quot;;</b>
+&nbsp;
+&nbsp;        // Scrive la risposta al client
+<b class="nc">&nbsp;        response.getWriter().write(jsonResponse);</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-01-23 01:20</div>
+</div>
+</body>
+</html>

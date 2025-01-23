@@ -1,0 +1,199 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=windows-1252"> 
+  <title>Coverage Report > LogoutServlet</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">it.unisa.magazon_lab.controller.login</a>
+</div>
+
+<h1>Coverage Summary for Class: LogoutServlet (it.unisa.magazon_lab.controller.login)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">LogoutServlet</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/5)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/15)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package it.unisa.magazon_lab.controller.login;
+&nbsp;
+&nbsp;import it.unisa.magazon_lab.model.Facade.Facade;
+&nbsp;import jakarta.servlet.ServletException;
+&nbsp;import jakarta.servlet.annotation.WebServlet;
+&nbsp;import jakarta.servlet.http.HttpServlet;
+&nbsp;import jakarta.servlet.http.HttpServletRequest;
+&nbsp;import jakarta.servlet.http.HttpServletResponse;
+&nbsp;import jakarta.servlet.http.HttpSession;
+&nbsp;import it.unisa.magazon_lab.model.DAO.GestioneUtentiDAO;
+&nbsp;
+&nbsp;import java.io.IOException;
+&nbsp;
+&nbsp;/**
+&nbsp; * Servlet che gestisce il logout dell&#39;utente. Quando l&#39;utente effettua il logout,
+&nbsp; * viene aggiornato lo stato dell&#39;utente come &quot;offline&quot; e la sessione corrente viene invalidata.
+&nbsp; * L&#39;utente viene quindi reindirizzato alla pagina di login.
+&nbsp; *
+&nbsp; * @author Battaglia Daniel
+&nbsp; */
+&nbsp;@WebServlet(name=&quot;logout-servlet&quot;, value=&quot;/logout-servlet&quot;)
+<b class="nc">&nbsp;public class LogoutServlet extends HttpServlet</b>
+&nbsp;{
+&nbsp;    private Facade facade;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Inizializza la servlet e crea una nuova istanza del Facade.
+&nbsp;     *
+&nbsp;     * @throws ServletException Se si verifica un errore durante l&#39;inizializzazione.
+&nbsp;     */
+&nbsp;    @Override
+&nbsp;    public void init() throws ServletException
+&nbsp;    {
+<b class="nc">&nbsp;        super.init();</b>
+<b class="nc">&nbsp;        this.facade = new Facade();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Gestisce la richiesta HTTP GET per il logout. La sessione utente viene invalidata,
+&nbsp;     * lo stato dell&#39;utente viene aggiornato a &quot;offline&quot; e l&#39;utente viene reindirizzato alla pagina di login.
+&nbsp;     *
+&nbsp;     * @param request La richiesta HTTP contenente la sessione dell&#39;utente.
+&nbsp;     * @param response La risposta HTTP, che viene utilizzata per reindirizzare l&#39;utente alla pagina di login.
+&nbsp;     * @throws ServletException Se si verifica un errore durante l&#39;elaborazione della richiesta.
+&nbsp;     * @throws IOException Se si verifica un errore durante la scrittura della risposta.
+&nbsp;     */
+&nbsp;    @Override
+&nbsp;    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
+&nbsp;    {
+<b class="nc">&nbsp;        HttpSession session = request.getSession(false); // Ottiene la sessione corrente, se esiste</b>
+&nbsp;
+<b class="nc">&nbsp;        if (session != null) {</b>
+<b class="nc">&nbsp;            Object userIDObj = session.getAttribute(&quot;ID&quot;); // Recupera l&#39;ID utente dalla sessione</b>
+&nbsp;
+<b class="nc">&nbsp;            if (userIDObj != null) {</b>
+<b class="nc">&nbsp;                int userID = (int) userIDObj;</b>
+&nbsp;
+&nbsp;                // Aggiorna lo stato dell&#39;utente a &quot;offline&quot;
+<b class="nc">&nbsp;                GestioneUtentiDAO gestioneUtentiDAO = facade.getGestioneUtentiDAO();</b>
+<b class="nc">&nbsp;                gestioneUtentiDAO.aggiornaStatoUtente(userID, &quot;offline&quot;);</b>
+&nbsp;            }
+&nbsp;
+<b class="nc">&nbsp;            session.invalidate(); // Invalida la sessione corrente</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        response.sendRedirect(&quot;index.jsp&quot;); // Reindirizza l&#39;utente alla pagina di login</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Gestisce la richiesta HTTP POST per il logout. In questo caso, il metodo POST fa lo stesso lavoro del GET,
+&nbsp;     * quindi viene semplicemente delegato al metodo doGet.
+&nbsp;     *
+&nbsp;     * @param req La richiesta HTTP.
+&nbsp;     * @param resp La risposta HTTP.
+&nbsp;     * @throws ServletException Se si verifica un errore durante l&#39;elaborazione della richiesta.
+&nbsp;     * @throws IOException Se si verifica un errore durante la scrittura della risposta.
+&nbsp;     */
+&nbsp;    @Override
+&nbsp;    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException
+&nbsp;    {
+<b class="nc">&nbsp;        doGet(req, resp);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Distrugge la servlet e chiude la connessione al database.
+&nbsp;     *
+&nbsp;     * @see jakarta.servlet.Servlet#destroy()
+&nbsp;     */
+&nbsp;    @Override
+&nbsp;    public void destroy()
+&nbsp;    {
+<b class="nc">&nbsp;        super.destroy();</b>
+<b class="nc">&nbsp;        facade.chiudiConnessione(); // Chiude la connessione al database</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-01-23 01:20</div>
+</div>
+</body>
+</html>

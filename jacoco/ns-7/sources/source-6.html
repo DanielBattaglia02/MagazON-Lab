@@ -1,0 +1,852 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=windows-1252"> 
+  <title>Coverage Report > GestioneProdottiDAO</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">it.unisa.magazon_lab.model.DAO</a>
+</div>
+
+<h1>Coverage Summary for Class: GestioneProdottiDAO (it.unisa.magazon_lab.model.DAO)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">GestioneProdottiDAO</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    44,4%
+  </span>
+  <span class="absValue">
+    (4/9)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    35,6%
+  </span>
+  <span class="absValue">
+    (128/360)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package it.unisa.magazon_lab.model.DAO;
+&nbsp;
+&nbsp;import it.unisa.magazon_lab.model.Entity.Connessione;
+&nbsp;import it.unisa.magazon_lab.model.Entity.Prodotto;
+&nbsp;import it.unisa.magazon_lab.model.utils.Patterns;
+&nbsp;
+&nbsp;import java.sql.*;
+&nbsp;import java.time.LocalDate;
+&nbsp;import java.time.format.DateTimeParseException;
+&nbsp;import java.util.ArrayList;
+&nbsp;import java.util.List;
+&nbsp;
+&nbsp;/**
+&nbsp; * Classe DAO per la gestione dei prodotti.
+&nbsp; * Implementa il pattern Singleton per garantire una singola istanza.
+&nbsp; *
+&nbsp; * @author Battaglia Daniel
+&nbsp; */
+&nbsp;public class GestioneProdottiDAO {
+&nbsp;    private static GestioneProdottiDAO instance;
+&nbsp;    private Connessione connessione;
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Costruttore privato per impedire la creazione di istanze multiple.
+&nbsp;     * Recupera un&#39;istanza della connessione al database.
+&nbsp;     */
+&nbsp;    private GestioneProdottiDAO()
+<b class="fc">&nbsp;    {</b>
+<b class="fc">&nbsp;        connessione = Connessione.getInstance();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Metodo per ottenere l&#39;istanza Singleton della classe.
+&nbsp;     *
+&nbsp;     * @return L&#39;unica istanza di GestioneProdottiDAO.
+&nbsp;     */
+&nbsp;    public static GestioneProdottiDAO getInstance() {
+<b class="fc">&nbsp;        if (instance == null) {</b>
+<b class="fc">&nbsp;            instance = new GestioneProdottiDAO();</b>
+&nbsp;        }
+<b class="fc">&nbsp;        return instance;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Recupera una lista di prodotti dal database, includendo le informazioni sulla categoria associata.
+&nbsp;     * Ogni prodotto viene creato come oggetto di tipo {@link Prodotto} e aggiunto a una lista.
+&nbsp;     *
+&nbsp;     * @return Una lista di oggetti {@link Prodotto} rappresentanti i prodotti presenti nel database.
+&nbsp;     * @throws RuntimeException se si verifica un errore durante l&#39;esecuzione della query o l&#39;accesso al database.
+&nbsp;     */
+&nbsp;    public List&lt;Prodotto&gt; visualizzaProdotti() {
+<b class="nc">&nbsp;        List&lt;Prodotto&gt; prodotti = new ArrayList&lt;&gt;();</b>
+&nbsp;
+<b class="nc">&nbsp;        String query = &quot;SELECT c.nome, p.* FROM prodotto p &quot; +</b>
+&nbsp;                &quot;JOIN categoria c ON p.IDcategoria=c.ID &quot; +
+&nbsp;                &quot;ORDER BY p.ID&quot;;
+&nbsp;
+&nbsp;        try {
+<b class="nc">&nbsp;            PreparedStatement statement = connessione.getConnection().prepareStatement(query);</b>
+<b class="nc">&nbsp;            ResultSet resultSet = statement.executeQuery();</b>
+&nbsp;
+<b class="nc">&nbsp;            while (resultSet.next()) {</b>
+<b class="nc">&nbsp;                int ID = resultSet.getInt(&quot;p.ID&quot;);</b>
+<b class="nc">&nbsp;                int IDcategoria = resultSet.getInt(&quot;p.IDcategoria&quot;);</b>
+<b class="nc">&nbsp;                String nomeCategoria = resultSet.getString(&quot;c.nome&quot;);</b>
+<b class="nc">&nbsp;                String codice = resultSet.getString(&quot;codice&quot;);</b>
+<b class="nc">&nbsp;                String stato = resultSet.getString(&quot;stato&quot;);</b>
+<b class="nc">&nbsp;                String nome = resultSet.getString(&quot;nome&quot;);</b>
+<b class="nc">&nbsp;                String descrizione = resultSet.getString(&quot;descrizione&quot;);</b>
+<b class="nc">&nbsp;                Date dataArrivo = resultSet.getDate(&quot;dataArrivo&quot;);</b>
+<b class="nc">&nbsp;                String noteArrivo = resultSet.getString(&quot;noteArrivo&quot;);</b>
+<b class="nc">&nbsp;                String partenza = resultSet.getString(&quot;partenza&quot;);</b>
+<b class="nc">&nbsp;                Date dataSpedizione = resultSet.getDate(&quot;dataSpedizione&quot;);</b>
+<b class="nc">&nbsp;                String noteSpedizione = resultSet.getString(&quot;noteSpedizione&quot;);</b>
+<b class="nc">&nbsp;                String destinazione = resultSet.getString(&quot;destinazione&quot;);</b>
+<b class="nc">&nbsp;                String noteGenerali = resultSet.getString(&quot;noteGenerali&quot;);</b>
+&nbsp;
+<b class="nc">&nbsp;                Prodotto prodotto = new Prodotto(ID, IDcategoria, nomeCategoria, codice, stato, nome, descrizione,</b>
+&nbsp;                        dataArrivo, noteArrivo, partenza, dataSpedizione,
+&nbsp;                        noteSpedizione, destinazione, noteGenerali);
+<b class="nc">&nbsp;                prodotti.add(prodotto);</b>
+<b class="nc">&nbsp;            }</b>
+&nbsp;
+<b class="nc">&nbsp;            resultSet.close();</b>
+<b class="nc">&nbsp;            statement.close();</b>
+<b class="nc">&nbsp;        } catch (SQLException e) {</b>
+<b class="nc">&nbsp;            throw new RuntimeException(e);</b>
+<b class="nc">&nbsp;        }</b>
+&nbsp;
+<b class="nc">&nbsp;        return prodotti;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Recupera una lista di prodotti dal database che non sono in stato &quot;in arrivo&quot; o &quot;in spedizione&quot;.
+&nbsp;     * Ogni prodotto viene creato come oggetto di tipo {@link Prodotto} e aggiunto a una lista.
+&nbsp;     *
+&nbsp;     * La query esclude i prodotti con stato &quot;in arrivo&quot; e &quot;in spedizione&quot; e ordina i risultati per ID.
+&nbsp;     *
+&nbsp;     * @return Una lista di oggetti {@link Prodotto} rappresentanti i prodotti con stato diverso da &quot;in arrivo&quot; e &quot;in spedizione&quot;.
+&nbsp;     * @throws RuntimeException se si verifica un errore durante l&#39;esecuzione della query o l&#39;accesso al database.
+&nbsp;     */
+&nbsp;    public List&lt;Prodotto&gt; visualizzaProdottiPerSpedizioneArrivo() {
+<b class="nc">&nbsp;        List&lt;Prodotto&gt; prodotti = new ArrayList&lt;&gt;();</b>
+&nbsp;
+<b class="nc">&nbsp;        String query = &quot;SELECT c.nome, p.* FROM prodotto p &quot; +</b>
+&nbsp;                &quot;JOIN categoria c ON p.IDcategoria=c.ID &quot; +
+&nbsp;                &quot;WHERE p.stato NOT IN (&#39;in arrivo&#39;, &#39;in spedizione&#39;) &quot; +  // Filtra i prodotti con stato diverso da &#39;in arrivo&#39; e &#39;in spedizione&#39;
+&nbsp;                &quot;ORDER BY p.ID&quot;;
+&nbsp;
+&nbsp;        try {
+<b class="nc">&nbsp;            PreparedStatement statement = connessione.getConnection().prepareStatement(query);</b>
+<b class="nc">&nbsp;            ResultSet resultSet = statement.executeQuery();</b>
+&nbsp;
+<b class="nc">&nbsp;            while (resultSet.next()) {</b>
+<b class="nc">&nbsp;                int ID = resultSet.getInt(&quot;p.ID&quot;);</b>
+<b class="nc">&nbsp;                int IDcategoria = resultSet.getInt(&quot;p.IDcategoria&quot;);</b>
+<b class="nc">&nbsp;                String nomeCategoria = resultSet.getString(&quot;c.nome&quot;);</b>
+<b class="nc">&nbsp;                String codice = resultSet.getString(&quot;codice&quot;);</b>
+<b class="nc">&nbsp;                String stato = resultSet.getString(&quot;stato&quot;);</b>
+<b class="nc">&nbsp;                String nome = resultSet.getString(&quot;nome&quot;);</b>
+<b class="nc">&nbsp;                String descrizione = resultSet.getString(&quot;descrizione&quot;);</b>
+<b class="nc">&nbsp;                Date dataArrivo = resultSet.getDate(&quot;dataArrivo&quot;);</b>
+<b class="nc">&nbsp;                String noteArrivo = resultSet.getString(&quot;noteArrivo&quot;);</b>
+<b class="nc">&nbsp;                String partenza = resultSet.getString(&quot;partenza&quot;);</b>
+<b class="nc">&nbsp;                Date dataSpedizione = resultSet.getDate(&quot;dataSpedizione&quot;);</b>
+<b class="nc">&nbsp;                String noteSpedizione = resultSet.getString(&quot;noteSpedizione&quot;);</b>
+<b class="nc">&nbsp;                String destinazione = resultSet.getString(&quot;destinazione&quot;);</b>
+<b class="nc">&nbsp;                String noteGenerali = resultSet.getString(&quot;noteGenerali&quot;);</b>
+&nbsp;
+<b class="nc">&nbsp;                Prodotto prodotto = new Prodotto(ID, IDcategoria, nomeCategoria, codice, stato, nome, descrizione,</b>
+&nbsp;                        dataArrivo, noteArrivo, partenza, dataSpedizione,
+&nbsp;                        noteSpedizione, destinazione, noteGenerali);
+<b class="nc">&nbsp;                prodotti.add(prodotto);</b>
+<b class="nc">&nbsp;            }</b>
+&nbsp;
+<b class="nc">&nbsp;            resultSet.close();</b>
+<b class="nc">&nbsp;            statement.close();</b>
+<b class="nc">&nbsp;        } catch (SQLException e) {</b>
+<b class="nc">&nbsp;            throw new RuntimeException(&quot;Errore durante il recupero dei prodotti: &quot; + e.getMessage(), e);</b>
+<b class="nc">&nbsp;        }</b>
+&nbsp;
+<b class="nc">&nbsp;        return prodotti;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Cerca un prodotto nel database utilizzando il suo ID univoco.
+&nbsp;     * Restituisce un oggetto {@link Prodotto} con tutte le informazioni recuperate,
+&nbsp;     * inclusa la categoria associata, oppure {@code null} se il prodotto non viene trovato.
+&nbsp;     *
+&nbsp;     * @param ID L&#39;identificativo univoco del prodotto da cercare.
+&nbsp;     * @return Un oggetto {@link Prodotto} contenente i dettagli del prodotto trovato,
+&nbsp;     *         oppure {@code null} se non esiste un prodotto con l&#39;ID specificato.
+&nbsp;     * @throws RuntimeException se si verifica un errore durante l&#39;esecuzione della query o l&#39;accesso al database.
+&nbsp;     */
+&nbsp;    public Prodotto cercaProdotto(int ID) {
+<b class="nc">&nbsp;        Prodotto prodotto = null;</b>
+&nbsp;
+<b class="nc">&nbsp;        String query = &quot;SELECT c.nome AS nomeCategoria, p.* FROM prodotto p &quot; +</b>
+&nbsp;                &quot;JOIN categoria c ON p.IDcategoria = c.ID &quot; +
+&nbsp;                &quot;WHERE p.ID = ?&quot;;
+&nbsp;
+&nbsp;        try {
+<b class="nc">&nbsp;            PreparedStatement statement = connessione.getConnection().prepareStatement(query);</b>
+<b class="nc">&nbsp;            statement.setInt(1, ID);</b>
+&nbsp;
+<b class="nc">&nbsp;            ResultSet resultSet = statement.executeQuery();</b>
+&nbsp;
+<b class="nc">&nbsp;            if (resultSet.next()) {</b>
+<b class="nc">&nbsp;                int IDcategoria = resultSet.getInt(&quot;p.IDcategoria&quot;);</b>
+<b class="nc">&nbsp;                String nomeCategoria = resultSet.getString(&quot;nomeCategoria&quot;);</b>
+<b class="nc">&nbsp;                String codice = resultSet.getString(&quot;codice&quot;);</b>
+<b class="nc">&nbsp;                String stato = resultSet.getString(&quot;stato&quot;);</b>
+<b class="nc">&nbsp;                String nome = resultSet.getString(&quot;nome&quot;);</b>
+<b class="nc">&nbsp;                String descrizione = resultSet.getString(&quot;descrizione&quot;);</b>
+<b class="nc">&nbsp;                Date dataArrivo = resultSet.getDate(&quot;dataArrivo&quot;);</b>
+<b class="nc">&nbsp;                String noteArrivo = resultSet.getString(&quot;noteArrivo&quot;);</b>
+<b class="nc">&nbsp;                String partenza = resultSet.getString(&quot;partenza&quot;);</b>
+<b class="nc">&nbsp;                Date dataSpedizione = resultSet.getDate(&quot;dataSpedizione&quot;);</b>
+<b class="nc">&nbsp;                String noteSpedizione = resultSet.getString(&quot;noteSpedizione&quot;);</b>
+<b class="nc">&nbsp;                String destinazione = resultSet.getString(&quot;destinazione&quot;);</b>
+<b class="nc">&nbsp;                String noteGenerali = resultSet.getString(&quot;noteGenerali&quot;);</b>
+&nbsp;
+<b class="nc">&nbsp;                prodotto = new Prodotto(ID, IDcategoria, nomeCategoria, codice, stato, nome, descrizione,</b>
+&nbsp;                        dataArrivo, noteArrivo, partenza, dataSpedizione,
+&nbsp;                        noteSpedizione, destinazione, noteGenerali);
+&nbsp;            }
+&nbsp;
+<b class="nc">&nbsp;            resultSet.close();</b>
+<b class="nc">&nbsp;            statement.close();</b>
+<b class="nc">&nbsp;        } catch (SQLException e) {</b>
+<b class="nc">&nbsp;            throw new RuntimeException(e);</b>
+<b class="nc">&nbsp;        }</b>
+&nbsp;
+<b class="nc">&nbsp;        return prodotto;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Cerca prodotti nel database applicando filtri dinamici sui campi forniti.
+&nbsp;     * I filtri includono codice, ID della categoria, nome, stato, data di arrivo e data di spedizione.
+&nbsp;     * Restituisce una lista di oggetti {@link Prodotto} che soddisfano i criteri di ricerca.
+&nbsp;     *
+&nbsp;     * @param codice Il codice del prodotto (opzionale, filtro con LIKE).
+&nbsp;     * @param categoriaID L&#39;ID della categoria del prodotto (opzionale, filtro esatto).
+&nbsp;     * @param nome Il nome del prodotto (opzionale, filtro con LIKE).
+&nbsp;     * @param stato Lo stato del prodotto (opzionale, filtro con LIKE).
+&nbsp;     * @param dataArrivoStr La data di arrivo del prodotto in formato stringa (opzionale, filtro esatto).
+&nbsp;     * @param dataSpedizioneStr La data di spedizione del prodotto in formato stringa (opzionale, filtro esatto).
+&nbsp;     * @return Una lista di oggetti {@link Prodotto} che corrispondono ai filtri applicati.
+&nbsp;     *         Se nessun prodotto soddisfa i filtri, restituisce una lista vuota.
+&nbsp;     * @throws RuntimeException se si verifica un errore durante l&#39;esecuzione della query o l&#39;accesso al database.
+&nbsp;     */
+&nbsp;    public List&lt;Prodotto&gt; cercaProdottiFiltrati(String codice, Integer categoriaID, String nome, String stato,
+&nbsp;                                                String dataArrivoStr, String dataSpedizioneStr) {
+<b class="nc">&nbsp;        List&lt;Prodotto&gt; prodotti = new ArrayList&lt;&gt;();</b>
+&nbsp;
+<b class="nc">&nbsp;        StringBuilder query = new StringBuilder(&quot;SELECT c.nome AS nomeCategoria, p.* FROM prodotto p &quot; +</b>
+&nbsp;                &quot;JOIN categoria c ON p.IDcategoria = c.ID WHERE 1=1&quot;);
+&nbsp;
+&nbsp;        // Aggiungi filtri dinamici
+<b class="nc">&nbsp;        if (codice != null &amp;&amp; !codice.isEmpty()) {</b>
+<b class="nc">&nbsp;            query.append(&quot; AND p.codice LIKE ?&quot;);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        if (categoriaID != null &amp;&amp; categoriaID &gt; 0) { // Corretto controllo su categoriaID</b>
+<b class="nc">&nbsp;            query.append(&quot; AND p.IDcategoria = ?&quot;);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        if (nome != null &amp;&amp; !nome.isEmpty()) {</b>
+<b class="nc">&nbsp;            query.append(&quot; AND p.nome LIKE ?&quot;);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        if (stato != null &amp;&amp; !stato.isEmpty()) {</b>
+<b class="nc">&nbsp;            query.append(&quot; AND p.stato LIKE ?&quot;);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        if (dataArrivoStr != null &amp;&amp; !dataArrivoStr.isEmpty()) {</b>
+<b class="nc">&nbsp;            query.append(&quot; AND p.dataArrivo = ?&quot;);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        if (dataSpedizioneStr != null &amp;&amp; !dataSpedizioneStr.isEmpty()) {</b>
+<b class="nc">&nbsp;            query.append(&quot; AND p.dataSpedizione = ?&quot;);</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        query.append(&quot; ORDER BY p.ID&quot;);</b>
+&nbsp;
+&nbsp;        try {
+<b class="nc">&nbsp;            PreparedStatement statement = connessione.getConnection().prepareStatement(query.toString());</b>
+&nbsp;
+<b class="nc">&nbsp;            int paramIndex = 1;</b>
+&nbsp;
+&nbsp;            // Impostazione dei parametri dinamici
+<b class="nc">&nbsp;            if (codice != null &amp;&amp; !codice.isEmpty()) {</b>
+<b class="nc">&nbsp;                statement.setString(paramIndex++, &quot;%&quot; + codice + &quot;%&quot;);</b>
+&nbsp;            }
+<b class="nc">&nbsp;            if (categoriaID != null &amp;&amp; categoriaID &gt; 0) { // Imposta categoriaID solo se valido</b>
+<b class="nc">&nbsp;                statement.setInt(paramIndex++, categoriaID);</b>
+&nbsp;            }
+<b class="nc">&nbsp;            if (nome != null &amp;&amp; !nome.isEmpty()) {</b>
+<b class="nc">&nbsp;                statement.setString(paramIndex++, &quot;%&quot; + nome + &quot;%&quot;);</b>
+&nbsp;            }
+<b class="nc">&nbsp;            if (stato != null &amp;&amp; !stato.isEmpty()) {</b>
+<b class="nc">&nbsp;                statement.setString(paramIndex++, &quot;%&quot; + stato + &quot;%&quot;);</b>
+&nbsp;            }
+&nbsp;
+&nbsp;            // Conversione delle date da stringa a java.sql.Date
+<b class="nc">&nbsp;            java.sql.Date dataArrivo = null;</b>
+<b class="nc">&nbsp;            if (dataArrivoStr != null &amp;&amp; !dataArrivoStr.trim().isEmpty()) {</b>
+<b class="nc">&nbsp;                dataArrivo = java.sql.Date.valueOf(dataArrivoStr);</b>
+&nbsp;            }
+<b class="nc">&nbsp;            if (dataArrivo != null) {</b>
+<b class="nc">&nbsp;                statement.setDate(paramIndex++, dataArrivo);</b>
+&nbsp;            }
+&nbsp;
+<b class="nc">&nbsp;            java.sql.Date dataSpedizione = null;</b>
+<b class="nc">&nbsp;            if (dataSpedizioneStr != null &amp;&amp; !dataSpedizioneStr.trim().isEmpty()) {</b>
+<b class="nc">&nbsp;                dataSpedizione = java.sql.Date.valueOf(dataSpedizioneStr);</b>
+&nbsp;            }
+<b class="nc">&nbsp;            if (dataSpedizione != null) {</b>
+<b class="nc">&nbsp;                statement.setDate(paramIndex++, dataSpedizione);</b>
+&nbsp;            }
+&nbsp;
+<b class="nc">&nbsp;            ResultSet resultSet = statement.executeQuery();</b>
+&nbsp;
+<b class="nc">&nbsp;            while (resultSet.next()) {</b>
+<b class="nc">&nbsp;                int ID = resultSet.getInt(&quot;p.ID&quot;);</b>
+<b class="nc">&nbsp;                int IDcategoria = resultSet.getInt(&quot;p.IDcategoria&quot;);</b>
+<b class="nc">&nbsp;                String nomeCategoria = resultSet.getString(&quot;nomeCategoria&quot;);</b>
+<b class="nc">&nbsp;                String codiceProdotto = resultSet.getString(&quot;codice&quot;);</b>
+<b class="nc">&nbsp;                String statoProdotto = resultSet.getString(&quot;stato&quot;);</b>
+<b class="nc">&nbsp;                String nomeProdotto = resultSet.getString(&quot;nome&quot;);</b>
+<b class="nc">&nbsp;                String descrizione = resultSet.getString(&quot;descrizione&quot;);</b>
+<b class="nc">&nbsp;                Date dataArrivoProdotto = resultSet.getDate(&quot;dataArrivo&quot;);</b>
+<b class="nc">&nbsp;                String noteArrivo = resultSet.getString(&quot;noteArrivo&quot;);</b>
+<b class="nc">&nbsp;                String partenza = resultSet.getString(&quot;partenza&quot;);</b>
+<b class="nc">&nbsp;                Date dataSpedizioneProdotto = resultSet.getDate(&quot;dataSpedizione&quot;);</b>
+<b class="nc">&nbsp;                String noteSpedizione = resultSet.getString(&quot;noteSpedizione&quot;);</b>
+<b class="nc">&nbsp;                String destinazione = resultSet.getString(&quot;destinazione&quot;);</b>
+<b class="nc">&nbsp;                String noteGenerali = resultSet.getString(&quot;noteGenerali&quot;);</b>
+&nbsp;
+<b class="nc">&nbsp;                Prodotto prodotto = new Prodotto(ID, IDcategoria, nomeCategoria, codiceProdotto, statoProdotto, nomeProdotto,</b>
+&nbsp;                        descrizione, dataArrivoProdotto, noteArrivo, partenza, dataSpedizioneProdotto, noteSpedizione,
+&nbsp;                        destinazione, noteGenerali);
+<b class="nc">&nbsp;                prodotti.add(prodotto);</b>
+<b class="nc">&nbsp;            }</b>
+&nbsp;
+<b class="nc">&nbsp;            resultSet.close();</b>
+<b class="nc">&nbsp;            statement.close();</b>
+<b class="nc">&nbsp;        } catch (SQLException e) {</b>
+<b class="nc">&nbsp;            throw new RuntimeException(e);</b>
+<b class="nc">&nbsp;        }</b>
+&nbsp;
+<b class="nc">&nbsp;        return prodotti;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Elimina un prodotto dal database se non è associato alle tabelle &quot;spedizione&quot; o &quot;arrivo&quot;.
+&nbsp;     * Se il prodotto è presente in una delle tabelle bloccanti, non viene eliminato e viene restituito un codice specifico.
+&nbsp;     *
+&nbsp;     * @param id L&#39;ID del prodotto da eliminare.
+&nbsp;     * @return Una stringa che rappresenta il risultato dell&#39;operazione:
+&nbsp;     *         &lt;ul&gt;
+&nbsp;     *           &lt;li&gt;&quot;1&quot;: Il prodotto è presente nella tabella &quot;spedizione&quot; e non può essere eliminato.&lt;/li&gt;
+&nbsp;     *           &lt;li&gt;&quot;2&quot;: Il prodotto è presente nella tabella &quot;arrivo&quot; e non può essere eliminato.&lt;/li&gt;
+&nbsp;     *           &lt;li&gt;&quot;3&quot;: Il prodotto è stato eliminato con successo dalla tabella &quot;prodotto&quot;.&lt;/li&gt;
+&nbsp;     *           &lt;li&gt;&quot;4&quot;: Si è verificato un errore durante l&#39;eliminazione o il prodotto non è stato trovato.&lt;/li&gt;
+&nbsp;     *         &lt;/ul&gt;
+&nbsp;     * @throws RuntimeException se si verifica un errore SQL durante l&#39;esecuzione delle query.
+&nbsp;     */
+&nbsp;    public String eliminaProdotto(int id) {
+<b class="nc">&nbsp;        String result = null;</b>
+&nbsp;
+<b class="nc">&nbsp;        String query1 = &quot;SELECT 1 FROM spedizione WHERE IDprodotto = ?&quot;;</b>
+<b class="nc">&nbsp;        String query2 = &quot;SELECT 1 FROM arrivo WHERE IDprodotto = ?&quot;;</b>
+<b class="nc">&nbsp;        String query3 = &quot;SELECT 1 FROM prodotto WHERE ID = ?&quot;;</b>
+&nbsp;
+&nbsp;        try {
+<b class="nc">&nbsp;            PreparedStatement statement1 = connessione.getConnection().prepareStatement(query1);</b>
+<b class="nc">&nbsp;            PreparedStatement statement2 = connessione.getConnection().prepareStatement(query2);</b>
+<b class="nc">&nbsp;            PreparedStatement statement3 = connessione.getConnection().prepareStatement(query3);</b>
+&nbsp;
+<b class="nc">&nbsp;            statement1.setInt(1, id);</b>
+<b class="nc">&nbsp;            statement2.setInt(1, id);</b>
+<b class="nc">&nbsp;            statement3.setInt(1, id);</b>
+&nbsp;
+<b class="nc">&nbsp;            ResultSet resultSet1 = statement1.executeQuery();</b>
+<b class="nc">&nbsp;            ResultSet resultSet2 = statement2.executeQuery();</b>
+<b class="nc">&nbsp;            ResultSet resultSet3 = statement3.executeQuery();</b>
+&nbsp;
+<b class="nc">&nbsp;            if (resultSet1.next()) {</b>
+<b class="nc">&nbsp;                result = &quot;1&quot;;  // ID is present in spedizione</b>
+<b class="nc">&nbsp;            } else if (resultSet2.next()) {</b>
+<b class="nc">&nbsp;                result = &quot;2&quot;;  // ID is present in arrivo</b>
+<b class="nc">&nbsp;            } else if (resultSet3.next()) {</b>
+&nbsp;                try {
+<b class="nc">&nbsp;                    String deleteQuery = &quot;DELETE FROM prodotto WHERE ID=?&quot;;</b>
+<b class="nc">&nbsp;                    PreparedStatement deleteStatement = connessione.getConnection().prepareStatement(deleteQuery);</b>
+<b class="nc">&nbsp;                    deleteStatement.setInt(1, id);</b>
+<b class="nc">&nbsp;                    int rowsAffected = deleteStatement.executeUpdate();</b>
+&nbsp;
+<b class="nc">&nbsp;                    if (rowsAffected &gt; 0) {</b>
+<b class="nc">&nbsp;                        result = &quot;3&quot;;  // Deletion successful</b>
+&nbsp;                    } else {
+<b class="nc">&nbsp;                        result = &quot;4&quot;;  // Technical issues during deletion</b>
+&nbsp;                    }
+<b class="nc">&nbsp;                } catch (SQLException e) {</b>
+<b class="nc">&nbsp;                    result = &quot;4&quot;;</b>
+<b class="nc">&nbsp;                    throw new RuntimeException(e);</b>
+<b class="nc">&nbsp;                }</b>
+&nbsp;            } else {
+<b class="nc">&nbsp;                result = &quot;4&quot;;  // Product not found in any table (spedizione, arrivo, prodotto), return error</b>
+&nbsp;            }
+<b class="nc">&nbsp;        } catch (SQLException e) {</b>
+<b class="nc">&nbsp;            result = &quot;4&quot;;  // Catch and handle any SQL errors</b>
+<b class="nc">&nbsp;            throw new RuntimeException(e);</b>
+<b class="nc">&nbsp;        }</b>
+&nbsp;
+<b class="nc">&nbsp;        return result;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Aggiunge un nuovo prodotto al database, con la possibilità di inserirlo anche nella tabella &quot;Arrivo&quot;
+&nbsp;     * se lo stato del prodotto è &quot;in arrivo&quot;. Il metodo effettua verifiche sui formati dei dati e controlla
+&nbsp;     * la presenza di un codice univoco prima dell&#39;inserimento.
+&nbsp;     *
+&nbsp;     * @param idCategoria L&#39;ID della categoria associata al prodotto.
+&nbsp;     * @param codice Il codice univoco del prodotto (verifica formato con {@link Patterns#PATTERN1}).
+&nbsp;     * @param stato Lo stato del prodotto (ad esempio, &quot;in arrivo&quot;).
+&nbsp;     * @param nome Il nome del prodotto (verifica formato con {@link Patterns#PATTERN1}).
+&nbsp;     * @param descrizione La descrizione del prodotto (verifica formato con {@link Patterns#PATTERN2}).
+&nbsp;     * @param dataArrivoStr La data di arrivo del prodotto in formato stringa (verifica con {@link Patterns#DATE_TIME_FORMATTER}).
+&nbsp;     * @param noteArrivo Note aggiuntive relative all&#39;arrivo del prodotto.
+&nbsp;     * @param partenza La località di partenza del prodotto (verifica formato con {@link Patterns#PATTERN3}).
+&nbsp;     * @param dataSpedizioneStr La data di spedizione del prodotto in formato stringa (opzionale, verifica formato).
+&nbsp;     * @param noteSpedizione Note aggiuntive relative alla spedizione del prodotto.
+&nbsp;     * @param destinazione La località di destinazione del prodotto (opzionale, verifica formato con {@link Patterns#PATTERN3}).
+&nbsp;     * @param noteGenerali Note generali associate al prodotto.
+&nbsp;     * @return Una stringa che rappresenta il risultato dell&#39;operazione:
+&nbsp;     *         &lt;ul&gt;
+&nbsp;     *           &lt;li&gt;&quot;1&quot;: Prodotto inserito con successo in entrambe le tabelle &quot;Prodotto&quot; e &quot;Arrivo&quot;.&lt;/li&gt;
+&nbsp;     *           &lt;li&gt;&quot;2&quot;: Formato del codice non corretto.&lt;/li&gt;
+&nbsp;     *           &lt;li&gt;&quot;3&quot;: Formato del nome non corretto.&lt;/li&gt;
+&nbsp;     *           &lt;li&gt;&quot;4&quot;: Formato della descrizione non corretto.&lt;/li&gt;
+&nbsp;     *           &lt;li&gt;&quot;5&quot;: Formato della località di partenza non corretto.&lt;/li&gt;
+&nbsp;     *           &lt;li&gt;&quot;6&quot;: Formato della destinazione non corretto.&lt;/li&gt;
+&nbsp;     *           &lt;li&gt;&quot;7&quot;: Formato della data di arrivo non corretto.&lt;/li&gt;
+&nbsp;     *           &lt;li&gt;&quot;8&quot;: Formato della data di spedizione non corretto.&lt;/li&gt;
+&nbsp;     *           &lt;li&gt;&quot;9&quot;: Codice prodotto già esistente.&lt;/li&gt;
+&nbsp;     *           &lt;li&gt;&quot;10&quot;: Problemi nell&#39;inserimento del prodotto nella tabella &quot;Arrivo&quot;.&lt;/li&gt;
+&nbsp;     *           &lt;li&gt;&quot;11&quot;: Prodotto inserito con successo solo nella tabella &quot;Prodotto&quot;.&lt;/li&gt;
+&nbsp;     *           &lt;li&gt;&quot;12&quot;: Problemi nell&#39;inserimento del prodotto nella tabella &quot;Prodotto&quot;.&lt;/li&gt;
+&nbsp;     *         &lt;/ul&gt;
+&nbsp;     * @throws RuntimeException se si verifica un errore SQL durante l&#39;esecuzione delle query.
+&nbsp;     */
+&nbsp;    public String aggiungiProdotto(
+&nbsp;            int idCategoria,
+&nbsp;            String codice,
+&nbsp;            String stato,
+&nbsp;            String nome,
+&nbsp;            String descrizione,
+&nbsp;            String dataArrivoStr,
+&nbsp;            String noteArrivo,
+&nbsp;            String partenza,
+&nbsp;            String dataSpedizioneStr,
+&nbsp;            String noteSpedizione,
+&nbsp;            String destinazione,
+&nbsp;            String noteGenerali) {
+&nbsp;
+<b class="fc">&nbsp;        String result = null;</b>
+&nbsp;
+&nbsp;        try {
+&nbsp;            // Verifica formato del codice
+<b class="fc">&nbsp;            if (codice == null || !Patterns.PATTERN1.matcher(codice).matches()) {</b>
+<b class="fc">&nbsp;                return &quot;2&quot;; // Formato codice non corretto</b>
+&nbsp;            }
+&nbsp;
+&nbsp;            // Verifica formato del nome
+<b class="fc">&nbsp;            if (nome == null || !Patterns.PATTERN1.matcher(nome).matches()) {</b>
+<b class="fc">&nbsp;                return &quot;3&quot;; // Formato nome non corretto</b>
+&nbsp;            }
+&nbsp;
+&nbsp;            // Verifica formato della descrizione
+<b class="fc">&nbsp;            if (descrizione == null || !Patterns.PATTERN2.matcher(descrizione).matches()) {</b>
+<b class="fc">&nbsp;                return &quot;4&quot;; // Formato descrizione non corretto</b>
+&nbsp;            }
+&nbsp;
+&nbsp;            // Verifica formato dei campi partenza
+<b class="fc">&nbsp;            if (partenza == null || !Patterns.PATTERN3.matcher(partenza).matches()) {</b>
+<b class="nc">&nbsp;                return &quot;5&quot;; // Formato partenza o destinazione non corretto</b>
+&nbsp;            }
+&nbsp;
+&nbsp;            // Verifica formato destinazione
+<b class="fc">&nbsp;            if (destinazione != null)</b>
+&nbsp;            {
+<b class="fc">&nbsp;                if(!Patterns.PATTERN3.matcher(destinazione).matches())</b>
+&nbsp;                {
+<b class="nc">&nbsp;                    return &quot;6&quot;; // Formato destinazione non corretto</b>
+&nbsp;                }
+&nbsp;            }
+&nbsp;
+&nbsp;            // Conversione delle date da stringa a java.sql.Date
+<b class="fc">&nbsp;            java.sql.Date dataArrivo = null;</b>
+<b class="fc">&nbsp;            if (dataArrivoStr == null) {</b>
+<b class="nc">&nbsp;                return &quot;7&quot;;</b>
+&nbsp;            } else {
+&nbsp;                try {
+<b class="fc">&nbsp;                    LocalDate localDate = LocalDate.parse(dataArrivoStr, Patterns.DATE_TIME_FORMATTER);</b>
+<b class="fc">&nbsp;                    dataArrivo = java.sql.Date.valueOf(localDate);</b>
+<b class="nc">&nbsp;                } catch (DateTimeParseException e) {</b>
+<b class="nc">&nbsp;                    return &quot;7&quot;; // Formato dataArrivo non corretto</b>
+<b class="fc">&nbsp;                }</b>
+&nbsp;            }
+&nbsp;
+<b class="fc">&nbsp;            java.sql.Date dataSpedizione = null;</b>
+<b class="fc">&nbsp;            if (dataSpedizioneStr != null) {</b>
+&nbsp;                try {
+<b class="fc">&nbsp;                    LocalDate localDate = LocalDate.parse(dataSpedizioneStr, Patterns.DATE_TIME_FORMATTER);</b>
+<b class="fc">&nbsp;                    dataSpedizione = java.sql.Date.valueOf(localDate);</b>
+<b class="nc">&nbsp;                } catch (DateTimeParseException e) {</b>
+<b class="nc">&nbsp;                    return &quot;8&quot;; // Formato dataSpedizione non corretto</b>
+<b class="fc">&nbsp;                }</b>
+&nbsp;            }
+&nbsp;
+&nbsp;            // Verifica se il codice esiste già nella tabella Prodotto
+<b class="fc">&nbsp;            String queryCheckCodice = &quot;SELECT COUNT(*) FROM Prodotto WHERE codice = ?&quot;;</b>
+<b class="fc">&nbsp;            PreparedStatement statementCheckCodice = connessione.getConnection().prepareStatement(queryCheckCodice);</b>
+<b class="fc">&nbsp;            statementCheckCodice.setString(1, codice);</b>
+<b class="fc">&nbsp;            ResultSet resultSet = statementCheckCodice.executeQuery();</b>
+<b class="fc">&nbsp;            if (resultSet.next() &amp;&amp; resultSet.getInt(1) &gt; 0) {</b>
+<b class="fc">&nbsp;                return &quot;9&quot;; // Codice già presente</b>
+&nbsp;            }
+&nbsp;
+<b class="fc">&nbsp;            String queryProdotto = &quot;INSERT INTO Prodotto(IDcategoria, codice, stato, nome, descrizione, dataArrivo, noteArrivo, partenza, dataSpedizione, noteSpedizione, destinazione, noteGenerali) &quot;</b>
+&nbsp;                    + &quot;VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)&quot;;
+&nbsp;
+<b class="fc">&nbsp;            PreparedStatement statementProdotto = connessione.getConnection().prepareStatement(queryProdotto, Statement.RETURN_GENERATED_KEYS);</b>
+<b class="fc">&nbsp;            statementProdotto.setInt(1, idCategoria);</b>
+<b class="fc">&nbsp;            statementProdotto.setString(2, codice);</b>
+<b class="fc">&nbsp;            statementProdotto.setString(3, stato);</b>
+<b class="fc">&nbsp;            statementProdotto.setString(4, nome);</b>
+<b class="fc">&nbsp;            statementProdotto.setString(5, descrizione);</b>
+<b class="fc">&nbsp;            statementProdotto.setDate(6, dataArrivo);</b>
+<b class="fc">&nbsp;            statementProdotto.setString(7, noteArrivo);</b>
+<b class="fc">&nbsp;            statementProdotto.setString(8, partenza);</b>
+<b class="fc">&nbsp;            statementProdotto.setDate(9, dataSpedizione);</b>
+<b class="fc">&nbsp;            statementProdotto.setString(10, noteSpedizione);</b>
+<b class="fc">&nbsp;            statementProdotto.setString(11, destinazione);</b>
+<b class="fc">&nbsp;            statementProdotto.setString(12, noteGenerali);</b>
+&nbsp;
+<b class="fc">&nbsp;            int rowsAffectedProdotto = statementProdotto.executeUpdate();</b>
+&nbsp;
+<b class="fc">&nbsp;            if (rowsAffectedProdotto &gt; 0) {</b>
+<b class="fc">&nbsp;                ResultSet generatedKeys = statementProdotto.getGeneratedKeys();</b>
+<b class="fc">&nbsp;                if (generatedKeys.next()) {</b>
+<b class="fc">&nbsp;                    int idProdotto = generatedKeys.getInt(1);</b>
+&nbsp;
+&nbsp;                    // Se lo stato è &quot;in arrivo&quot;, aggiungere alla tabella Arrivo
+<b class="fc">&nbsp;                    if (&quot;in arrivo&quot;.equalsIgnoreCase(stato)) {</b>
+<b class="fc">&nbsp;                        String queryArrivo = &quot;INSERT INTO Arrivo(IDprodotto, note) VALUES (?, ?)&quot;;</b>
+<b class="fc">&nbsp;                        PreparedStatement statementArrivo = connessione.getConnection().prepareStatement(queryArrivo);</b>
+<b class="fc">&nbsp;                        statementArrivo.setInt(1, idProdotto);</b>
+<b class="fc">&nbsp;                        statementArrivo.setString(2, noteArrivo);</b>
+&nbsp;
+<b class="fc">&nbsp;                        int rowsAffectedArrivo = statementArrivo.executeUpdate();</b>
+<b class="fc">&nbsp;                        if (rowsAffectedArrivo &gt; 0) {</b>
+<b class="fc">&nbsp;                            result = &quot;1&quot;; // Inserimento avvenuto con successo</b>
+&nbsp;                        } else {
+<b class="nc">&nbsp;                            result = &quot;10&quot;; // Problemi nell&#39;inserimento in Arrivo</b>
+&nbsp;                        }
+<b class="fc">&nbsp;                    } else {</b>
+<b class="nc">&nbsp;                        result = &quot;11&quot;; // Inserimento avvenuto con successo solo nella tabella Prodotto</b>
+&nbsp;                    }
+&nbsp;                }
+<b class="fc">&nbsp;            } else {</b>
+<b class="nc">&nbsp;                result = &quot;12&quot;; // Problemi nell&#39;inserimento nella tabella Prodotto</b>
+&nbsp;            }
+&nbsp;
+<b class="nc">&nbsp;        } catch (SQLException e) {</b>
+<b class="nc">&nbsp;            e.printStackTrace();</b>
+<b class="nc">&nbsp;            throw new RuntimeException(&quot;Errore durante l&#39;inserimento del prodotto.&quot;, e);</b>
+<b class="fc">&nbsp;        }</b>
+&nbsp;
+<b class="fc">&nbsp;        return result;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Modifica i dettagli di un prodotto esistente nel database, con la possibilità di aggiornare
+&nbsp;     * le tabelle &quot;Arrivo&quot; e &quot;Spedizione&quot; in base allo stato del prodotto.
+&nbsp;     *
+&nbsp;     * @param idProdotto L&#39;ID univoco del prodotto da modificare.
+&nbsp;     * @param idCategoria L&#39;ID della categoria associata al prodotto.
+&nbsp;     * @param codice Il codice univoco del prodotto (verifica formato con {@link Patterns#PATTERN1}).
+&nbsp;     * @param stato Lo stato del prodotto (ad esempio, &quot;in arrivo&quot;, &quot;in spedizione&quot;, &quot;in magazzino&quot;).
+&nbsp;     * @param nome Il nome del prodotto (verifica formato con {@link Patterns#PATTERN1}).
+&nbsp;     * @param descrizione La descrizione del prodotto (verifica formato con {@link Patterns#PATTERN2}).
+&nbsp;     * @param dataArrivoStr La data di arrivo del prodotto in formato stringa (verifica con {@link Patterns#DATE_TIME_FORMATTER}).
+&nbsp;     * @param noteArrivo Note aggiuntive relative all&#39;arrivo del prodotto.
+&nbsp;     * @param partenza La località di partenza del prodotto (verifica formato con {@link Patterns#PATTERN3}).
+&nbsp;     * @param dataSpedizioneStr La data di spedizione del prodotto in formato stringa (opzionale, verifica formato).
+&nbsp;     * @param noteSpedizione Note aggiuntive relative alla spedizione del prodotto.
+&nbsp;     * @param destinazione La località di destinazione del prodotto (opzionale, verifica formato con {@link Patterns#PATTERN3}).
+&nbsp;     * @param noteGenerali Note generali associate al prodotto.
+&nbsp;     * @return Una stringa che rappresenta il risultato dell&#39;operazione:
+&nbsp;     *         &lt;ul&gt;
+&nbsp;     *           &lt;li&gt;&quot;1&quot;: Modifica avvenuta con successo.&lt;/li&gt;
+&nbsp;     *           &lt;li&gt;&quot;2&quot;: Formato del codice non corretto.&lt;/li&gt;
+&nbsp;     *           &lt;li&gt;&quot;3&quot;: Formato del nome non corretto.&lt;/li&gt;
+&nbsp;     *           &lt;li&gt;&quot;4&quot;: Formato della descrizione non corretto.&lt;/li&gt;
+&nbsp;     *           &lt;li&gt;&quot;5&quot;: Formato della località di partenza non corretto.&lt;/li&gt;
+&nbsp;     *           &lt;li&gt;&quot;6&quot;: Formato della destinazione non corretto.&lt;/li&gt;
+&nbsp;     *           &lt;li&gt;&quot;7&quot;: Formato della data di arrivo non corretto.&lt;/li&gt;
+&nbsp;     *           &lt;li&gt;&quot;8&quot;: Formato della data di spedizione non corretto.&lt;/li&gt;
+&nbsp;     *           &lt;li&gt;&quot;9&quot;: Codice prodotto già esistente (associato a un altro prodotto).&lt;/li&gt;
+&nbsp;     *         &lt;/ul&gt;
+&nbsp;     * @throws RuntimeException se si verifica un errore SQL durante l&#39;esecuzione delle query.
+&nbsp;     */
+&nbsp;    public String modificaProdotto(
+&nbsp;            int idProdotto,
+&nbsp;            int idCategoria,
+&nbsp;            String codice,
+&nbsp;            String stato,
+&nbsp;            String nome,
+&nbsp;            String descrizione,
+&nbsp;            String dataArrivoStr,
+&nbsp;            String noteArrivo,
+&nbsp;            String partenza,
+&nbsp;            String dataSpedizioneStr,
+&nbsp;            String noteSpedizione,
+&nbsp;            String destinazione,
+&nbsp;            String noteGenerali) {
+&nbsp;
+<b class="fc">&nbsp;        String result = null;</b>
+&nbsp;
+&nbsp;        try {
+&nbsp;            // Verifica formato del codice
+<b class="fc">&nbsp;            if (codice == null || !Patterns.PATTERN1.matcher(codice).matches()) {</b>
+<b class="fc">&nbsp;                return &quot;2&quot;; // Formato codice non corretto</b>
+&nbsp;            }
+&nbsp;
+&nbsp;            // Verifica formato del nome
+<b class="fc">&nbsp;            if (nome == null || !Patterns.PATTERN1.matcher(nome).matches()) {</b>
+<b class="fc">&nbsp;                return &quot;3&quot;; // Formato nome non corretto</b>
+&nbsp;            }
+&nbsp;
+&nbsp;            // Verifica formato della descrizione
+<b class="fc">&nbsp;            if (descrizione == null || !Patterns.PATTERN2.matcher(descrizione).matches()) {</b>
+<b class="fc">&nbsp;                return &quot;4&quot;; // Formato descrizione non corretto</b>
+&nbsp;            }
+&nbsp;
+&nbsp;            // Verifica formato dei campi partenza e destinazione
+<b class="fc">&nbsp;            if (partenza == null || !Patterns.PATTERN3.matcher(partenza).matches()) {</b>
+<b class="nc">&nbsp;                return &quot;5&quot;; // Formato partenza non corretto</b>
+&nbsp;            }
+&nbsp;
+<b class="fc">&nbsp;            if (destinazione != null &amp;&amp; !Patterns.PATTERN3.matcher(destinazione).matches()) {</b>
+<b class="nc">&nbsp;                return &quot;6&quot;; // Formato destinazione non corretto</b>
+&nbsp;            }
+&nbsp;
+&nbsp;            // Conversione delle date da stringa a java.sql.Date
+<b class="fc">&nbsp;            java.sql.Date dataArrivo = null;</b>
+<b class="fc">&nbsp;            if (dataArrivoStr == null) {</b>
+<b class="nc">&nbsp;                return &quot;7&quot;;</b>
+&nbsp;            } else {
+&nbsp;                try {
+<b class="fc">&nbsp;                    LocalDate localDate = LocalDate.parse(dataArrivoStr, Patterns.DATE_TIME_FORMATTER);</b>
+<b class="fc">&nbsp;                    dataArrivo = java.sql.Date.valueOf(localDate);</b>
+<b class="fc">&nbsp;                } catch (DateTimeParseException e) {</b>
+<b class="fc">&nbsp;                    return &quot;7&quot;; // Formato dataArrivo non corretto</b>
+<b class="fc">&nbsp;                }</b>
+&nbsp;            }
+&nbsp;
+<b class="fc">&nbsp;            java.sql.Date dataSpedizione = null;</b>
+<b class="fc">&nbsp;            if (dataSpedizioneStr != null) {</b>
+&nbsp;                try {
+<b class="fc">&nbsp;                    LocalDate localDate = LocalDate.parse(dataSpedizioneStr, Patterns.DATE_TIME_FORMATTER);</b>
+<b class="fc">&nbsp;                    dataSpedizione = java.sql.Date.valueOf(localDate);</b>
+<b class="fc">&nbsp;                } catch (DateTimeParseException e) {</b>
+<b class="fc">&nbsp;                    return &quot;8&quot;; // Formato dataSpedizione non corretto</b>
+<b class="fc">&nbsp;                }</b>
+&nbsp;            }
+&nbsp;
+<b class="fc">&nbsp;            Connection conn = connessione.getConnection(); // Ottieni la connessione attiva</b>
+&nbsp;
+&nbsp;            // Verifica se il codice è già presente nel database
+<b class="fc">&nbsp;            String queryCheckCodice = &quot;SELECT COUNT(*) FROM prodotto WHERE codice = ? AND ID != ?&quot;;</b>
+<b class="fc">&nbsp;            PreparedStatement stmtCheckCodice = conn.prepareStatement(queryCheckCodice);</b>
+<b class="fc">&nbsp;            stmtCheckCodice.setString(1, codice);</b>
+<b class="fc">&nbsp;            stmtCheckCodice.setInt(2, idProdotto);</b>
+<b class="fc">&nbsp;            ResultSet rsCheckCodice = stmtCheckCodice.executeQuery();</b>
+<b class="fc">&nbsp;            if (rsCheckCodice.next() &amp;&amp; rsCheckCodice.getInt(1) &gt; 0) {</b>
+<b class="fc">&nbsp;                return &quot;9&quot;; // Codice già presente</b>
+&nbsp;            }
+&nbsp;
+&nbsp;            // Gestione stato prodotto
+<b class="fc">&nbsp;            if (&quot;in magazzino&quot;.equalsIgnoreCase(stato) || &quot;non disponibile&quot;.equalsIgnoreCase(stato)) {</b>
+&nbsp;                // Rimuove il prodotto da &quot;arrivo&quot; e &quot;spedizione&quot;
+<b class="nc">&nbsp;                String deleteArrivo = &quot;DELETE FROM arrivo WHERE IDprodotto = ?&quot;;</b>
+<b class="nc">&nbsp;                PreparedStatement stmtArrivo = conn.prepareStatement(deleteArrivo);</b>
+<b class="nc">&nbsp;                stmtArrivo.setInt(1, idProdotto);</b>
+<b class="nc">&nbsp;                stmtArrivo.executeUpdate();</b>
+&nbsp;
+<b class="nc">&nbsp;                String deleteSpedizione = &quot;DELETE FROM spedizione WHERE IDprodotto = ?&quot;;</b>
+<b class="nc">&nbsp;                PreparedStatement stmtSpedizione = conn.prepareStatement(deleteSpedizione);</b>
+<b class="nc">&nbsp;                stmtSpedizione.setInt(1, idProdotto);</b>
+<b class="nc">&nbsp;                stmtSpedizione.executeUpdate();</b>
+&nbsp;
+<b class="nc">&nbsp;            } else if (&quot;in spedizione&quot;.equalsIgnoreCase(stato)) {</b>
+&nbsp;                // Rimuove il prodotto da &quot;arrivo&quot; e aggiunge a &quot;spedizione&quot;
+<b class="nc">&nbsp;                String deleteArrivo = &quot;DELETE FROM arrivo WHERE IDprodotto = ?&quot;;</b>
+<b class="nc">&nbsp;                PreparedStatement stmtArrivo = conn.prepareStatement(deleteArrivo);</b>
+<b class="nc">&nbsp;                stmtArrivo.setInt(1, idProdotto);</b>
+<b class="nc">&nbsp;                stmtArrivo.executeUpdate();</b>
+&nbsp;
+&nbsp;                // Aggiorna o aggiunge il prodotto a spedizione
+<b class="nc">&nbsp;                String checkSpedizione = &quot;SELECT COUNT(*) FROM spedizione WHERE IDprodotto = ?&quot;;</b>
+<b class="nc">&nbsp;                PreparedStatement stmtCheckSpedizione = conn.prepareStatement(checkSpedizione);</b>
+<b class="nc">&nbsp;                stmtCheckSpedizione.setInt(1, idProdotto);</b>
+<b class="nc">&nbsp;                ResultSet rsCheckSpedizione = stmtCheckSpedizione.executeQuery();</b>
+<b class="nc">&nbsp;                if (rsCheckSpedizione.next() &amp;&amp; rsCheckSpedizione.getInt(1) == 0) {</b>
+<b class="nc">&nbsp;                    String insertSpedizione = &quot;INSERT INTO spedizione(IDprodotto, note) VALUES (?, ?)&quot;;</b>
+<b class="nc">&nbsp;                    PreparedStatement stmtInsertSpedizione = conn.prepareStatement(insertSpedizione);</b>
+<b class="nc">&nbsp;                    stmtInsertSpedizione.setInt(1, idProdotto);</b>
+<b class="nc">&nbsp;                    stmtInsertSpedizione.setString(2, noteSpedizione);</b>
+<b class="nc">&nbsp;                    stmtInsertSpedizione.executeUpdate();</b>
+<b class="nc">&nbsp;                } else {</b>
+<b class="nc">&nbsp;                    String updateNoteSpedizione = &quot;UPDATE spedizione SET note = ? WHERE IDprodotto = ?&quot;;</b>
+<b class="nc">&nbsp;                    PreparedStatement stmtUpdateSpedizione = conn.prepareStatement(updateNoteSpedizione);</b>
+<b class="nc">&nbsp;                    stmtUpdateSpedizione.setString(1, noteSpedizione);</b>
+<b class="nc">&nbsp;                    stmtUpdateSpedizione.setInt(2, idProdotto);</b>
+<b class="nc">&nbsp;                    stmtUpdateSpedizione.executeUpdate();</b>
+&nbsp;                }
+&nbsp;
+<b class="nc">&nbsp;            } else if (&quot;in arrivo&quot;.equalsIgnoreCase(stato)) {</b>
+&nbsp;                // Rimuove il prodotto da &quot;spedizione&quot; e aggiunge a &quot;arrivo&quot;
+<b class="fc">&nbsp;                String deleteSpedizione = &quot;DELETE FROM spedizione WHERE IDprodotto = ?&quot;;</b>
+<b class="fc">&nbsp;                PreparedStatement stmtSpedizione = conn.prepareStatement(deleteSpedizione);</b>
+<b class="fc">&nbsp;                stmtSpedizione.setInt(1, idProdotto);</b>
+<b class="fc">&nbsp;                stmtSpedizione.executeUpdate();</b>
+&nbsp;
+<b class="fc">&nbsp;                String checkArrivo = &quot;SELECT COUNT(*) FROM arrivo WHERE IDprodotto = ?&quot;;</b>
+<b class="fc">&nbsp;                PreparedStatement stmtCheckArrivo = conn.prepareStatement(checkArrivo);</b>
+<b class="fc">&nbsp;                stmtCheckArrivo.setInt(1, idProdotto);</b>
+<b class="fc">&nbsp;                ResultSet rsCheckArrivo = stmtCheckArrivo.executeQuery();</b>
+<b class="fc">&nbsp;                if (rsCheckArrivo.next() &amp;&amp; rsCheckArrivo.getInt(1) == 0) {</b>
+<b class="nc">&nbsp;                    String insertArrivo = &quot;INSERT INTO arrivo(IDprodotto, note) VALUES (?, ?)&quot;;</b>
+<b class="nc">&nbsp;                    PreparedStatement stmtInsertArrivo = conn.prepareStatement(insertArrivo);</b>
+<b class="nc">&nbsp;                    stmtInsertArrivo.setInt(1, idProdotto);</b>
+<b class="nc">&nbsp;                    stmtInsertArrivo.setString(2, noteArrivo);</b>
+<b class="nc">&nbsp;                    stmtInsertArrivo.executeUpdate();</b>
+<b class="nc">&nbsp;                } else {</b>
+<b class="fc">&nbsp;                    String updateNoteArrivo = &quot;UPDATE arrivo SET note = ? WHERE IDprodotto = ?&quot;;</b>
+<b class="fc">&nbsp;                    PreparedStatement stmtUpdateArrivo = conn.prepareStatement(updateNoteArrivo);</b>
+<b class="fc">&nbsp;                    stmtUpdateArrivo.setString(1, noteArrivo);</b>
+<b class="fc">&nbsp;                    stmtUpdateArrivo.setInt(2, idProdotto);</b>
+<b class="fc">&nbsp;                    stmtUpdateArrivo.executeUpdate();</b>
+&nbsp;                }
+&nbsp;            }
+&nbsp;
+&nbsp;            // Aggiorna i dettagli del prodotto
+<b class="fc">&nbsp;            String queryUpdateProdotto = &quot;UPDATE prodotto SET &quot;</b>
+&nbsp;                    + &quot;IDcategoria = ?, codice = ?, stato = ?, nome = ?, descrizione = ?, &quot;
+&nbsp;                    + &quot;dataArrivo = ?, noteArrivo = ?, partenza = ?, dataSpedizione = ?, &quot;
+&nbsp;                    + &quot;noteSpedizione = ?, destinazione = ?, noteGenerali = ? &quot;
+&nbsp;                    + &quot;WHERE ID = ?&quot;;
+<b class="fc">&nbsp;            PreparedStatement stmtUpdateProdotto = conn.prepareStatement(queryUpdateProdotto);</b>
+<b class="fc">&nbsp;            stmtUpdateProdotto.setInt(1, idCategoria);</b>
+<b class="fc">&nbsp;            stmtUpdateProdotto.setString(2, codice);</b>
+<b class="fc">&nbsp;            stmtUpdateProdotto.setString(3, stato);</b>
+<b class="fc">&nbsp;            stmtUpdateProdotto.setString(4, nome);</b>
+<b class="fc">&nbsp;            stmtUpdateProdotto.setString(5, descrizione);</b>
+<b class="fc">&nbsp;            stmtUpdateProdotto.setDate(6, dataArrivo);</b>
+<b class="fc">&nbsp;            stmtUpdateProdotto.setString(7, noteArrivo);</b>
+<b class="fc">&nbsp;            stmtUpdateProdotto.setString(8, partenza);</b>
+<b class="fc">&nbsp;            stmtUpdateProdotto.setDate(9, dataSpedizione);</b>
+<b class="fc">&nbsp;            stmtUpdateProdotto.setString(10, noteSpedizione);</b>
+<b class="fc">&nbsp;            stmtUpdateProdotto.setString(11, destinazione);</b>
+<b class="fc">&nbsp;            stmtUpdateProdotto.setString(12, noteGenerali);</b>
+<b class="fc">&nbsp;            stmtUpdateProdotto.setInt(13, idProdotto);</b>
+&nbsp;
+<b class="fc">&nbsp;            int rowsAffected = stmtUpdateProdotto.executeUpdate();</b>
+<b class="fc">&nbsp;            if (rowsAffected &gt; 0) {</b>
+<b class="fc">&nbsp;                result = &quot;1&quot;; // Modifica avvenuta con successo</b>
+&nbsp;            }
+&nbsp;
+<b class="nc">&nbsp;        } catch (SQLException e) {</b>
+<b class="nc">&nbsp;            e.printStackTrace();</b>
+<b class="nc">&nbsp;            throw new RuntimeException(&quot;Errore durante la modifica del prodotto.&quot;, e);</b>
+<b class="fc">&nbsp;        }</b>
+&nbsp;
+<b class="fc">&nbsp;        return result;</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-01-23 01:20</div>
+</div>
+</body>
+</html>

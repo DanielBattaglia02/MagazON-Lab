@@ -1,0 +1,348 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=windows-1252"> 
+  <title>Coverage Report > GestioneCategorieDAO</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">it.unisa.magazon_lab.model.DAO</a>
+</div>
+
+<h1>Coverage Summary for Class: GestioneCategorieDAO (it.unisa.magazon_lab.model.DAO)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">GestioneCategorieDAO</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    57,1%
+  </span>
+  <span class="absValue">
+    (4/7)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    42,2%
+  </span>
+  <span class="absValue">
+    (46/109)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package it.unisa.magazon_lab.model.DAO;
+&nbsp;
+&nbsp;import it.unisa.magazon_lab.model.Entity.Categoria;
+&nbsp;import it.unisa.magazon_lab.model.Entity.Connessione;
+&nbsp;import it.unisa.magazon_lab.model.utils.Patterns;
+&nbsp;
+&nbsp;import java.beans.PropertyEditorSupport;
+&nbsp;import java.sql.PreparedStatement;
+&nbsp;import java.sql.ResultSet;
+&nbsp;import java.sql.SQLException;
+&nbsp;import java.sql.Statement;
+&nbsp;import java.util.ArrayList;
+&nbsp;import java.util.List;
+&nbsp;
+&nbsp;/**
+&nbsp; * Classe GestioneCategorieDAO.
+&nbsp; * Gestisce le operazioni di accesso ai dati per l&#39;entità Categoria.
+&nbsp; * Implementa il pattern Singleton per garantire un&#39;unica istanza della classe.
+&nbsp; * Autore: Francesco Vaiano
+&nbsp; */
+&nbsp;
+&nbsp;public class GestioneCategorieDAO {
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Istanza Singleton della classe.
+&nbsp;     */
+&nbsp;    private static GestioneCategorieDAO instance;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Connessione al database.
+&nbsp;     */
+&nbsp;    private Connessione connessione;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Costruttore privato per impedire creazioni multiple.
+&nbsp;     */
+<b class="fc">&nbsp;    private GestioneCategorieDAO() {</b>
+<b class="fc">&nbsp;        connessione = Connessione.getInstance();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Ottiene l&#39;istanza Singleton della classe.
+&nbsp;     *
+&nbsp;     * @return Istanza di GestioneCategorieDAO
+&nbsp;     */
+&nbsp;    public static GestioneCategorieDAO getInstance() {
+<b class="fc">&nbsp;        if (instance == null) {</b>
+<b class="fc">&nbsp;            instance = new GestioneCategorieDAO();</b>
+&nbsp;        }
+<b class="fc">&nbsp;        return instance;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Recupera tutte le categorie presenti nel database.
+&nbsp;     *
+&nbsp;     * @return Lista di oggetti Categoria
+&nbsp;     */
+&nbsp;    public List&lt;Categoria&gt; visualizzaCategorie() {
+<b class="nc">&nbsp;        List&lt;Categoria&gt; categorie = new ArrayList&lt;&gt;();</b>
+<b class="nc">&nbsp;        String query = &quot;SELECT * FROM categoria&quot;;</b>
+&nbsp;
+&nbsp;        try {
+<b class="nc">&nbsp;            PreparedStatement statement = connessione.getConnection().prepareStatement(query);</b>
+<b class="nc">&nbsp;            ResultSet resultSet = statement.executeQuery();</b>
+&nbsp;
+<b class="nc">&nbsp;            while (resultSet.next()) {</b>
+<b class="nc">&nbsp;                int ID = resultSet.getInt(&quot;ID&quot;);</b>
+<b class="nc">&nbsp;                String nome = resultSet.getString(&quot;nome&quot;);</b>
+<b class="nc">&nbsp;                String descrizione = resultSet.getString(&quot;descrizione&quot;);</b>
+<b class="nc">&nbsp;                String note = resultSet.getString(&quot;note&quot;);</b>
+&nbsp;
+<b class="nc">&nbsp;                Categoria categoria = new Categoria(ID, nome, descrizione, note);</b>
+<b class="nc">&nbsp;                categorie.add(categoria);</b>
+<b class="nc">&nbsp;            }</b>
+&nbsp;
+<b class="nc">&nbsp;            resultSet.close();</b>
+<b class="nc">&nbsp;            statement.close();</b>
+<b class="nc">&nbsp;        } catch (SQLException e) {</b>
+<b class="nc">&nbsp;            throw new RuntimeException(e);</b>
+<b class="nc">&nbsp;        }</b>
+&nbsp;
+<b class="nc">&nbsp;        return categorie;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Aggiunge una nuova categoria al database.
+&nbsp;     *
+&nbsp;     * @param nome Nome della categoria
+&nbsp;     * @param descrizione Descrizione della categoria
+&nbsp;     * @param note Note aggiuntive sulla categoria
+&nbsp;     * @return &quot;1&quot; se l&#39;operazione ha avuto successo, &quot;2&quot; se il nome non è corretto, &quot;3&quot; se la descrizione non è corretta e &quot;4&quot; se il nome è già presente o c&#39;è stato un errore
+&nbsp;     */
+&nbsp;    public String aggiungiCategoria(String nome, String descrizione, String note) {
+&nbsp;
+<b class="fc">&nbsp;        String result = null;</b>
+&nbsp;
+<b class="fc">&nbsp;        if (nome == null || nome.trim().isEmpty() || !Patterns.PATTERN1.matcher(nome).matches())</b>
+<b class="fc">&nbsp;            return &quot;2&quot;;</b>
+&nbsp;
+<b class="fc">&nbsp;        if (descrizione == null || descrizione.trim().isEmpty() || !Patterns.PATTERN2.matcher(descrizione).matches())</b>
+<b class="fc">&nbsp;            return &quot;3&quot;;</b>
+&nbsp;
+&nbsp;        try {
+<b class="fc">&nbsp;            String queryCheckNome = &quot;SELECT COUNT(*) FROM Categoria WHERE nome = ?&quot;;</b>
+<b class="fc">&nbsp;            PreparedStatement statementCheckNome = connessione.getConnection().prepareStatement(queryCheckNome);</b>
+<b class="fc">&nbsp;            statementCheckNome.setString(1, nome);</b>
+<b class="fc">&nbsp;            ResultSet resultSet = statementCheckNome.executeQuery();</b>
+<b class="fc">&nbsp;            if (resultSet.next() &amp;&amp; resultSet.getInt(1) &gt; 0) {</b>
+<b class="fc">&nbsp;                return &quot;4&quot;; // Nome già presente</b>
+&nbsp;            }
+&nbsp;
+<b class="fc">&nbsp;            String queryCategoria = &quot;INSERT INTO Categoria(nome, descrizione, note) VALUES(?,?,?)&quot;;</b>
+<b class="fc">&nbsp;            PreparedStatement statementCategoria = connessione.getConnection().prepareStatement(queryCategoria, Statement.RETURN_GENERATED_KEYS);</b>
+<b class="fc">&nbsp;            statementCategoria.setString(1, nome);</b>
+<b class="fc">&nbsp;            statementCategoria.setString(2, descrizione);</b>
+<b class="fc">&nbsp;            statementCategoria.setString(3, note);</b>
+&nbsp;
+<b class="fc">&nbsp;            int rowsAffected = statementCategoria.executeUpdate();</b>
+<b class="fc">&nbsp;            result = rowsAffected &gt; 0 ? &quot;1&quot; : &quot;4&quot;;</b>
+<b class="nc">&nbsp;        } catch (SQLException e) {</b>
+<b class="nc">&nbsp;            throw new RuntimeException(e);</b>
+<b class="fc">&nbsp;        }</b>
+&nbsp;
+<b class="fc">&nbsp;        return result;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Modifica una categoria esistente nel database.
+&nbsp;     *
+&nbsp;     * @param IDprodotto ID della categoria da modificare
+&nbsp;     * @param nome Nuovo nome della categoria
+&nbsp;     * @param descrizione Nuova descrizione della categoria
+&nbsp;     * @param note Nuove note della categoria
+&nbsp;     * @return &quot;1&quot; se l&#39;operazione ha avuto successo, &quot;2&quot; se il nome non è corretto, &quot;3&quot; se la descrizione non è corretta e &quot;4&quot; se il nome è gia presente.
+&nbsp;     */
+&nbsp;    public String modificaCategoria(int IDprodotto, String nome, String descrizione, String note) {
+&nbsp;
+<b class="fc">&nbsp;        String result = null;</b>
+&nbsp;
+<b class="fc">&nbsp;        if (nome == null || nome.trim().isEmpty() || !Patterns.PATTERN1.matcher(nome).matches())</b>
+<b class="fc">&nbsp;            return &quot;2&quot;;</b>
+&nbsp;
+<b class="fc">&nbsp;        if (descrizione == null || descrizione.trim().isEmpty() || !Patterns.PATTERN2.matcher(descrizione).matches())</b>
+<b class="fc">&nbsp;            return &quot;3&quot;;</b>
+&nbsp;
+&nbsp;        try {
+<b class="fc">&nbsp;            String queryCheckNome = &quot;SELECT COUNT(*) FROM Categoria WHERE nome = ?&quot;;</b>
+<b class="fc">&nbsp;            PreparedStatement statementCheckNome = connessione.getConnection().prepareStatement(queryCheckNome);</b>
+<b class="fc">&nbsp;            statementCheckNome.setString(1, nome);</b>
+<b class="fc">&nbsp;            ResultSet resultSet = statementCheckNome.executeQuery();</b>
+<b class="fc">&nbsp;            if (resultSet.next() &amp;&amp; resultSet.getInt(1) &gt; 0) {</b>
+<b class="fc">&nbsp;                return &quot;4&quot;; // Nome già presente</b>
+&nbsp;            }
+&nbsp;
+<b class="fc">&nbsp;            String queryCategoria = &quot;UPDATE categoria SET nome = ?, descrizione = ?, note = ? WHERE ID = ?&quot;;</b>
+<b class="fc">&nbsp;            PreparedStatement statementCategoria = connessione.getConnection().prepareStatement(queryCategoria);</b>
+<b class="fc">&nbsp;            statementCategoria.setString(1, nome);</b>
+<b class="fc">&nbsp;            statementCategoria.setString(2, descrizione);</b>
+<b class="fc">&nbsp;            statementCategoria.setString(3, note);</b>
+<b class="fc">&nbsp;            statementCategoria.setInt(4, IDprodotto);</b>
+&nbsp;
+<b class="fc">&nbsp;            int rowsAffectedProdotto = statementCategoria.executeUpdate();</b>
+<b class="fc">&nbsp;            result = rowsAffectedProdotto &gt; 0 ? &quot;1&quot; : &quot;2&quot;;</b>
+<b class="nc">&nbsp;        } catch (SQLException e) {</b>
+<b class="nc">&nbsp;            e.printStackTrace();</b>
+<b class="fc">&nbsp;        }</b>
+&nbsp;
+<b class="fc">&nbsp;        return result;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Cerca una categoria specifica nel database tramite il suo ID.
+&nbsp;     *
+&nbsp;     * @param ID ID della categoria da cercare
+&nbsp;     * @return Oggetto Categoria se trovato, altrimenti null
+&nbsp;     */
+&nbsp;    public Categoria CercaCategoria(int ID) {
+<b class="nc">&nbsp;        Categoria categoria = null;</b>
+<b class="nc">&nbsp;        String query = &quot;SELECT * FROM categoria WHERE ID = ?&quot;;</b>
+&nbsp;
+&nbsp;        try {
+<b class="nc">&nbsp;            PreparedStatement statement = connessione.getConnection().prepareStatement(query);</b>
+<b class="nc">&nbsp;            statement.setInt(1, ID);</b>
+<b class="nc">&nbsp;            ResultSet resultSet = statement.executeQuery();</b>
+&nbsp;
+<b class="nc">&nbsp;            if (resultSet.next()) {</b>
+<b class="nc">&nbsp;                int IDcategoria = resultSet.getInt(&quot;ID&quot;);</b>
+<b class="nc">&nbsp;                String nome = resultSet.getString(&quot;nome&quot;);</b>
+<b class="nc">&nbsp;                String descrizione = resultSet.getString(&quot;descrizione&quot;);</b>
+<b class="nc">&nbsp;                String note = resultSet.getString(&quot;note&quot;);</b>
+&nbsp;
+<b class="nc">&nbsp;                categoria = new Categoria(ID, nome, descrizione, note);</b>
+&nbsp;            }
+<b class="nc">&nbsp;            resultSet.close();</b>
+<b class="nc">&nbsp;            statement.close();</b>
+<b class="nc">&nbsp;        } catch (SQLException e) {</b>
+<b class="nc">&nbsp;            throw new RuntimeException(e);</b>
+<b class="nc">&nbsp;        }</b>
+&nbsp;
+<b class="nc">&nbsp;        return categoria;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Elimina una categoria dal database.
+&nbsp;     *
+&nbsp;     * @param ID ID della categoria da eliminare
+&nbsp;     * @return &quot;1&quot; se l&#39;operazione ha avuto successo, &quot;2&quot; per errore di SQL, &quot;3&quot; se la categoria è associata a prodotti, &quot;4&quot; se la categoria non è trovata
+&nbsp;     */
+&nbsp;    public String eliminaCategoria(int ID) {
+<b class="nc">&nbsp;        String result = null;</b>
+<b class="nc">&nbsp;        String checkProdottiQuery = &quot;SELECT COUNT(*) FROM prodotto WHERE IDcategoria = ?&quot;;</b>
+&nbsp;
+&nbsp;        try {
+<b class="nc">&nbsp;            PreparedStatement checkStatement = connessione.getConnection().prepareStatement(checkProdottiQuery);</b>
+<b class="nc">&nbsp;            checkStatement.setInt(1, ID);</b>
+<b class="nc">&nbsp;            ResultSet checkResult = checkStatement.executeQuery();</b>
+&nbsp;
+<b class="nc">&nbsp;            if (checkResult.next() &amp;&amp; checkResult.getInt(1) &gt; 0) {</b>
+<b class="nc">&nbsp;                result = &quot;3&quot;; // Categoria non eliminabile, ci sono prodotti associati</b>
+&nbsp;            } else {
+<b class="nc">&nbsp;                String query = &quot;SELECT * FROM categoria WHERE ID = ?&quot;;</b>
+<b class="nc">&nbsp;                PreparedStatement statement = connessione.getConnection().prepareStatement(query);</b>
+<b class="nc">&nbsp;                statement.setInt(1, ID);</b>
+<b class="nc">&nbsp;                ResultSet resultSet = statement.executeQuery();</b>
+&nbsp;
+<b class="nc">&nbsp;                if (resultSet.next()) {</b>
+<b class="nc">&nbsp;                    String deleteQuery = &quot;DELETE FROM categoria WHERE ID = ?&quot;;</b>
+<b class="nc">&nbsp;                    PreparedStatement deleteStatement = connessione.getConnection().prepareStatement(deleteQuery);</b>
+<b class="nc">&nbsp;                    deleteStatement.setInt(1, ID);</b>
+&nbsp;
+<b class="nc">&nbsp;                    int rowsAffected = deleteStatement.executeUpdate();</b>
+<b class="nc">&nbsp;                    result = rowsAffected &gt; 0 ? &quot;1&quot; : &quot;2&quot;;</b>
+<b class="nc">&nbsp;                } else {</b>
+<b class="nc">&nbsp;                    result = &quot;4&quot;; // Categoria non trovata</b>
+&nbsp;                }
+&nbsp;            }
+<b class="nc">&nbsp;        } catch (SQLException e) {</b>
+<b class="nc">&nbsp;            result = &quot;2&quot;;</b>
+<b class="nc">&nbsp;            throw new RuntimeException(e);</b>
+<b class="nc">&nbsp;        }</b>
+&nbsp;
+<b class="nc">&nbsp;        return result;</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-01-23 01:20</div>
+</div>
+</body>
+</html>

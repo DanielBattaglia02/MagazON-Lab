@@ -1,0 +1,202 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=windows-1252"> 
+  <title>Coverage Report > ScaricaListaServlet</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">it.unisa.magazon_lab.controller.utils</a>
+</div>
+
+<h1>Coverage Summary for Class: ScaricaListaServlet (it.unisa.magazon_lab.controller.utils)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">ScaricaListaServlet</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/20)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;/*
+&nbsp;Autore: Ruben Gigante
+&nbsp; */
+&nbsp;
+&nbsp;package it.unisa.magazon_lab.controller.utils;
+&nbsp;
+&nbsp;import it.unisa.magazon_lab.model.DAO.GestioneListeDAO;
+&nbsp;import it.unisa.magazon_lab.model.Facade.Facade;
+&nbsp;import jakarta.servlet.ServletException;
+&nbsp;import jakarta.servlet.annotation.WebServlet;
+&nbsp;import jakarta.servlet.http.HttpServlet;
+&nbsp;import jakarta.servlet.http.HttpServletRequest;
+&nbsp;import jakarta.servlet.http.HttpServletResponse;
+&nbsp;
+&nbsp;import java.io.IOException;
+&nbsp;
+&nbsp;/**
+&nbsp; * Questa servlet permette di scaricare un file associato a una lista specifica
+&nbsp; * identificata tramite un parametro di richiesta. Se il file esiste, viene inviato
+&nbsp; * come risposta HTTP, altrimenti viene restituito un errore.
+&nbsp; *
+&nbsp; * @author Ruben Gigante
+&nbsp; */
+&nbsp;
+&nbsp;@WebServlet(name=&quot;scarica-lista-servlet&quot;, value=&quot;/scarica-lista-servlet&quot;)
+<b class="nc">&nbsp;public class ScaricaListaServlet extends HttpServlet</b>
+&nbsp;{
+&nbsp;    private Facade facade;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Inizializza la servlet creando un&#39;istanza della classe Facade.
+&nbsp;     *
+&nbsp;     * @throws ServletException se si verifica un errore durante l&#39;inizializzazione.
+&nbsp;     */
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public void init() throws ServletException
+&nbsp;    {
+<b class="nc">&nbsp;        super.init();</b>
+<b class="nc">&nbsp;        this.facade = new Facade();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Recupera l&#39;ID della lista dalla richiesta, ottiene il nome del file dal database
+&nbsp;     * tramite la Facade e invia il file come risposta.
+&nbsp;     *
+&nbsp;     * @param request La richiesta HTTP contenente le credenziali dell&#39;utente.
+&nbsp;     * @param response La risposta HTTP che può essere utilizzata per reindirizzare l&#39;utente o inviare un messaggio di errore.
+&nbsp;     * @throws ServletException Se si verifica un errore durante l&#39;elaborazione della richiesta.
+&nbsp;     * @throws IOException Se si verifica un errore durante la scrittura della risposta.
+&nbsp;     */
+&nbsp;
+&nbsp;    @Override
+&nbsp;    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
+&nbsp;    {
+<b class="nc">&nbsp;        String pageName = request.getParameter(&quot;pageName&quot;);</b>
+&nbsp;
+<b class="nc">&nbsp;        if (pageName.equals(&quot;liste&quot;)) {</b>
+<b class="nc">&nbsp;            int id = Integer.parseInt(request.getParameter(&quot;IDlista&quot;));</b>
+<b class="nc">&nbsp;            GestioneListeDAO gestioneListeDAO = facade.getGestioneListeDAO();</b>
+&nbsp;
+<b class="nc">&nbsp;            String nomeFile = gestioneListeDAO.getListaFileName(id);</b>
+<b class="nc">&nbsp;            if (!nomeFile.isEmpty()) {</b>
+&nbsp;                // Percorso del file nella cartella &quot;liste&quot;
+<b class="nc">&nbsp;                String filePath = getServletContext().getRealPath(&quot;/&quot;) + &quot;liste/&quot; + nomeFile;</b>
+&nbsp;
+&nbsp;                // Configura la risposta HTTP per il download
+<b class="nc">&nbsp;                response.setContentType(&quot;application/octet-stream&quot;);</b>
+<b class="nc">&nbsp;                response.setHeader(&quot;Content-Disposition&quot;, &quot;attachment; filename=\&quot;&quot; + nomeFile + &quot;\&quot;&quot;);</b>
+&nbsp;
+&nbsp;                // Leggi il file e invialo nella risposta
+<b class="nc">&nbsp;                java.nio.file.Path file = java.nio.file.Paths.get(filePath);</b>
+&nbsp;                try {
+<b class="nc">&nbsp;                    java.nio.file.Files.copy(file, response.getOutputStream());</b>
+<b class="nc">&nbsp;                    response.getOutputStream().flush();</b>
+<b class="nc">&nbsp;                } catch (IOException e) {</b>
+<b class="nc">&nbsp;                    e.printStackTrace();</b>
+<b class="nc">&nbsp;                    response.sendError(HttpServletResponse.SC_NOT_FOUND, &quot;Il file non è stato trovato&quot;);</b>
+<b class="nc">&nbsp;                }</b>
+&nbsp;            }
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Gestisce le richieste POST inoltrandole al metodo doGet.
+&nbsp;     *
+&nbsp;     * @param request La richiesta HTTP contenente le credenziali dell&#39;utente.
+&nbsp;     * @param response La risposta HTTP che può essere utilizzata per reindirizzare l&#39;utente o inviare un messaggio di errore.
+&nbsp;     * @throws ServletException Se si verifica un errore durante l&#39;elaborazione della richiesta.
+&nbsp;     * @throws IOException Se si verifica un errore durante la scrittura della risposta.
+&nbsp;     */
+&nbsp;
+&nbsp;    @Override
+&nbsp;    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
+&nbsp;    {
+<b class="nc">&nbsp;        doGet(request, response);</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-01-23 01:20</div>
+</div>
+</body>
+</html>

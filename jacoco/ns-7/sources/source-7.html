@@ -1,0 +1,613 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=windows-1252"> 
+  <title>Coverage Report > GestioneUtentiDAO</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">it.unisa.magazon_lab.model.DAO</a>
+</div>
+
+<h1>Coverage Summary for Class: GestioneUtentiDAO (it.unisa.magazon_lab.model.DAO)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">GestioneUtentiDAO</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    60%
+  </span>
+  <span class="absValue">
+    (6/10)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    50,4%
+  </span>
+  <span class="absValue">
+    (113/224)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;/*
+&nbsp;Autore: Ruben Gigante
+&nbsp; */
+&nbsp;
+&nbsp;package it.unisa.magazon_lab.model.DAO;
+&nbsp;
+&nbsp;import it.unisa.magazon_lab.model.Entity.Connessione;
+&nbsp;import it.unisa.magazon_lab.model.Entity.Utente;
+&nbsp;import it.unisa.magazon_lab.model.utils.Patterns;
+&nbsp;
+&nbsp;import java.sql.Date;
+&nbsp;import java.sql.PreparedStatement;
+&nbsp;import java.sql.ResultSet;
+&nbsp;import java.sql.SQLException;
+&nbsp;import java.time.LocalDate;
+&nbsp;import java.time.format.DateTimeParseException;
+&nbsp;import java.util.ArrayList;
+&nbsp;import java.util.List;
+&nbsp;
+&nbsp;import java.util.regex.Pattern;
+&nbsp;import java.util.regex.Matcher;
+&nbsp;
+&nbsp;/**
+&nbsp; * Classe DAO per la gestione degli utenti.
+&nbsp; * Implementa il pattern Singleton per garantire una sola istanza.
+&nbsp; *
+&nbsp; * @author Gigante Ruben
+&nbsp; */
+&nbsp;
+&nbsp;public class GestioneUtentiDAO
+&nbsp;{
+&nbsp;    private static GestioneUtentiDAO instance;
+&nbsp;    private Connessione connessione;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Costruttore privato per impedire la creazione di istanze multiple.
+&nbsp;     * Recupera un&#39;istanza della connessione al database.
+&nbsp;     */
+<b class="fc">&nbsp;    private GestioneUtentiDAO() {</b>
+<b class="fc">&nbsp;        connessione = Connessione.getInstance();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Ottiene l&#39;istanza Singleton della classe.
+&nbsp;     *
+&nbsp;     * @return L&#39;istanza Singleton di GestioneUtentiDAO.
+&nbsp;     */
+&nbsp;    public static GestioneUtentiDAO getInstance()
+&nbsp;    {
+<b class="fc">&nbsp;        if (instance == null)</b>
+&nbsp;        {
+<b class="fc">&nbsp;            instance = new GestioneUtentiDAO();</b>
+&nbsp;        }
+<b class="fc">&nbsp;        return instance;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Recupera la lista di tutti gli utenti presenti nel database.
+&nbsp;     *
+&nbsp;     * @return Una lista di oggetti Utente.
+&nbsp;     */
+&nbsp;
+&nbsp;    public List&lt;Utente&gt; visualizzaUtenti()
+&nbsp;    {
+<b class="nc">&nbsp;        List&lt;Utente&gt; utenti = new ArrayList&lt;&gt;();</b>
+&nbsp;
+<b class="nc">&nbsp;        String query = &quot;SELECT * FROM utente u &quot;;</b>
+&nbsp;
+&nbsp;        try
+&nbsp;        {
+<b class="nc">&nbsp;            PreparedStatement statement = connessione.getConnection().prepareStatement(query);</b>
+<b class="nc">&nbsp;            ResultSet resultSet = statement.executeQuery();</b>
+&nbsp;
+<b class="nc">&nbsp;            while (resultSet.next()) {</b>
+<b class="nc">&nbsp;                int ID = resultSet.getInt(&quot;ID&quot;);</b>
+<b class="nc">&nbsp;                String nome = resultSet.getString(&quot;nome&quot;);</b>
+<b class="nc">&nbsp;                String cognome = resultSet.getString(&quot;cognome&quot;);</b>
+<b class="nc">&nbsp;                String ruolo = resultSet.getString(&quot;ruolo&quot;);</b>
+<b class="nc">&nbsp;                String username = resultSet.getString(&quot;username&quot;);</b>
+<b class="nc">&nbsp;                String stato = resultSet.getString(&quot;stato&quot;);</b>
+<b class="nc">&nbsp;                String email = resultSet.getString(&quot;email&quot;);</b>
+<b class="nc">&nbsp;                String telefono = resultSet.getString(&quot;telefono&quot;);</b>
+<b class="nc">&nbsp;                Date dataDiNascita = resultSet.getDate(&quot;dataDiNascita&quot;);</b>
+<b class="nc">&nbsp;                String luogoDiNascita = resultSet.getString(&quot;luogoDiNascita&quot;);</b>
+&nbsp;
+<b class="nc">&nbsp;                Utente utente = new Utente(ID, nome, cognome, ruolo, username, stato, email, telefono, dataDiNascita, luogoDiNascita);</b>
+<b class="nc">&nbsp;                utenti.add(utente);</b>
+<b class="nc">&nbsp;            }</b>
+&nbsp;
+<b class="nc">&nbsp;            resultSet.close();</b>
+<b class="nc">&nbsp;            statement.close();</b>
+&nbsp;        }
+<b class="nc">&nbsp;        catch (SQLException e)</b>
+&nbsp;        {
+<b class="nc">&nbsp;            throw new RuntimeException(e);</b>
+<b class="nc">&nbsp;        }</b>
+&nbsp;
+<b class="nc">&nbsp;        return utenti;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Aggiorna lo stato di un utente.
+&nbsp;     *
+&nbsp;     * @param userID     ID dell&#39;utente da aggiornare.
+&nbsp;     * @param nuovoStato Nuovo stato da assegnare all&#39;utente.
+&nbsp;     */
+&nbsp;
+&nbsp;    public void aggiornaStatoUtente(int userID, String nuovoStato)
+&nbsp;    {
+&nbsp;
+<b class="nc">&nbsp;        if(!(nuovoStato.equals(&quot;online&quot;) || nuovoStato.equals(&quot;offline&quot;)))</b>
+<b class="nc">&nbsp;            throw new RuntimeException(&quot;Errore durante l&#39;aggiornamento dello stato dell&#39;utente&quot;);</b>
+&nbsp;
+<b class="nc">&nbsp;        String query = &quot;UPDATE utente SET stato = ? WHERE ID = ?&quot;;</b>
+&nbsp;
+&nbsp;        try {
+<b class="nc">&nbsp;            PreparedStatement statement = connessione.getConnection().prepareStatement(query);</b>
+<b class="nc">&nbsp;            statement.setString(1, nuovoStato);</b>
+<b class="nc">&nbsp;            statement.setInt(2, userID);</b>
+<b class="nc">&nbsp;            statement.executeUpdate();</b>
+<b class="nc">&nbsp;            statement.close();</b>
+&nbsp;        }
+<b class="nc">&nbsp;        catch (SQLException e)</b>
+&nbsp;        {
+<b class="nc">&nbsp;            throw new RuntimeException(&quot;Errore durante l&#39;aggiornamento dello stato dell&#39;utente: &quot; + e.getMessage(), e);</b>
+<b class="nc">&nbsp;        }</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Aggiunge un nuovo utente al database.
+&nbsp;     *
+&nbsp;     * @param nome          Nome dell&#39;utente.
+&nbsp;     * @param cognome       Cognome dell&#39;utente.
+&nbsp;     * @param ruolo         Ruolo dell&#39;utente.
+&nbsp;     * @param username      Username dell&#39;utente.
+&nbsp;     * @param password      Password dell&#39;utente.
+&nbsp;     * @param email         Email dell&#39;utente.
+&nbsp;     * @param telefono      Telefono dell&#39;utente.
+&nbsp;     * @param dataNascitaStr Data di nascita dell&#39;utente (formato stringa).
+&nbsp;     * @param luogoNascita  Luogo di nascita dell&#39;utente.
+&nbsp;     * @return Un codice che indica il risultato dell&#39;operazione:
+&nbsp;     *         &quot;1&quot; se l&#39;inserimento è avvenuto con successo,
+&nbsp;     *         &quot;2&quot; in caso di problemi tecnici,
+&nbsp;     *         &quot;3&quot; in caso di eccezioni SQL.
+&nbsp;     */
+&nbsp;
+&nbsp;    public String aggiungiUtente(String nome, String cognome, String ruolo,
+&nbsp;                                 String username, String password, String email,
+&nbsp;                                 String telefono, String dataNascitaStr, String luogoNascita)
+&nbsp;    {
+&nbsp;
+<b class="fc">&nbsp;        if (nome == null || nome.trim().isEmpty() || !Patterns.PATTERN4.matcher(nome).matches())</b>
+<b class="nc">&nbsp;            return &quot;3&quot;;</b>
+&nbsp;
+<b class="fc">&nbsp;        if(cognome == null || cognome.trim().isEmpty() || !Patterns.PATTERN4.matcher(cognome).matches())</b>
+<b class="nc">&nbsp;            return &quot;3&quot;;</b>
+&nbsp;
+<b class="fc">&nbsp;        if (ruolo == null || ruolo.trim().isEmpty() || !(ruolo.equals(&quot;magazziniere&quot;) || ruolo.equals(&quot;admin&quot;)))</b>
+<b class="fc">&nbsp;            return &quot;3&quot;;</b>
+&nbsp;
+&nbsp;
+<b class="fc">&nbsp;        if(username == null || username.trim().isEmpty() || !Patterns.PATTERN5.matcher(username).matches())</b>
+<b class="nc">&nbsp;            return &quot;3&quot;;</b>
+&nbsp;
+<b class="fc">&nbsp;        if(password == null || password.trim().isEmpty())</b>
+<b class="nc">&nbsp;            return &quot;3&quot;;</b>
+&nbsp;
+<b class="fc">&nbsp;        if (email == null || email.trim().isEmpty() || !Patterns.PATTERN6.matcher(email).matches())</b>
+<b class="fc">&nbsp;            return &quot;3&quot;;</b>
+&nbsp;
+<b class="fc">&nbsp;        if(telefono == null || telefono.trim().isEmpty() || !Patterns.PATTERN7.matcher(telefono).matches())</b>
+<b class="nc">&nbsp;            return &quot;3&quot;;</b>
+&nbsp;
+<b class="fc">&nbsp;        java.sql.Date dataNascita = null;</b>
+<b class="fc">&nbsp;        if (dataNascitaStr == null) {</b>
+<b class="nc">&nbsp;            return &quot;3&quot;;</b>
+&nbsp;        } else {
+&nbsp;            try {
+<b class="fc">&nbsp;                LocalDate localDate = LocalDate.parse(dataNascitaStr, Patterns.DATE_TIME_FORMATTER);</b>
+<b class="fc">&nbsp;                dataNascita = java.sql.Date.valueOf(localDate);</b>
+<b class="nc">&nbsp;            } catch (DateTimeParseException e) {</b>
+<b class="nc">&nbsp;                return &quot;3&quot;; // Formato dataArrivo non corretto</b>
+<b class="fc">&nbsp;            }</b>
+&nbsp;        }
+&nbsp;
+<b class="fc">&nbsp;        if(luogoNascita == null || luogoNascita.trim().isEmpty() || !Patterns.PATTERN4.matcher(luogoNascita).matches())</b>
+<b class="nc">&nbsp;            return &quot;3&quot;;</b>
+&nbsp;
+&nbsp;
+&nbsp;
+<b class="fc">&nbsp;        String query = &quot;INSERT INTO utente (nome, cognome, ruolo, username, password, email, telefono, dataDiNascita, luogoDiNascita) VALUES (?, ?, ?, ?, SHA1(?), ?, ?, ?, ?)&quot;;</b>
+<b class="fc">&nbsp;        String result = null;</b>
+&nbsp;
+&nbsp;        try {
+<b class="fc">&nbsp;            PreparedStatement statement = connessione.getConnection().prepareStatement(query);</b>
+<b class="fc">&nbsp;            statement.setString(1, nome);</b>
+<b class="fc">&nbsp;            statement.setString(2, cognome);</b>
+<b class="fc">&nbsp;            statement.setString(3, ruolo);</b>
+<b class="fc">&nbsp;            statement.setString(4, username);</b>
+<b class="fc">&nbsp;            statement.setString(5, password);</b>
+<b class="fc">&nbsp;            statement.setString(6, email);</b>
+<b class="fc">&nbsp;            statement.setString(7, telefono);</b>
+<b class="fc">&nbsp;            statement.setDate(8, dataNascita);</b>
+<b class="fc">&nbsp;            statement.setString(9, luogoNascita);</b>
+&nbsp;
+<b class="fc">&nbsp;            int rowsInserted = statement.executeUpdate();</b>
+<b class="fc">&nbsp;            if (rowsInserted &gt; 0) {</b>
+<b class="fc">&nbsp;                result = &quot;1&quot;; // Inserimento avvenuto con successo</b>
+&nbsp;            } else {
+<b class="nc">&nbsp;                result = &quot;2&quot;; // Problemi nell&#39;inserimento in Utente</b>
+&nbsp;            }
+&nbsp;        }
+<b class="fc">&nbsp;        catch (SQLException e)</b>
+&nbsp;        {
+<b class="fc">&nbsp;            result = &quot;3&quot;; // Eccezione durante l&#39;inserimento</b>
+<b class="fc">&nbsp;            throw new RuntimeException(e);</b>
+<b class="fc">&nbsp;        }</b>
+&nbsp;
+<b class="fc">&nbsp;        return result;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Elimina un utente dal database.
+&nbsp;     *
+&nbsp;     * @param id ID dell&#39;utente da eliminare.
+&nbsp;     * @return Messaggio che indica il risultato dell&#39;operazione.
+&nbsp;     */
+&nbsp;
+&nbsp;    public String eliminaUtente(int id)
+&nbsp;    {
+<b class="fc">&nbsp;        String result = null;</b>
+&nbsp;
+<b class="fc">&nbsp;        String query = &quot;SELECT 1 FROM Utente WHERE ID = ?&quot;;</b>
+&nbsp;
+&nbsp;        try {
+<b class="fc">&nbsp;            PreparedStatement statement = connessione.getConnection().prepareStatement(query);</b>
+<b class="fc">&nbsp;            statement.setInt(1, id);</b>
+&nbsp;
+<b class="fc">&nbsp;            ResultSet resultSet = statement.executeQuery();</b>
+&nbsp;
+<b class="fc">&nbsp;            if (resultSet.next()) {</b>
+&nbsp;                try {
+&nbsp;                    // Se l&#39;utente esiste, procedi con la cancellazione
+<b class="fc">&nbsp;                    String deleteQuery = &quot;DELETE FROM Utente WHERE ID=?&quot;;</b>
+<b class="fc">&nbsp;                    PreparedStatement deleteStatement = connessione.getConnection().prepareStatement(deleteQuery);</b>
+<b class="fc">&nbsp;                    deleteStatement.setInt(1, id);</b>
+<b class="fc">&nbsp;                    int rowsAffected = deleteStatement.executeUpdate();</b>
+&nbsp;
+<b class="fc">&nbsp;                    if (rowsAffected &gt; 0) {</b>
+<b class="fc">&nbsp;                        result = &quot;Utente cancellato con successo!&quot;;  // Cancellazione riuscita</b>
+&nbsp;                    } else {
+<b class="nc">&nbsp;                        result = &quot;Errore nella cancellazione dell&#39;utente&quot;;  // Problemi tecnici durante la cancellazione</b>
+&nbsp;                    }
+<b class="nc">&nbsp;                } catch (SQLException e) {</b>
+<b class="nc">&nbsp;                    result = &quot;Errore nella cancellazione dell&#39;utente&quot;;</b>
+<b class="nc">&nbsp;                    throw new RuntimeException(e);</b>
+<b class="fc">&nbsp;                }</b>
+&nbsp;            } else {
+<b class="fc">&nbsp;                result = &quot;Errore nella cancellazione dell&#39;utente&quot;;  // Utente non trovato</b>
+&nbsp;            }
+&nbsp;        }
+<b class="nc">&nbsp;        catch (SQLException e)</b>
+&nbsp;        {
+<b class="nc">&nbsp;            result = &quot;Errore nella cancellazione dell&#39;utente&quot;;  // Gestione errori SQL</b>
+<b class="nc">&nbsp;            throw new RuntimeException(e);</b>
+<b class="fc">&nbsp;        }</b>
+&nbsp;
+<b class="fc">&nbsp;        return result;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Cerca un utente nel database in base al suo ID.
+&nbsp;     *
+&nbsp;     * @param id ID dell&#39;utente da cercare.
+&nbsp;     * @return Oggetto Utente se trovato, altrimenti null.
+&nbsp;     */
+&nbsp;
+&nbsp;    public Utente cercaUtente(int id) {
+<b class="nc">&nbsp;        String result = null;</b>
+<b class="nc">&nbsp;        String query = &quot;SELECT * FROM Utente WHERE ID = ?&quot;;</b>
+<b class="nc">&nbsp;        Utente u = null;</b>
+&nbsp;
+&nbsp;        try {
+<b class="nc">&nbsp;            PreparedStatement statement = connessione.getConnection().prepareStatement(query);</b>
+<b class="nc">&nbsp;            statement.setInt(1, id);</b>
+&nbsp;
+<b class="nc">&nbsp;            ResultSet resultSet = statement.executeQuery();</b>
+&nbsp;
+<b class="nc">&nbsp;            if (resultSet.next()) {</b>
+&nbsp;                // Estrai i dettagli dell&#39;utente
+<b class="nc">&nbsp;                String nome = resultSet.getString(&quot;nome&quot;);</b>
+<b class="nc">&nbsp;                String cognome = resultSet.getString(&quot;cognome&quot;);</b>
+<b class="nc">&nbsp;                String ruolo = resultSet.getString(&quot;ruolo&quot;);</b>
+<b class="nc">&nbsp;                String username = resultSet.getString(&quot;username&quot;);</b>
+<b class="nc">&nbsp;                String stato = resultSet.getString(&quot;stato&quot;);</b>
+<b class="nc">&nbsp;                String email = resultSet.getString(&quot;email&quot;);</b>
+<b class="nc">&nbsp;                String telefono = resultSet.getString(&quot;telefono&quot;);</b>
+<b class="nc">&nbsp;                Date dataDiNascita = resultSet.getDate(&quot;dataDiNascita&quot;);</b>
+<b class="nc">&nbsp;                String luogoDiNascita = resultSet.getString(&quot;luogoDiNascita&quot;);</b>
+&nbsp;
+<b class="nc">&nbsp;                u = new Utente(id, nome, cognome, ruolo, username, stato, email, telefono, dataDiNascita, luogoDiNascita);</b>
+&nbsp;
+&nbsp;
+<b class="nc">&nbsp;                return u;</b>
+&nbsp;            }
+&nbsp;        }
+<b class="nc">&nbsp;        catch (SQLException e)</b>
+&nbsp;        {
+<b class="nc">&nbsp;            e.printStackTrace();</b>
+<b class="nc">&nbsp;        }</b>
+&nbsp;
+<b class="nc">&nbsp;        return u;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Cerca un utente nel database in base al suo ID.
+&nbsp;     *
+&nbsp;     * @param user Username dell&#39;utente
+&nbsp;     * @return ID dell&#39;utente se trovato, altrimenti -1.
+&nbsp;     */
+&nbsp;
+&nbsp;    public int cercaIDUtente(String user) {
+<b class="fc">&nbsp;        String result = null;</b>
+<b class="fc">&nbsp;        String query = &quot;SELECT * FROM Utente WHERE username = ?&quot;;</b>
+<b class="fc">&nbsp;        Utente u = null;</b>
+&nbsp;
+&nbsp;        try {
+<b class="fc">&nbsp;            PreparedStatement statement = connessione.getConnection().prepareStatement(query);</b>
+<b class="fc">&nbsp;            statement.setString(1, user);</b>
+&nbsp;
+<b class="fc">&nbsp;            ResultSet resultSet = statement.executeQuery();</b>
+&nbsp;
+<b class="fc">&nbsp;            if (resultSet.next()) {</b>
+&nbsp;                // Estrai i dettagli dell&#39;utente
+<b class="fc">&nbsp;                int id = resultSet.getInt(&quot;ID&quot;);</b>
+<b class="fc">&nbsp;                String nome = resultSet.getString(&quot;nome&quot;);</b>
+<b class="fc">&nbsp;                String cognome = resultSet.getString(&quot;cognome&quot;);</b>
+<b class="fc">&nbsp;                String ruolo = resultSet.getString(&quot;ruolo&quot;);</b>
+<b class="fc">&nbsp;                String username = resultSet.getString(&quot;username&quot;);</b>
+<b class="fc">&nbsp;                String stato = resultSet.getString(&quot;stato&quot;);</b>
+<b class="fc">&nbsp;                String email = resultSet.getString(&quot;email&quot;);</b>
+<b class="fc">&nbsp;                String telefono = resultSet.getString(&quot;telefono&quot;);</b>
+<b class="fc">&nbsp;                Date dataDiNascita = resultSet.getDate(&quot;dataDiNascita&quot;);</b>
+<b class="fc">&nbsp;                String luogoDiNascita = resultSet.getString(&quot;luogoDiNascita&quot;);</b>
+&nbsp;
+<b class="fc">&nbsp;                u = new Utente(id, nome, cognome, ruolo, username, stato, email, telefono, dataDiNascita, luogoDiNascita);</b>
+&nbsp;
+&nbsp;
+<b class="fc">&nbsp;                return u.getID();</b>
+&nbsp;            }
+&nbsp;        }
+<b class="nc">&nbsp;        catch (SQLException e)</b>
+&nbsp;        {
+<b class="nc">&nbsp;            e.printStackTrace();</b>
+<b class="fc">&nbsp;        }</b>
+&nbsp;
+<b class="fc">&nbsp;        return -1;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Modifica un utente esistente nel database con i dati forniti.
+&nbsp;     *
+&nbsp;     * @param id                ID dell&#39;utente da modificare.
+&nbsp;     * @param nome              Nome dell&#39;utente.
+&nbsp;     * @param cognome           Cognome dell&#39;utente.
+&nbsp;     * @param ruolo             Ruolo dell&#39;utente (es. amministratore, utente normale).
+&nbsp;     * @param username          Username dell&#39;utente.
+&nbsp;     * @param password          Password dell&#39;utente (opzionale; se vuota, non verrà modificata).
+&nbsp;     * @param email             Indirizzo email dell&#39;utente.
+&nbsp;     * @param telefono          Numero di telefono dell&#39;utente.
+&nbsp;     * @param dataDiNascitaStr  Data di nascita dell&#39;utente in formato stringa (es. &quot;YYYY-MM-DD&quot;).
+&nbsp;     * @param luogoDiNascita    Luogo di nascita dell&#39;utente.
+&nbsp;     * @return Una stringa indicante il risultato dell&#39;operazione.
+&nbsp;     */
+&nbsp;
+&nbsp;    public String modificaUtente(int id, String nome, String cognome, String ruolo, String username, String password, String email, String telefono, String dataDiNascitaStr, String luogoDiNascita)
+&nbsp;    {
+<b class="fc">&nbsp;        String result = &quot;0&quot;;</b>
+<b class="fc">&nbsp;        String query=&quot;&quot;;</b>
+&nbsp;
+&nbsp;
+<b class="fc">&nbsp;        if (nome == null || nome.trim().isEmpty() || !Patterns.PATTERN4.matcher(nome).matches())</b>
+<b class="nc">&nbsp;            return &quot;Nome non valido.&quot;;</b>
+&nbsp;
+<b class="fc">&nbsp;        if (cognome == null || cognome.trim().isEmpty() || !Patterns.PATTERN4.matcher(cognome).matches())</b>
+<b class="nc">&nbsp;            return &quot;Cognome non valido.&quot;;</b>
+&nbsp;
+<b class="fc">&nbsp;        if (ruolo == null || ruolo.trim().isEmpty() || !(ruolo.equals(&quot;magazziniere&quot;) || ruolo.equals(&quot;admin&quot;)))</b>
+<b class="fc">&nbsp;            return &quot;Ruolo non valido: deve essere &#39;magazziniere&#39; o &#39;admin&#39;.&quot;;</b>
+&nbsp;
+<b class="fc">&nbsp;        if (username == null || username.trim().isEmpty() || !Patterns.PATTERN5.matcher(username).matches())</b>
+<b class="nc">&nbsp;            return &quot;Username non valido.&quot;;</b>
+&nbsp;
+<b class="fc">&nbsp;        if (!(password == null || password.trim().isEmpty()) &amp;&amp; !Patterns.PATTERN8.matcher(password).matches())</b>
+<b class="nc">&nbsp;            return &quot;Password non valida.&quot;;</b>
+&nbsp;
+<b class="fc">&nbsp;        if (email == null || email.trim().isEmpty() || !Patterns.PATTERN6.matcher(email).matches())</b>
+<b class="fc">&nbsp;            return &quot;Email non valida.&quot;;</b>
+&nbsp;
+<b class="fc">&nbsp;        if (telefono == null || telefono.trim().isEmpty() || !Patterns.PATTERN7.matcher(telefono).matches())</b>
+<b class="nc">&nbsp;            return &quot;Numero Telefono non valido.&quot;;</b>
+&nbsp;
+<b class="fc">&nbsp;        java.sql.Date dataDiNascita = null;</b>
+<b class="fc">&nbsp;        if (dataDiNascitaStr == null) {</b>
+<b class="nc">&nbsp;            return &quot;Data di nascita non valida.&quot;;</b>
+&nbsp;        } else {
+&nbsp;            try {
+<b class="fc">&nbsp;                LocalDate localDate = LocalDate.parse(dataDiNascitaStr, Patterns.DATE_TIME_FORMATTER);</b>
+<b class="fc">&nbsp;                dataDiNascita = java.sql.Date.valueOf(localDate);</b>
+<b class="nc">&nbsp;            } catch (DateTimeParseException e) {</b>
+<b class="nc">&nbsp;                return &quot;Data di nascita non valida.&quot;;</b>
+<b class="fc">&nbsp;            }</b>
+&nbsp;        }
+&nbsp;
+<b class="fc">&nbsp;        if (luogoDiNascita == null || luogoDiNascita.trim().isEmpty() || !Patterns.PATTERN4.matcher(luogoDiNascita).matches())</b>
+<b class="nc">&nbsp;            return &quot;Luogo di nascita non valido.&quot;;</b>
+&nbsp;
+&nbsp;
+<b class="fc">&nbsp;        if(password.isEmpty()) {</b>
+<b class="nc">&nbsp;            query = &quot;UPDATE Utente SET nome = ?, cognome = ?, ruolo = ?, username = ?, email = ?, telefono = ?, dataDiNascita = ?, luogoDiNascita = ? WHERE ID = ?&quot;;</b>
+&nbsp;        }else{
+<b class="fc">&nbsp;            query = &quot;UPDATE Utente SET nome = ?, cognome = ?, ruolo = ?, username = ?,password = SHA1(?), email = ?, telefono = ?, dataDiNascita = ?, luogoDiNascita = ? WHERE ID = ?&quot;;</b>
+&nbsp;        }
+&nbsp;        try {
+&nbsp;            // Prepara la query
+<b class="fc">&nbsp;            PreparedStatement statement = connessione.getConnection().prepareStatement(query);</b>
+&nbsp;
+<b class="fc">&nbsp;            if(password.isEmpty()) {</b>
+&nbsp;                // Imposta i parametri per la query
+<b class="nc">&nbsp;                statement.setString(1, nome);</b>
+<b class="nc">&nbsp;                statement.setString(2, cognome);</b>
+<b class="nc">&nbsp;                statement.setString(3, ruolo);</b>
+<b class="nc">&nbsp;                statement.setString(4, username);</b>
+<b class="nc">&nbsp;                statement.setString(5, email);</b>
+<b class="nc">&nbsp;                statement.setString(6, telefono);</b>
+<b class="nc">&nbsp;                statement.setDate(7, dataDiNascita);</b>
+<b class="nc">&nbsp;                statement.setString(8, luogoDiNascita);</b>
+<b class="nc">&nbsp;                statement.setInt(9, id);</b>
+&nbsp;            }else{
+&nbsp;                // Imposta i parametri per la query
+<b class="fc">&nbsp;                statement.setString(1, nome);</b>
+<b class="fc">&nbsp;                statement.setString(2, cognome);</b>
+<b class="fc">&nbsp;                statement.setString(3, ruolo);</b>
+<b class="fc">&nbsp;                statement.setString(4, username);</b>
+<b class="fc">&nbsp;                statement.setString(5, password);</b>
+<b class="fc">&nbsp;                statement.setString(6, email);</b>
+<b class="fc">&nbsp;                statement.setString(7, telefono);</b>
+<b class="fc">&nbsp;                statement.setDate(8, dataDiNascita);</b>
+<b class="fc">&nbsp;                statement.setString(9, luogoDiNascita);</b>
+<b class="fc">&nbsp;                statement.setInt(10, id);</b>
+&nbsp;            }
+&nbsp;
+&nbsp;            // Esegui l&#39;aggiornamento
+<b class="fc">&nbsp;            int rowsAffected = statement.executeUpdate();</b>
+&nbsp;
+<b class="fc">&nbsp;            if (rowsAffected &gt; 0) {</b>
+<b class="fc">&nbsp;                result = &quot;Utente modificato con successo!&quot;; // Successo: Utente modificato</b>
+&nbsp;            } else {
+<b class="nc">&nbsp;                result = &quot;Errore nella modifica dell&#39;utente&quot;; // Nessun utente trovato con l&#39;ID specificato</b>
+&nbsp;            }
+&nbsp;
+&nbsp;        }
+<b class="nc">&nbsp;        catch (SQLException e)</b>
+&nbsp;        {
+<b class="nc">&nbsp;            result = &quot;Errore nella modifica dell&#39;utente&quot;; // Errore durante la modifica</b>
+<b class="fc">&nbsp;        }</b>
+&nbsp;
+<b class="fc">&nbsp;        return result;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Imposta lo stato di un utente (online o offline) nel database.
+&nbsp;     *
+&nbsp;     * @param id        ID dell&#39;utente di cui aggiornare lo stato.
+&nbsp;     * @param statoInt  Stato dell&#39;utente: 1 per &quot;online&quot;, 0 per &quot;offline&quot;.
+&nbsp;     * @throws RuntimeException In caso di errore durante l&#39;aggiornamento dello stato.
+&nbsp;     */
+&nbsp;
+&nbsp;    public void setStato(int id, int statoInt)
+&nbsp;    {
+<b class="nc">&nbsp;        String query = &quot;UPDATE Utente SET stato = ? WHERE ID = ?&quot;;</b>
+<b class="nc">&nbsp;        String stato = &quot;&quot;;</b>
+&nbsp;
+<b class="nc">&nbsp;        if (statoInt == 1) {</b>
+<b class="nc">&nbsp;            stato = &quot;online&quot;;</b>
+<b class="nc">&nbsp;        } else if (statoInt == 0) {</b>
+<b class="nc">&nbsp;            stato = &quot;offline&quot;;</b>
+&nbsp;        } else return;
+&nbsp;
+&nbsp;        try {
+&nbsp;            // Prepara la query
+<b class="nc">&nbsp;            PreparedStatement statement = connessione.getConnection().prepareStatement(query);</b>
+&nbsp;
+&nbsp;            // Imposta i parametri per la query
+<b class="nc">&nbsp;            statement.setString(1, stato);</b>
+<b class="nc">&nbsp;            statement.setInt(2, id);</b>
+&nbsp;
+&nbsp;            // Esegui l&#39;aggiornamento
+<b class="nc">&nbsp;            statement.executeUpdate();</b>
+&nbsp;
+&nbsp;        }
+<b class="nc">&nbsp;        catch (SQLException e)</b>
+&nbsp;        {
+<b class="nc">&nbsp;            throw new RuntimeException(e);</b>
+<b class="nc">&nbsp;        }</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-01-23 01:20</div>
+</div>
+</body>
+</html>

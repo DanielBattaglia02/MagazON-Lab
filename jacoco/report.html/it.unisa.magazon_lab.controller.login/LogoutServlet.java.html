@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="it"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>LogoutServlet.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ModificaCategoriaTest Coverage Results, InserisciServletAdminTest Coverage Results, ModificaServletAdminTest Coverage Results, AutenticazioneDAOTest Coverage Results, GestioneCategorieDAOTest Coverage Results, GestioneListeDAOTest Coverage Results, GestioneLogisticaDAOTest Coverage Results, GestioneNotificheDAOTest Coverage Results, GestioneProdottiDAOTest Coverage Results, GestioneUtentiDAOTest Coverage Results, ConnessioneTest Coverage Results</a> &gt; <a href="index.source.html" class="el_package">it.unisa.magazon_lab.controller.login</a> &gt; <span class="el_source">LogoutServlet.java</span></div><h1>LogoutServlet.java</h1><pre class="source lang-java linenums">package it.unisa.magazon_lab.controller.login;
+
+import it.unisa.magazon_lab.model.Facade.Facade;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+import it.unisa.magazon_lab.model.DAO.GestioneUtentiDAO;
+
+import java.io.IOException;
+
+/**
+ * Servlet che gestisce il logout dell'utente. Quando l'utente effettua il logout,
+ * viene aggiornato lo stato dell'utente come &quot;offline&quot; e la sessione corrente viene invalidata.
+ * L'utente viene quindi reindirizzato alla pagina di login.
+ *
+ * @author Battaglia Daniel
+ */
+@WebServlet(name=&quot;logout-servlet&quot;, value=&quot;/logout-servlet&quot;)
+<span class="nc" id="L22">public class LogoutServlet extends HttpServlet</span>
+{
+    private Facade facade;
+
+    /**
+     * Inizializza la servlet e crea una nuova istanza del Facade.
+     *
+     * @throws ServletException Se si verifica un errore durante l'inizializzazione.
+     */
+    @Override
+    public void init() throws ServletException
+    {
+<span class="nc" id="L34">        super.init();</span>
+<span class="nc" id="L35">        this.facade = new Facade();</span>
+<span class="nc" id="L36">    }</span>
+
+    /**
+     * Gestisce la richiesta HTTP GET per il logout. La sessione utente viene invalidata,
+     * lo stato dell'utente viene aggiornato a &quot;offline&quot; e l'utente viene reindirizzato alla pagina di login.
+     *
+     * @param request La richiesta HTTP contenente la sessione dell'utente.
+     * @param response La risposta HTTP, che viene utilizzata per reindirizzare l'utente alla pagina di login.
+     * @throws ServletException Se si verifica un errore durante l'elaborazione della richiesta.
+     * @throws IOException Se si verifica un errore durante la scrittura della risposta.
+     */
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
+    {
+<span class="nc" id="L50">        HttpSession session = request.getSession(false); // Ottiene la sessione corrente, se esiste</span>
+
+<span class="nc bnc" id="L52" title="All 2 branches missed.">        if (session != null) {</span>
+<span class="nc" id="L53">            Object userIDObj = session.getAttribute(&quot;ID&quot;); // Recupera l'ID utente dalla sessione</span>
+
+<span class="nc bnc" id="L55" title="All 2 branches missed.">            if (userIDObj != null) {</span>
+<span class="nc" id="L56">                int userID = (int) userIDObj;</span>
+
+                // Aggiorna lo stato dell'utente a &quot;offline&quot;
+<span class="nc" id="L59">                GestioneUtentiDAO gestioneUtentiDAO = facade.getGestioneUtentiDAO();</span>
+<span class="nc" id="L60">                gestioneUtentiDAO.aggiornaStatoUtente(userID, &quot;offline&quot;);</span>
+            }
+
+<span class="nc" id="L63">            session.invalidate(); // Invalida la sessione corrente</span>
+        }
+
+<span class="nc" id="L66">        response.sendRedirect(&quot;index.jsp&quot;); // Reindirizza l'utente alla pagina di login</span>
+<span class="nc" id="L67">    }</span>
+
+    /**
+     * Gestisce la richiesta HTTP POST per il logout. In questo caso, il metodo POST fa lo stesso lavoro del GET,
+     * quindi viene semplicemente delegato al metodo doGet.
+     *
+     * @param req La richiesta HTTP.
+     * @param resp La risposta HTTP.
+     * @throws ServletException Se si verifica un errore durante l'elaborazione della richiesta.
+     * @throws IOException Se si verifica un errore durante la scrittura della risposta.
+     */
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException
+    {
+<span class="nc" id="L81">        doGet(req, resp);</span>
+<span class="nc" id="L82">    }</span>
+
+    /**
+     * Distrugge la servlet e chiude la connessione al database.
+     *
+     * @see jakarta.servlet.Servlet#destroy()
+     */
+    @Override
+    public void destroy()
+    {
+<span class="nc" id="L92">        super.destroy();</span>
+<span class="nc" id="L93">        facade.chiudiConnessione(); // Chiude la connessione al database</span>
+<span class="nc" id="L94">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

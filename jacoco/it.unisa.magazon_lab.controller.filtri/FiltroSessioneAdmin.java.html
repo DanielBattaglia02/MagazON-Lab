@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="it"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>FiltroSessioneAdmin.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ModificaCategoriaTest Coverage Results, InserisciServletAdminTest Coverage Results, ModificaServletAdminTest Coverage Results, AutenticazioneDAOTest Coverage Results, GestioneCategorieDAOTest Coverage Results, GestioneListeDAOTest Coverage Results, GestioneLogisticaDAOTest Coverage Results, GestioneNotificheDAOTest Coverage Results, GestioneProdottiDAOTest Coverage Results, GestioneUtentiDAOTest Coverage Results, ConnessioneTest Coverage Results</a> &gt; <a href="index.source.html" class="el_package">it.unisa.magazon_lab.controller.filtri</a> &gt; <span class="el_source">FiltroSessioneAdmin.java</span></div><h1>FiltroSessioneAdmin.java</h1><pre class="source lang-java linenums">package it.unisa.magazon_lab.controller.filtri;
+
+import jakarta.servlet.*;
+import jakarta.servlet.annotation.WebFilter;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+
+import java.io.IOException;
+
+/**
+ * Filtro che verifica se l'utente ha una sessione attiva con il ruolo &quot;admin&quot;.
+ * Se l'utente non è autenticato o non ha il ruolo di &quot;admin&quot;, viene reindirizzato alla pagina di login.
+ * Questo filtro è applicato alle URL che richiedono i privilegi di amministratore.
+ *
+ * @author Battaglia Daniel
+ */
+@WebFilter(filterName = &quot;FiltroSessioneAdmin&quot;, urlPatterns = {&quot;/visualizza-servlet-admin&quot;, &quot;/modifica-servlet-admin&quot;, &quot;/elimina-servlet-admin&quot;, &quot;/inserisci-servlet-admin&quot;})
+<span class="nc" id="L19">public class FiltroSessioneAdmin implements Filter</span>
+{
+    /**
+     * Verifica se l'utente ha una sessione attiva con il ruolo &quot;admin&quot;.
+     * Se l'utente non è autenticato o non ha il ruolo di &quot;admin&quot;, viene reindirizzato alla pagina di login.
+     * Altrimenti, permette l'esecuzione della richiesta.
+     *
+     * @param request La richiesta HTTP da filtrare.
+     * @param response La risposta HTTP alla quale il filtro applica modifiche.
+     * @param chain La catena di filtri successivi da eseguire dopo il controllo.
+     * @throws IOException Se si verifica un errore durante l'elaborazione della richiesta o della risposta.
+     * @throws ServletException Se si verifica un errore durante l'esecuzione del filtro.
+     */
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+            throws IOException, ServletException
+    {
+<span class="nc" id="L35">        HttpServletRequest httpRequest = (HttpServletRequest) request;</span>
+<span class="nc" id="L36">        HttpServletResponse httpResponse = (HttpServletResponse) response;</span>
+
+        // Controlla se l'utente ha una sessione attiva e se ha il ruolo &quot;admin&quot;
+<span class="nc" id="L39">        HttpSession session = httpRequest.getSession();</span>
+<span class="nc bnc" id="L40" title="All 6 branches missed.">        boolean loggedIn = session != null &amp;&amp; session.getAttribute(&quot;ID&quot;) != null &amp;&amp; session.getAttribute(&quot;ruolo&quot;).equals(&quot;admin&quot;);</span>
+
+        // Se l'utente non ha una sessione attiva o non ha il ruolo &quot;admin&quot;, reindirizza alla pagina di login
+<span class="nc bnc" id="L43" title="All 2 branches missed.">        if (!loggedIn)</span>
+        {
+<span class="nc" id="L45">            httpResponse.sendRedirect(&quot;index.jsp&quot;);</span>
+<span class="nc" id="L46">            return;</span>
+        }
+
+        // Se l'utente ha una sessione attiva e il ruolo corretto, prosegue con la richiesta
+<span class="nc" id="L50">        chain.doFilter(request, response);</span>
+<span class="nc" id="L51">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

@@ -1,0 +1,505 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=windows-1252"> 
+  <title>Coverage Report > GestioneLogisticaDAO</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">it.unisa.magazon_lab.model.DAO</a>
+</div>
+
+<h1>Coverage Summary for Class: GestioneLogisticaDAO (it.unisa.magazon_lab.model.DAO)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">GestioneLogisticaDAO</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    33,3%
+  </span>
+  <span class="absValue">
+    (4/12)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    26%
+  </span>
+  <span class="absValue">
+    (52/200)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package it.unisa.magazon_lab.model.DAO;
+&nbsp;
+&nbsp;import it.unisa.magazon_lab.model.Entity.Arrivo;
+&nbsp;import it.unisa.magazon_lab.model.Entity.Connessione;
+&nbsp;import it.unisa.magazon_lab.model.Entity.Spedizione;
+&nbsp;
+&nbsp;import java.sql.PreparedStatement;
+&nbsp;import java.sql.ResultSet;
+&nbsp;import java.sql.SQLException;
+&nbsp;import java.util.ArrayList;
+&nbsp;import java.util.List;
+&nbsp;
+&nbsp;/**
+&nbsp; * GestioneLogisticaDAO
+&nbsp; * &lt;p&gt;
+&nbsp; * Classe DAO per gestire operazioni di logistica, come visualizzazione, inserimento, modifica
+&nbsp; * ed eliminazione di arrivi e spedizioni nel sistema.
+&nbsp; * &lt;/p&gt;
+&nbsp; *
+&nbsp; * @author Francesco Vaiano
+&nbsp; */
+&nbsp;
+&nbsp;public class GestioneLogisticaDAO {
+&nbsp;    private static GestioneLogisticaDAO instance;
+&nbsp;    private Connessione connessione;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Costruttore privato per implementare il pattern Singleton.
+&nbsp;     */
+<b class="fc">&nbsp;    private GestioneLogisticaDAO() {</b>
+<b class="fc">&nbsp;        connessione = Connessione.getInstance();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Restituisce l&#39;istanza Singleton della classe.
+&nbsp;     *
+&nbsp;     * @return L&#39;unica istanza di GestioneLogisticaDAO.
+&nbsp;     */
+&nbsp;    public static GestioneLogisticaDAO getInstance() {
+<b class="fc">&nbsp;        if (instance == null) {</b>
+<b class="fc">&nbsp;            instance = new GestioneLogisticaDAO();</b>
+&nbsp;        }
+<b class="fc">&nbsp;        return instance;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Recupera tutte le spedizioni dal database.
+&nbsp;     *
+&nbsp;     * @return Lista di oggetti Spedizione.
+&nbsp;     */
+&nbsp;    public List&lt;Spedizione&gt; visualizzaSpedizioni() {
+<b class="nc">&nbsp;        List&lt;Spedizione&gt; spedizioni = new ArrayList&lt;&gt;();</b>
+<b class="nc">&nbsp;        String query = &quot;SELECT s.ID, s.IDprodotto, p.codice, s.note &quot; +</b>
+&nbsp;                &quot;FROM Spedizione s &quot; +
+&nbsp;                &quot;INNER JOIN Prodotto p ON s.IDprodotto = p.ID&quot;;
+&nbsp;
+&nbsp;        try {
+<b class="nc">&nbsp;            PreparedStatement statement = connessione.getConnection().prepareStatement(query);</b>
+<b class="nc">&nbsp;            ResultSet resultSet = statement.executeQuery();</b>
+&nbsp;
+<b class="nc">&nbsp;            while (resultSet.next()) {</b>
+<b class="nc">&nbsp;                int ID = resultSet.getInt(&quot;ID&quot;);</b>
+<b class="nc">&nbsp;                int IDprodotto = resultSet.getInt(&quot;IDprodotto&quot;);</b>
+<b class="nc">&nbsp;                String codice = resultSet.getString(&quot;codice&quot;);</b>
+<b class="nc">&nbsp;                String note = resultSet.getString(&quot;note&quot;);</b>
+&nbsp;
+<b class="nc">&nbsp;                Spedizione spedizione = new Spedizione(ID, IDprodotto, codice, note);</b>
+<b class="nc">&nbsp;                spedizioni.add(spedizione);</b>
+<b class="nc">&nbsp;            }</b>
+&nbsp;
+<b class="nc">&nbsp;            resultSet.close();</b>
+<b class="nc">&nbsp;            statement.close();</b>
+<b class="nc">&nbsp;        } catch (SQLException e) {</b>
+<b class="nc">&nbsp;            throw new RuntimeException(&quot;Errore durante il recupero delle spedizioni: &quot; + e.getMessage(), e);</b>
+<b class="nc">&nbsp;        }</b>
+&nbsp;
+<b class="nc">&nbsp;        return spedizioni;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Recupera tutti gli arrivi dal database.
+&nbsp;     *
+&nbsp;     * @return Lista di oggetti Arrivo.
+&nbsp;     */
+&nbsp;    public List&lt;Arrivo&gt; visualizzaArrivi() {
+<b class="nc">&nbsp;        List&lt;Arrivo&gt; arrivi = new ArrayList&lt;&gt;();</b>
+<b class="nc">&nbsp;        String query = &quot;SELECT a.ID, a.IDprodotto, p.codice, a.note &quot; +</b>
+&nbsp;                &quot;FROM Arrivo a &quot; +
+&nbsp;                &quot;INNER JOIN Prodotto p ON a.IDprodotto = p.ID&quot;;
+&nbsp;
+&nbsp;        try {
+<b class="nc">&nbsp;            PreparedStatement statement = connessione.getConnection().prepareStatement(query);</b>
+<b class="nc">&nbsp;            ResultSet resultSet = statement.executeQuery();</b>
+&nbsp;
+<b class="nc">&nbsp;            while (resultSet.next()) {</b>
+<b class="nc">&nbsp;                int ID = resultSet.getInt(&quot;ID&quot;);</b>
+<b class="nc">&nbsp;                int IDprodotto = resultSet.getInt(&quot;IDprodotto&quot;);</b>
+<b class="nc">&nbsp;                String codice = resultSet.getString(&quot;codice&quot;);</b>
+<b class="nc">&nbsp;                String note = resultSet.getString(&quot;note&quot;);</b>
+&nbsp;
+<b class="nc">&nbsp;                Arrivo arrivo = new Arrivo(ID, IDprodotto, codice, note);</b>
+<b class="nc">&nbsp;                arrivi.add(arrivo);</b>
+<b class="nc">&nbsp;            }</b>
+&nbsp;
+<b class="nc">&nbsp;            resultSet.close();</b>
+<b class="nc">&nbsp;            statement.close();</b>
+<b class="nc">&nbsp;        } catch (SQLException e) {</b>
+<b class="nc">&nbsp;            throw new RuntimeException(&quot;Errore durante il recupero degli arrivi: &quot; + e.getMessage(), e);</b>
+<b class="nc">&nbsp;        }</b>
+&nbsp;
+<b class="nc">&nbsp;        return arrivi;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Elimina una spedizione dal database e aggiorna lo stato del prodotto associato.
+&nbsp;     *
+&nbsp;     * @param IDspedizione ID della spedizione da eliminare.
+&nbsp;     * @param IDprodotto   ID del prodotto associato alla spedizione.
+&nbsp;     */
+&nbsp;    public void eliminaSpedizione(int IDspedizione, int IDprodotto) {
+<b class="nc">&nbsp;        String queryProdotto = &quot;UPDATE Prodotto SET stato = &#39;in magazzino&#39;, noteSpedizione = (SELECT note FROM Spedizione WHERE ID = ? AND IDprodotto = ?) WHERE ID = ?&quot;;</b>
+<b class="nc">&nbsp;        String querySpedizione = &quot;DELETE FROM Spedizione WHERE ID = ? AND IDprodotto = ?&quot;;</b>
+&nbsp;
+&nbsp;        try {
+<b class="nc">&nbsp;            PreparedStatement statementProdotto = connessione.getConnection().prepareStatement(queryProdotto);</b>
+<b class="nc">&nbsp;            statementProdotto.setInt(1, IDspedizione);</b>
+<b class="nc">&nbsp;            statementProdotto.setInt(2, IDprodotto);</b>
+<b class="nc">&nbsp;            statementProdotto.setInt(3, IDprodotto);</b>
+<b class="nc">&nbsp;            statementProdotto.executeUpdate();</b>
+&nbsp;
+<b class="nc">&nbsp;            PreparedStatement statementSpedizione = connessione.getConnection().prepareStatement(querySpedizione);</b>
+<b class="nc">&nbsp;            statementSpedizione.setInt(1, IDspedizione);</b>
+<b class="nc">&nbsp;            statementSpedizione.setInt(2, IDprodotto);</b>
+<b class="nc">&nbsp;            statementSpedizione.executeUpdate();</b>
+&nbsp;
+<b class="nc">&nbsp;            statementProdotto.close();</b>
+<b class="nc">&nbsp;            statementSpedizione.close();</b>
+<b class="nc">&nbsp;        } catch (SQLException e) {</b>
+<b class="nc">&nbsp;            throw new RuntimeException(&quot;Errore durante l&#39;eliminazione della spedizione: &quot; + e.getMessage(), e);</b>
+<b class="nc">&nbsp;        }</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Elimina un arrivo dal database e aggiorna lo stato del prodotto associato.
+&nbsp;     *
+&nbsp;     * @param IDarrivo   ID dell&#39;arrivo da eliminare.
+&nbsp;     * @param IDprodotto ID del prodotto associato all&#39;arrivo.
+&nbsp;     */
+&nbsp;    public void eliminaArrivo(int IDarrivo, int IDprodotto) {
+<b class="nc">&nbsp;        String queryProdotto = &quot;UPDATE Prodotto SET stato = &#39;in magazzino&#39;, noteArrivo = (SELECT note FROM Arrivo WHERE ID = ? AND IDprodotto = ?) WHERE ID = ?&quot;;</b>
+<b class="nc">&nbsp;        String queryArrivo = &quot;DELETE FROM Arrivo WHERE ID = ? AND IDprodotto = ?&quot;;</b>
+&nbsp;
+&nbsp;        try {
+<b class="nc">&nbsp;            PreparedStatement statementProdotto = connessione.getConnection().prepareStatement(queryProdotto);</b>
+<b class="nc">&nbsp;            statementProdotto.setInt(1, IDarrivo);</b>
+<b class="nc">&nbsp;            statementProdotto.setInt(2, IDprodotto);</b>
+<b class="nc">&nbsp;            statementProdotto.setInt(3, IDprodotto);</b>
+<b class="nc">&nbsp;            statementProdotto.executeUpdate();</b>
+&nbsp;
+<b class="nc">&nbsp;            PreparedStatement statementArrivo = connessione.getConnection().prepareStatement(queryArrivo);</b>
+<b class="nc">&nbsp;            statementArrivo.setInt(1, IDarrivo);</b>
+<b class="nc">&nbsp;            statementArrivo.setInt(2, IDprodotto);</b>
+<b class="nc">&nbsp;            statementArrivo.executeUpdate();</b>
+&nbsp;
+<b class="nc">&nbsp;            statementProdotto.close();</b>
+<b class="nc">&nbsp;            statementArrivo.close();</b>
+<b class="nc">&nbsp;        } catch (SQLException e) {</b>
+<b class="nc">&nbsp;            throw new RuntimeException(&quot;Errore durante l&#39;eliminazione dell&#39;arrivo: &quot; + e.getMessage(), e);</b>
+<b class="nc">&nbsp;        }</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Inserisce un nuovo arrivo nel database e aggiorna lo stato del prodotto associato.
+&nbsp;     *
+&nbsp;     * @param IDprodotto     ID del prodotto da spedire.
+&nbsp;     * @param noteArrivo Note aggiuntive sulla spedizione.
+&nbsp;     */
+&nbsp;    public String inserisciArrivo(int IDprodotto, String noteArrivo) {
+<b class="fc">&nbsp;        String result = null;</b>
+&nbsp;
+<b class="fc">&nbsp;        if (IDprodotto == 0 || IDprodotto&lt;0) { // IDprodotto non può essere null per un tipo primitivo int</b>
+<b class="fc">&nbsp;            return &quot;2&quot;; // Codice per parametro nullo o non valido</b>
+&nbsp;        }
+&nbsp;
+<b class="fc">&nbsp;        String queryCheckProdotto = &quot;SELECT COUNT(*) FROM Prodotto WHERE ID = ?&quot;;</b>
+<b class="fc">&nbsp;        String queryArrivo = &quot;INSERT INTO Arrivo (IDprodotto, note) VALUES (?, ?)&quot;;</b>
+<b class="fc">&nbsp;        String queryProdotto = &quot;UPDATE Prodotto SET stato = &#39;in arrivo&#39; WHERE ID = ?&quot;;</b>
+&nbsp;
+&nbsp;        try {
+&nbsp;            // Controlla se IDprodotto è presente nel database
+<b class="fc">&nbsp;            PreparedStatement statementCheckProdotto = connessione.getConnection().prepareStatement(queryCheckProdotto);</b>
+<b class="fc">&nbsp;            statementCheckProdotto.setInt(1, IDprodotto);</b>
+<b class="fc">&nbsp;            ResultSet resultSet = statementCheckProdotto.executeQuery();</b>
+<b class="fc">&nbsp;            resultSet.next();</b>
+&nbsp;
+<b class="fc">&nbsp;            if (resultSet.getInt(1) == 0) {</b>
+&nbsp;                // IDprodotto non presente nel database
+<b class="nc">&nbsp;                resultSet.close();</b>
+<b class="nc">&nbsp;                statementCheckProdotto.close();</b>
+<b class="nc">&nbsp;                return &quot;3&quot;;</b>
+&nbsp;            }
+&nbsp;
+<b class="fc">&nbsp;            resultSet.close();</b>
+<b class="fc">&nbsp;            statementCheckProdotto.close();</b>
+&nbsp;
+&nbsp;            // Inserisce l&#39;arrivo nella tabella Arrivo
+<b class="fc">&nbsp;            PreparedStatement statementArrivo = connessione.getConnection().prepareStatement(queryArrivo);</b>
+<b class="fc">&nbsp;            statementArrivo.setInt(1, IDprodotto);</b>
+<b class="fc">&nbsp;            statementArrivo.setString(2, noteArrivo);</b>
+<b class="fc">&nbsp;            statementArrivo.executeUpdate();</b>
+&nbsp;
+&nbsp;            // Aggiorna lo stato nella tabella Prodotto
+<b class="fc">&nbsp;            PreparedStatement statementProdotto = connessione.getConnection().prepareStatement(queryProdotto);</b>
+<b class="fc">&nbsp;            statementProdotto.setInt(1, IDprodotto);</b>
+<b class="fc">&nbsp;            statementProdotto.executeUpdate();</b>
+&nbsp;
+&nbsp;            // Chiudi gli statement
+<b class="fc">&nbsp;            statementArrivo.close();</b>
+<b class="fc">&nbsp;            statementProdotto.close();</b>
+&nbsp;
+&nbsp;            // Operazione completata con successo
+<b class="fc">&nbsp;            result = &quot;1&quot;;</b>
+&nbsp;
+<b class="nc">&nbsp;        } catch (SQLException e) {</b>
+<b class="nc">&nbsp;            throw new RuntimeException(&quot;Errore durante l&#39;inserimento dell&#39;arrivo: &quot; + e.getMessage(), e);</b>
+<b class="fc">&nbsp;        }</b>
+&nbsp;
+<b class="fc">&nbsp;        return result;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Inserisce una nuova spedizione nel database e aggiorna lo stato del prodotto associato.
+&nbsp;     *
+&nbsp;     * @param IDprodotto     ID del prodotto da spedire.
+&nbsp;     * @param noteSpedizione Note aggiuntive sulla spedizione.
+&nbsp;     */
+&nbsp;    public String inserisciSpedizione(int IDprodotto, String noteSpedizione) {
+<b class="fc">&nbsp;        if (IDprodotto &lt;= 0) { // Controllo di validità dell&#39;ID (non può essere 0 o negativo)</b>
+<b class="fc">&nbsp;            return &quot;2&quot;; // Codice per ID non valido</b>
+&nbsp;        }
+&nbsp;
+<b class="fc">&nbsp;        String queryCheckProdotto = &quot;SELECT COUNT(*) FROM Prodotto WHERE ID = ?&quot;;</b>
+<b class="fc">&nbsp;        String querySpedizione = &quot;INSERT INTO Spedizione (IDprodotto, note) VALUES (?, ?)&quot;;</b>
+<b class="fc">&nbsp;        String queryProdotto = &quot;UPDATE Prodotto SET stato = &#39;in spedizione&#39; WHERE ID = ?&quot;;</b>
+&nbsp;
+&nbsp;        try {
+&nbsp;            // Verifica se l&#39;IDprodotto esiste nella tabella Prodotto
+<b class="fc">&nbsp;            PreparedStatement statementCheckProdotto = connessione.getConnection().prepareStatement(queryCheckProdotto);</b>
+<b class="fc">&nbsp;            statementCheckProdotto.setInt(1, IDprodotto);</b>
+<b class="fc">&nbsp;            ResultSet resultSet = statementCheckProdotto.executeQuery();</b>
+<b class="fc">&nbsp;            resultSet.next();</b>
+&nbsp;
+<b class="fc">&nbsp;            if (resultSet.getInt(1) == 0) {</b>
+&nbsp;                // L&#39;IDprodotto non esiste
+<b class="nc">&nbsp;                resultSet.close();</b>
+<b class="nc">&nbsp;                statementCheckProdotto.close();</b>
+<b class="nc">&nbsp;                return &quot;3&quot;; // Codice per ID non presente</b>
+&nbsp;            }
+&nbsp;
+<b class="fc">&nbsp;            resultSet.close();</b>
+<b class="fc">&nbsp;            statementCheckProdotto.close();</b>
+&nbsp;
+&nbsp;            // Inserisce la spedizione nella tabella Spedizione
+<b class="fc">&nbsp;            PreparedStatement statementSpedizione = connessione.getConnection().prepareStatement(querySpedizione);</b>
+<b class="fc">&nbsp;            statementSpedizione.setInt(1, IDprodotto);</b>
+<b class="fc">&nbsp;            statementSpedizione.setString(2, noteSpedizione);</b>
+<b class="fc">&nbsp;            statementSpedizione.executeUpdate();</b>
+&nbsp;
+&nbsp;            // Aggiorna lo stato nella tabella Prodotto
+<b class="fc">&nbsp;            PreparedStatement statementProdotto = connessione.getConnection().prepareStatement(queryProdotto);</b>
+<b class="fc">&nbsp;            statementProdotto.setInt(1, IDprodotto);</b>
+<b class="fc">&nbsp;            statementProdotto.executeUpdate();</b>
+&nbsp;
+&nbsp;            // Chiudi gli statement
+<b class="fc">&nbsp;            statementSpedizione.close();</b>
+<b class="fc">&nbsp;            statementProdotto.close();</b>
+&nbsp;
+<b class="fc">&nbsp;            return &quot;1&quot;; // Operazione completata con successo</b>
+&nbsp;
+<b class="nc">&nbsp;        } catch (SQLException e) {</b>
+<b class="nc">&nbsp;            throw new RuntimeException(&quot;Errore durante l&#39;inserimento della spedizione: &quot; + e.getMessage(), e);</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    public Spedizione visualizzaSpedizione(int IDspedizione)
+&nbsp;    {
+<b class="nc">&nbsp;        Spedizione spedizione = null;</b>
+<b class="nc">&nbsp;        String query = &quot;SELECT s.ID, s.IDprodotto, p.codice, s.note &quot; +</b>
+&nbsp;                &quot;FROM Spedizione s &quot; +
+&nbsp;                &quot;INNER JOIN Prodotto p ON s.IDprodotto = p.ID &quot; +
+&nbsp;                &quot;WHERE s.ID = ?&quot;;
+&nbsp;        try
+&nbsp;        {
+<b class="nc">&nbsp;            PreparedStatement statement = connessione.getConnection().prepareStatement(query);</b>
+<b class="nc">&nbsp;            statement.setInt(1, IDspedizione);</b>
+<b class="nc">&nbsp;            ResultSet resultSet = statement.executeQuery();</b>
+<b class="nc">&nbsp;            if (resultSet.next()) {</b>
+<b class="nc">&nbsp;                int ID = resultSet.getInt(&quot;ID&quot;);</b>
+<b class="nc">&nbsp;                int IDprodotto = resultSet.getInt(&quot;IDprodotto&quot;);</b>
+<b class="nc">&nbsp;                String codice = resultSet.getString(&quot;codice&quot;);</b>
+<b class="nc">&nbsp;                String note = resultSet.getString(&quot;note&quot;);</b>
+<b class="nc">&nbsp;                spedizione = new Spedizione(ID, IDprodotto, codice, note);</b>
+&nbsp;            }
+<b class="nc">&nbsp;            resultSet.close();</b>
+<b class="nc">&nbsp;            statement.close();</b>
+&nbsp;        }
+<b class="nc">&nbsp;        catch (SQLException e)</b>
+&nbsp;        {
+<b class="nc">&nbsp;            throw new RuntimeException(&quot;Errore durante il recupero della spedizione: &quot; + e.getMessage(), e);</b>
+<b class="nc">&nbsp;        }</b>
+<b class="nc">&nbsp;        return spedizione;</b>
+&nbsp;    }
+&nbsp;    public Arrivo visualizzaArrivo(int IDarrivo) {
+<b class="nc">&nbsp;        Arrivo arrivo = null;</b>
+<b class="nc">&nbsp;        String query = &quot;SELECT a.ID, a.IDprodotto, p.codice, a.note &quot; +</b>
+&nbsp;                &quot;FROM Arrivo a &quot; +
+&nbsp;                &quot;INNER JOIN Prodotto p ON a.IDprodotto = p.ID &quot; +
+&nbsp;                &quot;WHERE a.ID = ?&quot;;
+&nbsp;        try {
+<b class="nc">&nbsp;            PreparedStatement statement = connessione.getConnection().prepareStatement(query);</b>
+<b class="nc">&nbsp;            statement.setInt(1, IDarrivo);</b>
+<b class="nc">&nbsp;            ResultSet resultSet = statement.executeQuery();</b>
+<b class="nc">&nbsp;            if (resultSet.next())</b>
+&nbsp;            {
+<b class="nc">&nbsp;                int ID = resultSet.getInt(&quot;ID&quot;);</b>
+<b class="nc">&nbsp;                int IDprodotto = resultSet.getInt(&quot;IDprodotto&quot;);</b>
+<b class="nc">&nbsp;                String codice = resultSet.getString(&quot;codice&quot;);</b>
+<b class="nc">&nbsp;                String note = resultSet.getString(&quot;note&quot;);</b>
+<b class="nc">&nbsp;                arrivo = new Arrivo(ID, IDprodotto, codice, note);</b>
+&nbsp;            }
+<b class="nc">&nbsp;            resultSet.close();</b>
+<b class="nc">&nbsp;            statement.close();</b>
+&nbsp;        }
+<b class="nc">&nbsp;        catch (SQLException e)</b>
+&nbsp;        {
+<b class="nc">&nbsp;            throw new RuntimeException(&quot;Errore durante il recupero dell&#39;arrivo: &quot; + e.getMessage(), e);</b>
+<b class="nc">&nbsp;        }</b>
+<b class="nc">&nbsp;        return arrivo;</b>
+&nbsp;    }
+&nbsp;    public void modificaNoteSpedizione(int IDspedizione, String nuovaNota)
+&nbsp;    {
+<b class="nc">&nbsp;        String querySpedizione = &quot;UPDATE Spedizione SET note = ? WHERE ID = ?&quot;;</b>
+<b class="nc">&nbsp;        String queryProdotto = &quot;UPDATE Prodotto SET noteSpedizione = ? WHERE ID = (SELECT IDprodotto FROM Spedizione WHERE ID = ?)&quot;;</b>
+&nbsp;        try
+&nbsp;        {
+&nbsp;            // Modifica le note della spedizione
+<b class="nc">&nbsp;            PreparedStatement statementSpedizione = connessione.getConnection().prepareStatement(querySpedizione);</b>
+<b class="nc">&nbsp;            statementSpedizione.setString(1, nuovaNota);</b>
+<b class="nc">&nbsp;            statementSpedizione.setInt(2, IDspedizione);</b>
+<b class="nc">&nbsp;            int rowsUpdated = statementSpedizione.executeUpdate();</b>
+<b class="nc">&nbsp;            if (rowsUpdated &gt; 0) {</b>
+<b class="nc">&nbsp;                System.out.println(&quot;Le note della spedizione sono state modificate.&quot;);</b>
+&nbsp;            } else {
+<b class="nc">&nbsp;                System.out.println(&quot;Nessuna spedizione trovata con l&#39;ID specificato.&quot;);</b>
+&nbsp;            }
+&nbsp;            // Aggiorna le note di spedizione nel prodotto
+<b class="nc">&nbsp;            PreparedStatement statementProdotto = connessione.getConnection().prepareStatement(queryProdotto);</b>
+<b class="nc">&nbsp;            statementProdotto.setString(1, nuovaNota);</b>
+<b class="nc">&nbsp;            statementProdotto.setInt(2, IDspedizione);</b>
+<b class="nc">&nbsp;            statementProdotto.executeUpdate();</b>
+<b class="nc">&nbsp;            statementSpedizione.close();</b>
+<b class="nc">&nbsp;            statementProdotto.close();</b>
+&nbsp;        }
+<b class="nc">&nbsp;        catch (SQLException e)</b>
+&nbsp;        {
+<b class="nc">&nbsp;            throw new RuntimeException(&quot;Errore durante la modifica delle note della spedizione: &quot; + e.getMessage(), e);</b>
+<b class="nc">&nbsp;        }</b>
+&nbsp;    }
+&nbsp;    public void modificaNoteArrivo(int IDarrivo, String nuovaNota)
+&nbsp;    {
+<b class="nc">&nbsp;        String queryArrivo = &quot;UPDATE Arrivo SET note = ? WHERE ID = ?&quot;;</b>
+<b class="nc">&nbsp;        String queryProdotto = &quot;UPDATE Prodotto SET noteArrivo = ? WHERE ID = (SELECT IDprodotto FROM Arrivo WHERE ID = ?)&quot;;</b>
+&nbsp;        try
+&nbsp;        {
+&nbsp;            // Modifica le note dell&#39;arrivo
+<b class="nc">&nbsp;            PreparedStatement statementArrivo = connessione.getConnection().prepareStatement(queryArrivo);</b>
+<b class="nc">&nbsp;            statementArrivo.setString(1, nuovaNota);</b>
+<b class="nc">&nbsp;            statementArrivo.setInt(2, IDarrivo);</b>
+<b class="nc">&nbsp;            int rowsUpdated = statementArrivo.executeUpdate();</b>
+<b class="nc">&nbsp;            if (rowsUpdated &gt; 0) {</b>
+<b class="nc">&nbsp;                System.out.println(&quot;Le note dell&#39;arrivo sono state modificate.&quot;);</b>
+&nbsp;            } else {
+<b class="nc">&nbsp;                System.out.println(&quot;Nessun arrivo trovato con l&#39;ID specificato.&quot;);</b>
+&nbsp;            }
+&nbsp;            // Aggiorna le note di arrivo nel prodotto
+<b class="nc">&nbsp;            PreparedStatement statementProdotto = connessione.getConnection().prepareStatement(queryProdotto);</b>
+<b class="nc">&nbsp;            statementProdotto.setString(1, nuovaNota);</b>
+<b class="nc">&nbsp;            statementProdotto.setInt(2, IDarrivo);</b>
+<b class="nc">&nbsp;            statementProdotto.executeUpdate();</b>
+<b class="nc">&nbsp;            statementArrivo.close();</b>
+<b class="nc">&nbsp;            statementProdotto.close();</b>
+&nbsp;        }
+<b class="nc">&nbsp;        catch (SQLException e)</b>
+&nbsp;        {
+<b class="nc">&nbsp;            throw new RuntimeException(&quot;Errore durante la modifica delle note dell&#39;arrivo: &quot; + e.getMessage(), e);</b>
+<b class="nc">&nbsp;        }</b>
+&nbsp;    }
+&nbsp;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-01-23 01:20</div>
+</div>
+</body>
+</html>

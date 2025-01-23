@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="it"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SearchProdottoDaEliminareAJAX.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ModificaCategoriaTest Coverage Results, InserisciServletAdminTest Coverage Results, ModificaServletAdminTest Coverage Results, AutenticazioneDAOTest Coverage Results, GestioneCategorieDAOTest Coverage Results, GestioneListeDAOTest Coverage Results, GestioneLogisticaDAOTest Coverage Results, GestioneNotificheDAOTest Coverage Results, GestioneProdottiDAOTest Coverage Results, GestioneUtentiDAOTest Coverage Results, ConnessioneTest Coverage Results</a> &gt; <a href="index.source.html" class="el_package">it.unisa.magazon_lab.controller.chiamateAJAX</a> &gt; <span class="el_source">SearchProdottoDaEliminareAJAX.java</span></div><h1>SearchProdottoDaEliminareAJAX.java</h1><pre class="source lang-java linenums">package it.unisa.magazon_lab.controller.chiamateAJAX;
+
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import it.unisa.magazon_lab.model.Entity.Prodotto;
+import it.unisa.magazon_lab.model.Entity.Connessione;
+
+import java.io.*;
+import java.rmi.ServerException;
+import java.sql.*;
+import java.util.ArrayList;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+/**
+ * Servlet che gestisce le richieste AJAX per la ricerca di prodotti da eliminare.
+ * Se viene fornito un parametro 'codice', la servlet restituisce i prodotti che
+ * corrispondono a quel codice. Se il parametro è &quot;-1&quot;, la servlet restituisce tutti i prodotti.
+ * I risultati vengono inviati al client in formato JSON.
+ *
+ * @author Battaglia Daniel
+ */
+@WebServlet(name=&quot;search-prodotto-da-eliminare-ajax&quot;, value=&quot;/search-prodotto-da-eliminare-ajax&quot;)
+<span class="nc" id="L25">public class SearchProdottoDaEliminareAJAX extends HttpServlet {</span>
+
+    /**
+     * Gestisce la richiesta HTTP GET per cercare i prodotti da eliminare.
+     * Se il parametro 'codice' è valido, cerca i prodotti corrispondenti al codice.
+     * Altrimenti, restituisce tutti i prodotti.
+     *
+     * @param request La richiesta HTTP contenente il parametro 'codice'.
+     * @param response La risposta HTTP in cui viene inviato l'array di prodotti in formato JSON.
+     * @throws ServerException Se si verifica un errore durante l'elaborazione della richiesta.
+     * @throws IOException Se si verifica un errore durante la scrittura della risposta.
+     */
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServerException, IOException {
+        // Imposta il tipo di contenuto della risposta come JSON con codifica UTF-8
+<span class="nc" id="L39">        response.setContentType(&quot;application/json;charset=UTF-8&quot;);</span>
+
+        // Legge il parametro 'codice' dalla richiesta
+<span class="nc" id="L42">        String codice = (String) request.getParameter(&quot;codice&quot;);</span>
+<span class="nc" id="L43">        System.out.println(&quot;codice: &quot; + codice);</span>
+
+        // Inizializza la connessione e gli oggetti necessari per il recupero dei prodotti
+<span class="nc" id="L46">        ArrayList&lt;Prodotto&gt; prodotti = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L47">        Connessione connessione = Connessione.getInstance();</span>
+
+        try {
+            String sql;
+
+            // Se il parametro 'codice' è &quot;-1&quot;, recupera tutti i prodotti
+<span class="nc bnc" id="L53" title="All 2 branches missed.">            if (codice.equals(&quot;-1&quot;)) {</span>
+<span class="nc" id="L54">                sql = &quot;SELECT p.*, c.nome as categoriaNome FROM prodotto p &quot; +</span>
+                        &quot;JOIN Categoria c ON c.ID=p.IDcategoria&quot;;
+            } else {
+                // Altrimenti, cerca i prodotti corrispondenti al codice
+<span class="nc" id="L58">                sql = &quot;SELECT p.*, c.nome as categoriaNome FROM prodotto p &quot; +</span>
+                        &quot;JOIN Categoria c ON c.ID=p.IDcategoria &quot; +
+                        &quot;WHERE codice LIKE ?&quot;;
+            }
+
+<span class="nc" id="L63">            try (PreparedStatement stmt = connessione.getConnection().prepareStatement(sql)) {</span>
+                // Se il codice non è &quot;-1&quot;, aggiunge il parametro alla query
+<span class="nc bnc" id="L65" title="All 2 branches missed.">                if (!codice.equals(&quot;-1&quot;)) {</span>
+<span class="nc" id="L66">                    stmt.setString(1, &quot;%&quot; + codice + &quot;%&quot;);</span>
+                }
+
+<span class="nc" id="L69">                try (ResultSet rs = stmt.executeQuery()) {</span>
+                    // Aggiunge i risultati della query alla lista dei prodotti
+<span class="nc bnc" id="L71" title="All 2 branches missed.">                    while (rs.next()) {</span>
+<span class="nc" id="L72">                        Prodotto prodotto = new Prodotto(</span>
+<span class="nc" id="L73">                                rs.getInt(&quot;ID&quot;),</span>
+<span class="nc" id="L74">                                rs.getInt(&quot;IDcategoria&quot;),</span>
+<span class="nc" id="L75">                                rs.getString(&quot;categoriaNome&quot;),</span>
+<span class="nc" id="L76">                                rs.getString(&quot;codice&quot;),</span>
+<span class="nc" id="L77">                                rs.getString(&quot;stato&quot;),</span>
+<span class="nc" id="L78">                                rs.getString(&quot;nome&quot;),</span>
+<span class="nc" id="L79">                                rs.getString(&quot;descrizione&quot;),</span>
+<span class="nc" id="L80">                                rs.getDate(&quot;dataArrivo&quot;),</span>
+<span class="nc" id="L81">                                rs.getString(&quot;noteArrivo&quot;),</span>
+<span class="nc" id="L82">                                rs.getString(&quot;partenza&quot;),</span>
+<span class="nc" id="L83">                                rs.getDate(&quot;dataSpedizione&quot;),</span>
+<span class="nc" id="L84">                                rs.getString(&quot;noteSpedizione&quot;),</span>
+<span class="nc" id="L85">                                rs.getString(&quot;destinazione&quot;),</span>
+<span class="nc" id="L86">                                rs.getString(&quot;noteGenerali&quot;)</span>
+                        );
+<span class="nc" id="L88">                        prodotti.add(prodotto);</span>
+<span class="nc" id="L89">                        System.out.println(prodotti);</span>
+<span class="nc" id="L90">                    }</span>
+                }
+            }
+
+            // Serializza la lista di prodotti in formato JSON utilizzando la libreria Jackson
+<span class="nc" id="L95">            ObjectMapper mapper = new ObjectMapper();</span>
+<span class="nc" id="L96">            String json = mapper.writeValueAsString(prodotti);</span>
+
+            // Scrive la risposta JSON al client
+<span class="nc" id="L99">            response.getWriter().write(json);</span>
+
+<span class="nc" id="L101">        } catch (SQLException e) {</span>
+<span class="nc" id="L102">            e.printStackTrace();</span>
+            // In caso di errore, restituisce una risposta JSON vuota
+<span class="nc" id="L104">            response.getWriter().println(&quot;[]&quot;);</span>
+<span class="nc" id="L105">        }</span>
+<span class="nc" id="L106">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

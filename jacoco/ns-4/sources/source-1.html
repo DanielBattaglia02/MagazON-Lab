@@ -1,0 +1,218 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=windows-1252"> 
+  <title>Coverage Report > LoginServlet</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">it.unisa.magazon_lab.controller.login</a>
+</div>
+
+<h1>Coverage Summary for Class: LoginServlet (it.unisa.magazon_lab.controller.login)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">LoginServlet</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/26)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package it.unisa.magazon_lab.controller.login;
+&nbsp;
+&nbsp;import it.unisa.magazon_lab.model.DAO.AutenticazioneDAO;
+&nbsp;import it.unisa.magazon_lab.model.Facade.Facade;
+&nbsp;import jakarta.servlet.ServletException;
+&nbsp;import jakarta.servlet.annotation.WebServlet;
+&nbsp;import jakarta.servlet.http.*;
+&nbsp;import it.unisa.magazon_lab.model.DAO.GestioneUtentiDAO;
+&nbsp;import it.unisa.magazon_lab.model.Entity.Utente;
+&nbsp;
+&nbsp;import java.io.IOException;
+&nbsp;
+&nbsp;/**
+&nbsp; * Servlet che gestisce il login degli utenti. Recupera le credenziali inviate tramite una richiesta GET,
+&nbsp; * verifica l&#39;autenticità dell&#39;utente, e se i dati sono corretti, aggiorna lo stato dell&#39;utente come &quot;online&quot; e
+&nbsp; * imposta i dati della sessione.
+&nbsp; * Se il login ha successo, l&#39;utente viene reindirizzato alla dashboard del suo ruolo (magazziniere o admin).
+&nbsp; * In caso di errore, viene restituito un messaggio di errore tramite un cookie.
+&nbsp; *
+&nbsp; * @author Battaglia Daniel
+&nbsp; */
+&nbsp;@WebServlet(name=&quot;login-servlet&quot;, value=&quot;/login-servlet&quot;)
+<b class="nc">&nbsp;public class LoginServlet extends HttpServlet</b>
+&nbsp;{
+&nbsp;    private Facade facade;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Inizializza la servlet e crea una nuova istanza del Facade.
+&nbsp;     *
+&nbsp;     * @throws ServletException Se si verifica un errore durante l&#39;inizializzazione.
+&nbsp;     */
+&nbsp;    @Override
+&nbsp;    public void init() throws ServletException
+&nbsp;    {
+<b class="nc">&nbsp;        super.init();</b>
+<b class="nc">&nbsp;        this.facade = new Facade();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Gestisce la richiesta HTTP GET per il login. Recupera le credenziali inviate (username, password, ruolo),
+&nbsp;     * verifica se l&#39;utente esiste e, in caso positivo, aggiorna lo stato dell&#39;utente come &quot;online&quot; e crea una sessione.
+&nbsp;     * L&#39;utente viene quindi reindirizzato alla dashboard in base al suo ruolo (magazziniere o admin).
+&nbsp;     * In caso di credenziali errate, l&#39;utente viene reindirizzato alla pagina di login con un messaggio di errore.
+&nbsp;     *
+&nbsp;     * @param request La richiesta HTTP contenente le credenziali dell&#39;utente.
+&nbsp;     * @param response La risposta HTTP che può essere utilizzata per reindirizzare l&#39;utente o inviare un messaggio di errore.
+&nbsp;     * @throws ServletException Se si verifica un errore durante l&#39;elaborazione della richiesta.
+&nbsp;     * @throws IOException Se si verifica un errore durante la scrittura della risposta.
+&nbsp;     */
+&nbsp;    @Override
+&nbsp;    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
+&nbsp;    {
+&nbsp;        // Recupera i parametri dalla richiesta
+<b class="nc">&nbsp;        String password = request.getParameter(&quot;password&quot;);</b>
+<b class="nc">&nbsp;        String username = request.getParameter(&quot;username&quot;);</b>
+<b class="nc">&nbsp;        String ruolo = request.getParameter(&quot;ruolo&quot;);</b>
+&nbsp;
+&nbsp;        // Recupera il DAO di autenticazione e verifica le credenziali
+<b class="nc">&nbsp;        AutenticazioneDAO autenticazioneDAO = facade.getAutenticazioneDAO();</b>
+<b class="nc">&nbsp;        Utente utente = autenticazioneDAO.loginUtente(username, password, ruolo);</b>
+&nbsp;
+<b class="nc">&nbsp;        if(utente != null)</b>
+&nbsp;        {
+&nbsp;            // Se l&#39;utente è autenticato, aggiorna lo stato a &quot;online&quot;
+<b class="nc">&nbsp;            GestioneUtentiDAO gestioneUtentiDAO2 = facade.getGestioneUtentiDAO();</b>
+<b class="nc">&nbsp;            gestioneUtentiDAO2.aggiornaStatoUtente(utente.getID(), &quot;online&quot;);</b>
+&nbsp;
+&nbsp;            // Crea una sessione per l&#39;utente
+<b class="nc">&nbsp;            HttpSession session = request.getSession();</b>
+&nbsp;
+<b class="nc">&nbsp;            synchronized (session)</b>
+&nbsp;            {
+&nbsp;                // Imposta gli attributi della sessione
+<b class="nc">&nbsp;                session.setAttribute(&quot;ID&quot;, utente.getID());</b>
+<b class="nc">&nbsp;                session.setAttribute(&quot;username&quot;, utente.getUsername());</b>
+<b class="nc">&nbsp;                session.setAttribute(&quot;ruolo&quot;, utente.getRuolo());</b>
+&nbsp;
+&nbsp;                // Reindirizza l&#39;utente alla dashboard in base al suo ruolo
+<b class="nc">&nbsp;                if(ruolo.equals(&quot;magazziniere&quot;))</b>
+&nbsp;                {
+<b class="nc">&nbsp;                    response.sendRedirect(&quot;visualizza-servlet-magazziniere?pageName=dashboard&quot;);</b>
+&nbsp;                }
+&nbsp;                else
+&nbsp;                {
+<b class="nc">&nbsp;                    response.sendRedirect(&quot;visualizza-servlet-admin?pageName=dashboard&quot;);</b>
+&nbsp;                }
+<b class="nc">&nbsp;            }</b>
+<b class="nc">&nbsp;        }</b>
+&nbsp;        else
+&nbsp;        {
+&nbsp;            // Se le credenziali sono errate, crea un cookie di errore e reindirizza alla pagina di login
+<b class="nc">&nbsp;            Cookie cookie = new Cookie(&quot;errore&quot;, &quot;1&quot;);</b>
+<b class="nc">&nbsp;            cookie.setMaxAge(60); // Il cookie scade in 60 secondi</b>
+<b class="nc">&nbsp;            response.addCookie(cookie);</b>
+&nbsp;
+<b class="nc">&nbsp;            response.sendRedirect(&quot;index.jsp&quot;);</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Gestisce la richiesta HTTP POST per il login. In questo caso, il metodo POST fa lo stesso lavoro del GET,
+&nbsp;     * quindi viene semplicemente delegato al metodo doGet.
+&nbsp;     *
+&nbsp;     * @param request La richiesta HTTP.
+&nbsp;     * @param response La risposta HTTP.
+&nbsp;     * @throws ServletException Se si verifica un errore durante l&#39;elaborazione della richiesta.
+&nbsp;     * @throws IOException Se si verifica un errore durante la scrittura della risposta.
+&nbsp;     */
+&nbsp;    @Override
+&nbsp;    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
+&nbsp;    {
+<b class="nc">&nbsp;        doGet(request, response);</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-01-23 01:20</div>
+</div>
+</body>
+</html>

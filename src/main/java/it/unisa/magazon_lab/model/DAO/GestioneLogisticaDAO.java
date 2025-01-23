@@ -175,27 +175,59 @@ public class GestioneLogisticaDAO {
      * @param IDprodotto     ID del prodotto da spedire.
      * @param noteArrivo Note aggiuntive sulla spedizione.
      */
-    public void inserisciArrivo (int IDprodotto, String noteArrivo){
+    public String inserisciArrivo(int IDprodotto, String noteArrivo) {
+        String result = null;
+
+        if (IDprodotto == 0 || IDprodotto<0) { // IDprodotto non può essere null per un tipo primitivo int
+            return "2"; // Codice per parametro nullo o non valido
+        }
+
+        String queryCheckProdotto = "SELECT COUNT(*) FROM Prodotto WHERE ID = ?";
         String queryArrivo = "INSERT INTO Arrivo (IDprodotto, note) VALUES (?, ?)";
         String queryProdotto = "UPDATE Prodotto SET stato = 'in arrivo' WHERE ID = ?";
 
-        try{
-            PreparedStatement statementArrivo=connessione.getConnection().prepareStatement(queryArrivo);
-            statementArrivo.setInt(1,IDprodotto);
-            statementArrivo.setString(2,noteArrivo);
+        try {
+            // Controlla se IDprodotto è presente nel database
+            PreparedStatement statementCheckProdotto = connessione.getConnection().prepareStatement(queryCheckProdotto);
+            statementCheckProdotto.setInt(1, IDprodotto);
+            ResultSet resultSet = statementCheckProdotto.executeQuery();
+            resultSet.next();
+
+            if (resultSet.getInt(1) == 0) {
+                // IDprodotto non presente nel database
+                resultSet.close();
+                statementCheckProdotto.close();
+                return "3";
+            }
+
+            resultSet.close();
+            statementCheckProdotto.close();
+
+            // Inserisce l'arrivo nella tabella Arrivo
+            PreparedStatement statementArrivo = connessione.getConnection().prepareStatement(queryArrivo);
+            statementArrivo.setInt(1, IDprodotto);
+            statementArrivo.setString(2, noteArrivo);
             statementArrivo.executeUpdate();
 
-            PreparedStatement statementProdotto=connessione.getConnection().prepareStatement(queryProdotto);
-            statementProdotto.setInt(1,IDprodotto);
+            // Aggiorna lo stato nella tabella Prodotto
+            PreparedStatement statementProdotto = connessione.getConnection().prepareStatement(queryProdotto);
+            statementProdotto.setInt(1, IDprodotto);
             statementProdotto.executeUpdate();
 
+            // Chiudi gli statement
             statementArrivo.close();
             statementProdotto.close();
 
+            // Operazione completata con successo
+            result = "1";
+
         } catch (SQLException e) {
-            throw new RuntimeException("Errore durante l'inserimento dell' arrivo: " + e.getMessage(), e);
+            throw new RuntimeException("Errore durante l'inserimento dell'arrivo: " + e.getMessage(), e);
         }
+
+        return result;
     }
+
 
     /**
      * Inserisce una nuova spedizione nel database e aggiorna lo stato del prodotto associato.
@@ -203,26 +235,54 @@ public class GestioneLogisticaDAO {
      * @param IDprodotto     ID del prodotto da spedire.
      * @param noteSpedizione Note aggiuntive sulla spedizione.
      */
-    public void inserisciSpedizione(int IDprodotto, String noteSpedizione) {
+    public String inserisciSpedizione(int IDprodotto, String noteSpedizione) {
+        if (IDprodotto <= 0) { // Controllo di validità dell'ID (non può essere 0 o negativo)
+            return "2"; // Codice per ID non valido
+        }
+
+        String queryCheckProdotto = "SELECT COUNT(*) FROM Prodotto WHERE ID = ?";
         String querySpedizione = "INSERT INTO Spedizione (IDprodotto, note) VALUES (?, ?)";
         String queryProdotto = "UPDATE Prodotto SET stato = 'in spedizione' WHERE ID = ?";
 
         try {
+            // Verifica se l'IDprodotto esiste nella tabella Prodotto
+            PreparedStatement statementCheckProdotto = connessione.getConnection().prepareStatement(queryCheckProdotto);
+            statementCheckProdotto.setInt(1, IDprodotto);
+            ResultSet resultSet = statementCheckProdotto.executeQuery();
+            resultSet.next();
+
+            if (resultSet.getInt(1) == 0) {
+                // L'IDprodotto non esiste
+                resultSet.close();
+                statementCheckProdotto.close();
+                return "3"; // Codice per ID non presente
+            }
+
+            resultSet.close();
+            statementCheckProdotto.close();
+
+            // Inserisce la spedizione nella tabella Spedizione
             PreparedStatement statementSpedizione = connessione.getConnection().prepareStatement(querySpedizione);
             statementSpedizione.setInt(1, IDprodotto);
             statementSpedizione.setString(2, noteSpedizione);
             statementSpedizione.executeUpdate();
 
+            // Aggiorna lo stato nella tabella Prodotto
             PreparedStatement statementProdotto = connessione.getConnection().prepareStatement(queryProdotto);
             statementProdotto.setInt(1, IDprodotto);
             statementProdotto.executeUpdate();
 
+            // Chiudi gli statement
             statementSpedizione.close();
             statementProdotto.close();
+
+            return "1"; // Operazione completata con successo
+
         } catch (SQLException e) {
             throw new RuntimeException("Errore durante l'inserimento della spedizione: " + e.getMessage(), e);
         }
     }
+
 
     public Spedizione visualizzaSpedizione(int IDspedizione)
     {
