@@ -130,8 +130,6 @@ public class GestioneListeDAO {
     {
         String result="";
 
-        System.out.println("Nome: " + nomeFile);
-
         if(nomeFile == null || nomeFile.isEmpty() || !Patterns.PATTERN9.matcher(nomeFile).matches())
             throw new IllegalArgumentException("nomeFile non corretto");
 
