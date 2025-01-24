@@ -21,12 +21,12 @@ VALUES
 -- Inserimento di 10 prodotti associati alle categorie
 INSERT INTO Prodotto (IDcategoria, codice, stato, nome, descrizione, dataArrivo, noteArrivo, partenza, dataSpedizione, noteSpedizione, destinazione, noteGenerali)
 VALUES
-(1, 'ELEC001', 'in arrivo', 'Smartphone XYZ', 'Smartphone di ultima generazione', '2024-12-01', 'Arrivo previsto alle 10:00', '2024-12-05', NULL, NULL, 'Magazzino centrale', 'Nessuna nota.'),
-(1, 'ELEC002', 'in magazzino', 'Laptop ABC', 'Laptop con prestazioni elevate', '2024-11-25', 'Consegna puntuale', '2024-12-07', '2024-12-08', 'Consegna prevista entro 24 ore', 'Cliente finale Milano', 'Confezione protettiva inclusa.'),
-(1, 'ELEC003', 'in spedizione', 'Tablet 123', 'Tablet leggero e portatile', '2024-11-28', 'Consegna anticipata', '2024-12-01', '2024-12-02', 'In attesa del corriere', 'Negozio Roma', 'Includere caricatore.'),
-(2, 'ARR001', 'non disponibile', 'Sedia Ergonomica', 'Sedia comoda per ufficio', '2024-11-15', 'Richiesto riordino', '2024-12-10', NULL, NULL, NULL, 'Prodotto in attesa di restock.'),
-(2, 'ARR002', 'in arrivo', 'Tavolo in legno', 'Tavolo da pranzo in legno massello', '2024-12-03', 'Arrivo programmato con trasportatore', '2024-12-15', NULL, NULL, 'Magazzino Torino', 'Imballaggio speciale richiesto.'),
-(2, 'ARR003', 'in magazzino', 'Libreria moderna', 'Libreria con design contemporaneo', '2024-11-20', 'Arrivo confermato', '2024-12-04', '2024-12-06', NULL, 'Cliente Napoli', 'Assemblaggio richiesto.'),
+(1, 'ELEC001', 'in arrivo', 'Smartphone XYZ', 'Smartphone di ultima generazione', '2024-12-01', 'Arrivo previsto alle 10:00', 'Firenze', NULL, NULL, 'Magazzino centrale', 'Nessuna nota.'),
+(1, 'ELEC002', 'in magazzino', 'Laptop ABC', 'Laptop con prestazioni elevate', '2024-11-25', 'Consegna puntuale', 'Milano', '2024-12-08', 'Consegna prevista entro 24 ore', 'Cliente finale Milano', 'Confezione protettiva inclusa.'),
+(1, 'ELEC003', 'in spedizione', 'Tablet 123', 'Tablet leggero e portatile', '2024-11-28', 'Consegna anticipata', 'Napoli', '2024-12-02', 'In attesa del corriere', 'Negozio Roma', 'Includere caricatore.'),
+(2, 'ARR001', 'non disponibile', 'Sedia Ergonomica', 'Sedia comoda per ufficio', '2024-11-15', 'Richiesto riordino', 'Napoli', NULL, NULL, NULL, 'Prodotto in attesa di restock.'),
+(2, 'ARR002', 'in arrivo', 'Tavolo in legno', 'Tavolo da pranzo in legno massello', '2024-12-03', 'Arrivo programmato con trasportatore', 'lisbona', NULL, NULL, 'Magazzino Torino', 'Imballaggio speciale richiesto.'),
+(2, 'ARR003', 'in magazzino', 'Libreria moderna', 'Libreria con design contemporaneo', '2024-11-20', 'Arrivo confermato', 'Torino', '2024-12-06', NULL, 'Cliente Napoli', 'Assemblaggio richiesto.'),
 (3, 'ABB001', 'in spedizione', 'Giacca Invernale', 'Giacca impermeabile per uomo', '2024-11-30', NULL, 'napoli', '2024-12-02', 'In transito', 'Cliente Torino', 'Assicurarsi di includere tutte le taglie richieste.'),
 (3, 'ABB002', 'in magazzino', 'Scarpe Running', 'Scarpe sportive leggere', '2024-11-25', 'Consegna diretta', 'afragola', NULL, NULL, 'Cliente Firenze', 'Confezionate singolarmente.'),
 (3, 'ABB003', 'in arrivo', 'Cappello Estivo', 'Cappello leggero per protezione dal sole', '2024-12-02', 'Trasporto via aerea', 'Perugia', NULL, NULL, 'Magazzino Bologna', 'Materiale fragile.'),
