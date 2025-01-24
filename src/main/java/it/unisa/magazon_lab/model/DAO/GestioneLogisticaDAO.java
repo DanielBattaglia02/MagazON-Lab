@@ -284,6 +284,15 @@ public class GestioneLogisticaDAO {
     }
 
 
+    /**
+     * Recupera una spedizione dal database utilizzando l'ID della spedizione.
+     *
+     * @param IDspedizione L'ID della spedizione da recuperare.
+     * @return Un oggetto {@link Spedizione} che contiene i dettagli della spedizione,
+     *         oppure {@code null} se la spedizione non esiste.
+     * @throws RuntimeException Se si verifica un errore durante l'accesso al database.
+     */
+
     public Spedizione visualizzaSpedizione(int IDspedizione)
     {
         Spedizione spedizione = null;
@@ -312,6 +321,16 @@ public class GestioneLogisticaDAO {
         }
         return spedizione;
     }
+
+    /**
+     * Recupera un arrivo dal database utilizzando l'ID dell'arrivo.
+     *
+     * @param IDarrivo L'ID dell'arrivo da recuperare.
+     * @return Un oggetto {@link Arrivo} che contiene i dettagli dell'arrivo,
+     *         oppure {@code null} se l'arrivo non esiste.
+     * @throws RuntimeException Se si verifica un errore durante l'accesso al database.
+     */
+
     public Arrivo visualizzaArrivo(int IDarrivo) {
         Arrivo arrivo = null;
         String query = "SELECT a.ID, a.IDprodotto, p.codice, a.note " +
@@ -339,6 +358,14 @@ public class GestioneLogisticaDAO {
         }
         return arrivo;
     }
+
+    /**
+     * Modifica le note di una spedizione e le note relative nel prodotto associato.
+     *
+     * @param IDspedizione L'ID della spedizione da cui aggiornare le note.
+     * @param nuovaNota La nuova nota da associare alla spedizione.
+     * @throws RuntimeException Se si verifica un errore durante l'accesso al database.
+     */
     public void modificaNoteSpedizione(int IDspedizione, String nuovaNota)
     {
         String querySpedizione = "UPDATE Spedizione SET note = ? WHERE ID = ?";
@@ -368,6 +395,14 @@ public class GestioneLogisticaDAO {
             throw new RuntimeException("Errore durante la modifica delle note della spedizione: " + e.getMessage(), e);
         }
     }
+
+    /**
+     * Modifica le note di un arrivo e le note relative nel prodotto associato.
+     *
+     * @param IDarrivo L'ID dell'arrivo da cui aggiornare le note.
+     * @param nuovaNota La nuova nota da associare all'arrivo.
+     * @throws RuntimeException Se si verifica un errore durante l'accesso al database.
+     */
     public void modificaNoteArrivo(int IDarrivo, String nuovaNota)
     {
         String queryArrivo = "UPDATE Arrivo SET note = ? WHERE ID = ?";
