@@ -1,8 +1,6 @@
 package it.unisa.magazon_lab.model.DAO;
 
-import it.unisa.magazon_lab.model.DAO.GestioneNotificheDAO;
 import org.junit.jupiter.api.*;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
@@ -28,7 +26,7 @@ public class GestioneNotificheDAOTest {
      */
     @Test
     public void TC_6_1_1() {
-        int idUtente = 1; // Assumi un ID utente valido nel database di test
+        int idUtente = 1; // Assumi un ID utente valido nel database di test (mittente)
         String oggetto = ""; // Formato oggetto non valido (vuoto)
         String messaggio = ""; // Formato messaggio non valido (vuoto)
 

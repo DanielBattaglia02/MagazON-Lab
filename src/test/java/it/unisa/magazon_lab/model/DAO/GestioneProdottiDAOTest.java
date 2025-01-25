@@ -101,6 +101,32 @@ public class GestioneProdottiDAOTest {
     }
 
     /**
+     * TC_1.1.4
+     * Errore: formato nome non corretto.
+     */
+    @Test
+    public void TC_1_1_4() {
+        int idCategoria = 1;
+        String codice = "COD0010";
+        String stato = "in arrivo";
+        String nome = "P"; // Formato nome non valido
+        String descrizione = "Descrizione valida";
+        String dataArrivoStr = "2019-10-02";
+        String noteArrivo = "Note di arrivo";
+        String partenza = "Sede 1";
+        String dataSpedizioneStr = "2019-10-03";
+        String noteSpedizione = "Note spedizione";
+        String destinazione = "Sede 2";
+        String noteGenerali = "Note generali";
+
+        String result = gestioneProdottiDAO.aggiungiProdotto(idCategoria, codice, stato, nome, descrizione,
+                dataArrivoStr, noteArrivo, partenza,
+                dataSpedizioneStr, noteSpedizione,
+                destinazione, noteGenerali);
+        assertEquals("3", result, "Doveva essere restituito un errore per formato nome non corretto.");
+    }
+
+    /**
      * TC_1.1.5
      * Errore: dataArrivo non valida.
      */
@@ -152,32 +178,6 @@ public class GestioneProdottiDAOTest {
                 dataSpedizioneStr, noteSpedizione,
                 destinazione, noteGenerali);
         assertEquals("8", result, "Doveva essere restituito un errore per dataSpedizione non valida.");
-    }
-
-    /**
-     * TC_1.1.4
-     * Errore: formato nome non corretto.
-     */
-    @Test
-    public void TC_1_1_4() {
-        int idCategoria = 1;
-        String codice = "COD0010";
-        String stato = "in arrivo";
-        String nome = "P"; // Formato nome non valido
-        String descrizione = "Descrizione valida";
-        String dataArrivoStr = "2019-10-02";
-        String noteArrivo = "Note di arrivo";
-        String partenza = "Sede 1";
-        String dataSpedizioneStr = "2019-10-03";
-        String noteSpedizione = "Note spedizione";
-        String destinazione = "Sede 2";
-        String noteGenerali = "Note generali";
-
-        String result = gestioneProdottiDAO.aggiungiProdotto(idCategoria, codice, stato, nome, descrizione,
-                dataArrivoStr, noteArrivo, partenza,
-                dataSpedizioneStr, noteSpedizione,
-                destinazione, noteGenerali);
-        assertEquals("3", result, "Doveva essere restituito un errore per formato nome non corretto.");
     }
 
     /**
@@ -329,7 +329,7 @@ public class GestioneProdottiDAOTest {
         String dataArrivoStr = "31-02/2018"; // Data non valida
         String noteArrivo = "Note di arrivo";
         String partenza = "Sede 1";
-        String dataSpedizioneStr = "22/01/2019";
+        String dataSpedizioneStr = "2019-10-02";
         String noteSpedizione = "Note spedizione";
         String destinazione = "Sede 2";
         String noteGenerali = "Note generali";
