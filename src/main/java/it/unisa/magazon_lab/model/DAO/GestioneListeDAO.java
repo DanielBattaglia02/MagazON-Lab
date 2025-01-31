@@ -196,6 +196,7 @@ public class GestioneListeDAO {
      * Elimina una lista dal database dato il suo ID.
      *
      * @param id l'ID della lista da eliminare.
+     * @throws RuntimeException Se si verifica un errore durante l'esecuzione della query
      */
     public void eliminaLista(int id)
     {
@@ -218,6 +219,7 @@ public class GestioneListeDAO {
      *
      * @param id   l'ID della lista.
      * @param note le nuove note da associare alla lista.
+     * @throws RuntimeException Se si verifica un errore durante l'esecuzione della query
      * @return true se almeno una riga è stata aggiornata, altrimenti false.
      */
     public boolean aggiornaLista(int id, String note)
@@ -244,6 +246,7 @@ public class GestioneListeDAO {
      * Cerca una lista nel database dato il suo ID.
      *
      * @param id l'ID della lista da cercare.
+     * @throws RuntimeException Se si verifica un errore durante l'esecuzione della query
      * @return un oggetto Lista se trovato, altrimenti null.
      */
     public Lista cercaLista(int id)

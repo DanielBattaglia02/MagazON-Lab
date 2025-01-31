@@ -53,6 +53,7 @@ public class GestioneCategorieDAO {
     /**
      * Recupera tutte le categorie presenti nel database.
      *
+     * @throws RuntimeException Se si verifica un errore durante l'esecuzione della query
      * @return Lista di oggetti Categoria
      */
     public List<Categoria> visualizzaCategorie() {
@@ -88,6 +89,7 @@ public class GestioneCategorieDAO {
      * @param nome Nome della categoria
      * @param descrizione Descrizione della categoria
      * @param note Note aggiuntive sulla categoria
+     * @throws RuntimeException Se si verifica un errore durante l'esecuzione della query
      * @return "1" se l'operazione ha avuto successo, "2" se il nome non è corretto, "3" se la descrizione non è corretta e "4" se il nome è già presente o c'è stato un errore
      */
     public String aggiungiCategoria(String nome, String descrizione, String note) {
@@ -131,6 +133,7 @@ public class GestioneCategorieDAO {
      * @param nome Nuovo nome della categoria
      * @param descrizione Nuova descrizione della categoria
      * @param note Nuove note della categoria
+     * @throws RuntimeException Se si verifica un errore durante l'esecuzione della query
      * @return "1" se l'operazione ha avuto successo, "2" se il nome non è corretto, "3" se la descrizione non è corretta e "4" se il nome è gia presente.
      */
     public String modificaCategoria(int IDprodotto, String nome, String descrizione, String note) {
@@ -172,6 +175,7 @@ public class GestioneCategorieDAO {
      * Cerca una categoria specifica nel database tramite il suo ID.
      *
      * @param ID ID della categoria da cercare
+     * @throws RuntimeException Se si verifica un errore durante l'esecuzione della query
      * @return Oggetto Categoria se trovato, altrimenti null
      */
     public Categoria CercaCategoria(int ID) {
@@ -204,6 +208,7 @@ public class GestioneCategorieDAO {
      * Elimina una categoria dal database.
      *
      * @param ID ID della categoria da eliminare
+     * @throws RuntimeException Se si verifica un errore durante l'esecuzione della query
      * @return "1" se l'operazione ha avuto successo, "2" per errore di SQL, "3" se la categoria è associata a prodotti, "4" se la categoria non è trovata
      */
     public String eliminaCategoria(int ID) {

@@ -43,6 +43,7 @@ public class GestioneNotificheDAO {
      *
      * @param userID L'ID dell'utente di cui recuperare le notifiche.
      * @return Una lista di oggetti Notifica che rappresentano le notifiche dell'utente.
+     * @throws RuntimeException Se si verifica un errore durante l'esecuzione della query
      */
     public List<Notifica> visualizzaNotifiche(int userID) {
         List<Notifica> notifiche = new ArrayList<>();
@@ -136,6 +137,7 @@ public class GestioneNotificheDAO {
      * @param oggetto  L'oggetto della notifica.
      * @param messaggio Il contenuto della notifica.
      * @return "3" se l'operazione è completata con successo, "4" per problemi generali, o null per formato non valido.
+     * @throws RuntimeException Se si verifica un errore durante l'esecuzione della query
      */
     public String inviaNotifica(int ID, String oggetto, String messaggio) {
         if (!isValidNotify(oggetto, messaggio)) {

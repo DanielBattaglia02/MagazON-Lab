@@ -47,6 +47,7 @@ public class GestioneLogisticaDAO {
      * Recupera tutte le spedizioni dal database.
      *
      * @return Lista di oggetti Spedizione.
+     * @throws RuntimeException Se si verifica un errore durante l'esecuzione della query
      */
     public List<Spedizione> visualizzaSpedizioni() {
         List<Spedizione> spedizioni = new ArrayList<>();
@@ -81,6 +82,7 @@ public class GestioneLogisticaDAO {
      * Recupera tutti gli arrivi dal database.
      *
      * @return Lista di oggetti Arrivo.
+     * @throws RuntimeException Se si verifica un errore durante l'esecuzione della query
      */
     public List<Arrivo> visualizzaArrivi() {
         List<Arrivo> arrivi = new ArrayList<>();
@@ -116,6 +118,7 @@ public class GestioneLogisticaDAO {
      *
      * @param IDspedizione ID della spedizione da eliminare.
      * @param IDprodotto   ID del prodotto associato alla spedizione.
+     * @throws RuntimeException Se si verifica un errore durante l'esecuzione della query
      */
     public void eliminaSpedizione(int IDspedizione, int IDprodotto) {
         String queryProdotto = "UPDATE Prodotto SET stato = 'in magazzino', noteSpedizione = (SELECT note FROM Spedizione WHERE ID = ? AND IDprodotto = ?) WHERE ID = ?";
@@ -145,6 +148,7 @@ public class GestioneLogisticaDAO {
      *
      * @param IDarrivo   ID dell'arrivo da eliminare.
      * @param IDprodotto ID del prodotto associato all'arrivo.
+     * @throws RuntimeException Se si verifica un errore durante l'esecuzione della query
      */
     public void eliminaArrivo(int IDarrivo, int IDprodotto) {
         String queryProdotto = "UPDATE Prodotto SET stato = 'in magazzino', noteArrivo = (SELECT note FROM Arrivo WHERE ID = ? AND IDprodotto = ?) WHERE ID = ?";
@@ -174,6 +178,7 @@ public class GestioneLogisticaDAO {
      *
      * @param IDprodotto     ID del prodotto da spedire.
      * @param noteArrivo Note aggiuntive sulla spedizione.
+     * @throws RuntimeException Se si verifica un errore durante l'esecuzione della query
      */
     public String inserisciArrivo(int IDprodotto, String noteArrivo) {
         String result = null;
@@ -234,6 +239,7 @@ public class GestioneLogisticaDAO {
      *
      * @param IDprodotto     ID del prodotto da spedire.
      * @param noteSpedizione Note aggiuntive sulla spedizione.
+     * @throws RuntimeException Se si verifica un errore durante l'esecuzione della query
      */
     public String inserisciSpedizione(int IDprodotto, String noteSpedizione) {
         if (IDprodotto <= 0) { // Controllo di validità dell'ID (non può essere 0 o negativo)

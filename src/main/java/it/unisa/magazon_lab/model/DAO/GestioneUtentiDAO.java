@@ -58,6 +58,7 @@ public class GestioneUtentiDAO
      * Recupera la lista di tutti gli utenti presenti nel database.
      *
      * @return Una lista di oggetti Utente.
+     * @throws RuntimeException Se si verifica un errore durante l'esecuzione della query.
      */
 
     public List<Utente> visualizzaUtenti()
@@ -103,6 +104,7 @@ public class GestioneUtentiDAO
      *
      * @param userID     ID dell'utente da aggiornare.
      * @param nuovoStato Nuovo stato da assegnare all'utente.
+     * @throws RuntimeException Se si verifica un errore durante l'esecuzione della query.
      */
 
     public void aggiornaStatoUtente(int userID, String nuovoStato)
@@ -142,6 +144,7 @@ public class GestioneUtentiDAO
      *         "1" se l'inserimento è avvenuto con successo,
      *         "2" in caso di problemi tecnici,
      *         "3" in caso di eccezioni SQL.
+     * @throws RuntimeException Se si verifica un errore durante l'esecuzione della query.
      */
 
     public String aggiungiUtente(String nome, String cognome, String ruolo,
@@ -224,6 +227,7 @@ public class GestioneUtentiDAO
      *
      * @param id ID dell'utente da eliminare.
      * @return Messaggio che indica il risultato dell'operazione.
+     * @throws RuntimeException Se si verifica un errore durante l'esecuzione della query.
      */
 
     public String eliminaUtente(int id)
