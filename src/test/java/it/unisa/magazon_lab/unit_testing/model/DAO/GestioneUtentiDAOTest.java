@@ -1,21 +1,11 @@
-package it.unisa.magazon_lab.model.DAO;
+package it.unisa.magazon_lab.unit_testing.model.DAO;
 
-import it.unisa.magazon_lab.model.DAO.GestioneListeDAO;
 import it.unisa.magazon_lab.model.DAO.GestioneUtentiDAO;
-import it.unisa.magazon_lab.model.Entity.Utente;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
-import org.mockito.Mockito;
 
-
-import java.sql.Array;
-import java.sql.Date;
-import java.util.Arrays;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
 
 /**
  * Classe di test per verificare i casi di validazione dei metodi aggiungiUtente e modificaUtente di GestioneListeDAO.

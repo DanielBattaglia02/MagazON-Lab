@@ -112,8 +112,3 @@ INSERT INTO Spedizione (IDprodotto, note)
 VALUES
 (3, 'In attesa del corriere'), -- Tablet 123
 (7, 'In transito'); -- Giacca Invernale
-
-
-select * from arrivo;
-
-select * FROM prodotto where ID=11;

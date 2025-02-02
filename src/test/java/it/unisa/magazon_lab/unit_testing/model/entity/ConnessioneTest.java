@@ -1,4 +1,4 @@
-package it.unisa.magazon_lab.model.entity;
+package it.unisa.magazon_lab.unit_testing.model.entity;
 
 import it.unisa.magazon_lab.model.Entity.Connessione;
 import org.junit.jupiter.api.AfterEach;

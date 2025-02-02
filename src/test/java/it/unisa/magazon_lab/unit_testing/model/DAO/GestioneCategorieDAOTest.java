@@ -1,5 +1,6 @@
-package it.unisa.magazon_lab.model.DAO;
+package it.unisa.magazon_lab.unit_testing.model.DAO;
 
+import it.unisa.magazon_lab.model.DAO.GestioneCategorieDAO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

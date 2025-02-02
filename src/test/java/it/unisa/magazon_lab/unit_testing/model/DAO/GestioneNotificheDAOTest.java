@@ -1,5 +1,6 @@
-package it.unisa.magazon_lab.model.DAO;
+package it.unisa.magazon_lab.unit_testing.model.DAO;
 
+import it.unisa.magazon_lab.model.DAO.GestioneNotificheDAO;
 import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
 

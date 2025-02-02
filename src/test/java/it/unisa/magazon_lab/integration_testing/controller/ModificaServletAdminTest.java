@@ -1,4 +1,4 @@
-package it.unisa.magazon_lab.controller;
+package it.unisa.magazon_lab.integration_testing.controller;
 
 import it.unisa.magazon_lab.controller.admin.ModificaServletAdmin;
 import it.unisa.magazon_lab.model.DAO.GestioneCategorieDAO;

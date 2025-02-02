@@ -1,4 +1,4 @@
-package it.unisa.magazon_lab.selenium;
+package it.unisa.magazon_lab.system_testing.selenium;
 
 import org.junit.Test;
 import org.junit.Before;
@@ -59,6 +59,8 @@ public class GestioneProdottiTest {
      * Test per l'aggiunta di un prodotto.
      * Simula l'aggiunta di un prodotto al sistema, compreso il login e la compilazione del modulo.
      * Verifica la corretta aggiunta tramite un messaggio di alert.
+     *
+     * @author Battaglia Daniel
      */
 
     @Test
@@ -129,6 +131,8 @@ public class GestioneProdottiTest {
     /**
      * Test per la modifica di un prodotto.
      * Simula la modifica dello stato di un prodotto, verificando la modifica con un messaggio di alert.
+     *
+     * @author Vaiano Francesco
      */
 
     @Test
@@ -186,6 +190,8 @@ public class GestioneProdottiTest {
     /**
      * Test per la rimozione di un prodotto.
      * Simula la rimozione di un prodotto e verifica la corretta gestione degli alert.
+     *
+     * @author Gigante Ruben
      */
 
     @Test

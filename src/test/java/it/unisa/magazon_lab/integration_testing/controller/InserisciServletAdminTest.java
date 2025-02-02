@@ -1,4 +1,4 @@
-package it.unisa.magazon_lab.controller;
+package it.unisa.magazon_lab.integration_testing.controller;
 
 import it.unisa.magazon_lab.controller.admin.InserisciServletAdmin;
 import it.unisa.magazon_lab.model.DAO.GestioneNotificheDAO;
