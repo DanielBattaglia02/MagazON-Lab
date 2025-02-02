@@ -39,13 +39,11 @@ import org.junit.runners.MethodSorters;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class GestioneProdottiTest {
     private WebDriver driver;
-    private Map<String, Object> vars;
     JavascriptExecutor js;
     @Before
     public void setUp() {
         driver = new EdgeDriver();
         js = (JavascriptExecutor) driver;
-        vars = new HashMap<String, Object>();
     }
 
     /**
@@ -69,12 +67,8 @@ public class GestioneProdottiTest {
         driver.manage().window().setSize(new Dimension(1022, 718));
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
 
-        // Login
         WebElement usernameField = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("lbu")));
         usernameField.sendKeys("antonio.prete");
-
-        WebElement loginButton = driver.findElement(By.id("lbp"));
-        loginButton.click();
 
         WebElement passwordField = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("lbp")));
         passwordField.sendKeys("ddd");
@@ -82,18 +76,15 @@ public class GestioneProdottiTest {
         WebElement magazziniereButton = wait.until(ExpectedConditions.elementToBeClickable(By.id("magazziniere")));
         magazziniereButton.click();
 
-        // Pausa di 2 secondi dopo il login
         pausa(2000);
 
-        // Aggiunta prodotto
-        WebElement aggiungiProdottoButton = wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("input:nth-child(9)")));
+        WebElement loginButton = wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("input:nth-child(9)")));
+        loginButton.click();
+
+        pausa(2000);
+
+        WebElement aggiungiProdottoButton = wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector(".azione:nth-child(2) > img")));
         aggiungiProdottoButton.click();
-
-        // Pausa di 2 secondi prima di cliccare su Aggiungi prodotto
-        pausa(2000);
-
-        WebElement azioneButton = wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector(".azione:nth-child(2) > img")));
-        azioneButton.click();
 
         WebElement categoriaSelect = wait.until(ExpectedConditions.elementToBeClickable(By.id("categoria")));
         categoriaSelect.click();
@@ -122,14 +113,11 @@ public class GestioneProdottiTest {
         WebElement partenzaField = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("partenza")));
         partenzaField.sendKeys("Salerno");
 
-        // Pausa di 2 secondi prima di cliccare su Salva
         pausa(2000);
 
-        // Click su Salva
         WebElement salvaButton = wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("button")));
         salvaButton.click();
 
-        // Aspetta l'alert e controlla il messaggio
         Alert alert = wait.until(ExpectedConditions.alertIsPresent());
         assertThat(alert.getText(), is("Prodotto aggiunto con successo!"));
 
@@ -150,7 +138,6 @@ public class GestioneProdottiTest {
 
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
 
-        // Login
         WebElement loginLink = wait.until(ExpectedConditions.elementToBeClickable(By.id("lbu")));
         loginLink.click();
 
@@ -164,38 +151,36 @@ public class GestioneProdottiTest {
         WebElement magazziniereButton = wait.until(ExpectedConditions.elementToBeClickable(By.id("magazziniere")));
         magazziniereButton.click();
 
-        // Aggiunta prodotto
-        WebElement modificaProdottoButton = wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("input:nth-child(9)")));
-        modificaProdottoButton.click();
+        WebElement loginButton = wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("input:nth-child(9)")));
+        loginButton.click();
 
         pausa(2000);
 
-        WebElement bottoneModificaStato = wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("tr:nth-child(9) > td:nth-child(13) > .bottone")));
-        bottoneModificaStato.click();
+        WebElement rigaProdotto = driver.findElement(By.xpath("//td[contains(., 'APPL1')]//ancestor::tr"));
+
+        WebElement bottoneModifica = rigaProdotto.findElement(By.cssSelector("td:nth-child(13) .bottone"));
+
+        bottoneModifica.click();
 
         pausa(2000);
 
-        // Seleziona stato
         WebElement statoSelect = wait.until(ExpectedConditions.elementToBeClickable(By.id("stato")));
         statoSelect.click();
 
         WebElement statoOption = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//option[. = 'In magazzino']")));
         statoOption.click();
 
-        // Pausa di 2 secondi prima di cliccare su Salva
         pausa(2000);
 
-        // Clicca su Salva
         WebElement salvaButton = wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("button")));
         salvaButton.click();
 
-        // Aspetta l'alert e controlla il messaggio
         Alert alert = wait.until(ExpectedConditions.alertIsPresent());
         assertThat(alert.getText(), is("Modifica avvenuta con successo!"));
 
         pausa(2000);
 
-        alert.accept(); // Accetta l'alert per concludere
+        alert.accept();
     }
 
     /**
@@ -209,12 +194,9 @@ public class GestioneProdottiTest {
         driver.manage().window().setSize(new Dimension(1022, 718));
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
 
-        // Login
         WebElement usernameField = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("lbu")));
         usernameField.sendKeys("antonio.prete");
 
-        WebElement loginButton = driver.findElement(By.id("lbp"));
-        loginButton.click();
 
         WebElement passwordField = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("lbp")));
         passwordField.sendKeys("ddd");
@@ -224,36 +206,34 @@ public class GestioneProdottiTest {
 
         pausa(2000);
 
-        // Aggiunta prodotto
-        WebElement rimuoviProdottoButton = wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("input:nth-child(9)")));
-        rimuoviProdottoButton.click();
-
-        WebElement azioneButton = wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector(".azione:nth-child(3) > img")));
-        azioneButton.click();
+        WebElement loginButton = wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("input:nth-child(9)")));
+        loginButton.click();
 
         pausa(2000);
 
-        // Selezione prodotto
+        WebElement cancellaProdottoButton = wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector(".azione:nth-child(3) > img")));
+        cancellaProdottoButton.click();
+
+        pausa(2000);
+
         WebElement prodotto = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//td[contains(.,'APPL1')]")));
         prodotto.click();
 
         pausa(2000);
 
-        // Controllo dei messaggi di alert
         Alert alert = wait.until(ExpectedConditions.alertIsPresent());
         assertThat(alert.getText(), is("Sei sicuro di voler eliminare questo prodotto?"));
 
         pausa(2000);
 
-        alert.accept(); // Accetta l'alert per confermare l'eliminazione
+        alert.accept();
 
-        // Controllo dell'alert di successo
         alert = wait.until(ExpectedConditions.alertIsPresent());
         assertThat(alert.getText(), is("Eliminazione avvenuta con successo!"));
 
         pausa(2000);
 
-        alert.accept(); // Accetta l'alert per concludere
+        alert.accept();
     }
 
     /**
